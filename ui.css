@@ -1129,26 +1129,36 @@ h1 > span {
   color: var(--ivory);
   font-weight: 500;
 }
+/* Restore the original reference-style flight label only. */
 #toptracer-yardage-tag {
-  position: fixed;
-  pointer-events: none;
-  z-index: 9;
-  transform: translate(-50%, -150%);
-  background: var(--forest);
-  border: 1px solid var(--gold);
-  padding: 5px 9px;
-  color: var(--ivory);
-  align-items: center;
-  gap: 6px;
-  border-radius: 3px;
-}
-.tracer-label {
-  font-size: 8px;
-  color: var(--gold);
-}
-.tracer-val {
-  font-size: 17px;
-}
+      position: absolute;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 50;
+      transform: translate(26px, -50%); /* Clean offset to the right-side of the red tracer tip */
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.90), 0 0 5px rgba(0, 0, 0, 0.95);
+      user-select: none;
+      font-family: -apple-system, BlinkMacSystemFont, "Montserrat", "Segoe UI", Arial, sans-serif;
+    }
+    #toptracer-yardage-tag .tracer-label {
+      color: rgba(255, 255, 255, 0.90);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      line-height: 1.1;
+    }
+    #toptracer-yardage-tag .tracer-val {
+      color: #ffffff;
+      font-size: 30px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      line-height: 1.0;
+    }
+
 /* Overlay manager uses one scrim and one active panel. */
 #panel-scrim {
   position: fixed;

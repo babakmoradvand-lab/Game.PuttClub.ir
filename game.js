@@ -1078,6 +1078,12 @@ group.name = name;
       depthTest: false,
       depthWrite: false
     });
+    // Keep this flight overlay's original pre-redesign color output.
+    // The rest of the course continues to use the new sRGB rendering pipeline.
+    function legacyTracerColorOutput(shader) {
+      shader.fragmentShader = shader.fragmentShader.replace('#include <encodings_fragment>', '');
+    }
+    tracerMat.onBeforeCompile = legacyTracerColorOutput;
     const toptracerMesh = new THREE.Mesh(tracerGeo, tracerMat);
     toptracerMesh.renderOrder = 9998;
     toptracerMesh.frustumCulled = false;
@@ -1111,6 +1117,7 @@ group.name = name;
       depthTest: false,
       depthWrite: false
     });
+    shadowMat.onBeforeCompile = legacyTracerColorOutput;
     const shadowRibbon = new THREE.Mesh(shadowGeo, shadowMat);
     shadowRibbon.renderOrder = 9995;
     shadowRibbon.frustumCulled = false;
@@ -1224,6 +1231,8 @@ group.name = name;
       const distM = new THREE.Vector2(currentPt.x - shotStartPos.x, currentPt.z - shotStartPos.z).length();
       const yards = Math.round(distM * 1.09361);
 
+      // Project the tip with the current camera matrices, not the last frame.
+      camera.updateMatrixWorld(true);
       const screenPos = currentPt.clone().project(camera);
       if (screenPos.z > -1 && screenPos.z < 1) {
         const sx = (screenPos.x * 0.5 + 0.5) * window.innerWidth;
