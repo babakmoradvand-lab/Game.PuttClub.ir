@@ -29,7 +29,7 @@ fs.writeFileSync('audit/setup-layout-results.json',JSON.stringify({results,error
 // Dedicated touch journey (actual synthesized touchscreen taps, not mouse clicks).
 const touch=await browser.newContext({hasTouch:true,isMobile:true,viewport:{width:390,height:844},deviceScaleFactor:2,reducedMotion:'reduce'});
 const t=await touch.newPage();t.on('pageerror',e=>errors.push(e.message));await t.goto('http://localhost:8080/');await t.waitForFunction(()=>typeof PuttUI!=='undefined');
-await t.tap('#btn-splash-enter');await t.tap('[data-skill="mid"]');await t.tap('#skill-continue');await t.tap('#course-continue');await t.tap('#btn-mode-custom-hole');await t.locator('.hole-pick-card').nth(4).tap();
+await t.tap('#btn-splash-enter');await t.tap('[data-skill="mid"]');await t.tap('#course-continue');await t.tap('#btn-mode-custom-hole');await t.locator('.hole-pick-card').nth(4).tap();
 await t.tap('#club-trigger-card');await t.locator('[data-club-index="0"]').tap();await t.tap('#swing-trigger-card');await t.tap('[data-mode="half"]');await t.tap('#btn-close-swing-picker');
 assert.ok(await t.evaluate(()=>currentHoleNumber===5&&currentClubIndex===0&&currentSwingMode==='half'&&gameMode==='single_hole'));
 await t.tap('#minimap-container');await t.tap('#btn-open-scorecard');await t.tap('#btn-menu-close');

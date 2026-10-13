@@ -7,8 +7,8 @@ const {chromium}=require('playwright');const fs=require('fs');const assert=requi
  const ok=(name,value)=>{assert.ok(value,name);checks.push({name,pass:true})};
  await page.goto('http://localhost:8080/');await page.waitForFunction(()=>typeof PuttUI!=='undefined'&&proGolferLoaded);
  await page.click('#btn-splash-enter');
- for(const skill of ['beginner','mid','low','scratch']){await page.click(`[data-skill="${skill}"]`);ok('skill '+skill,await page.locator(`[data-skill="${skill}"]`).getAttribute('aria-pressed')==='true')}
- await page.click('#skill-continue');await page.click('[data-course="tehran"]');await page.click('#course-continue');
+ for(const skill of ['beginner','mid','low','scratch']){await page.click(`[data-skill="${skill}"]`);ok('skill '+skill,await page.locator(`[data-skill="${skill}"]`).getAttribute('aria-pressed')==='true');await page.click('#setup-back')}
+ await page.click('#skill-continue');await page.click('[data-course="tehran"]');
  await page.click('#setup-back');ok('setup back returns to course',await page.locator('#course-select-modal').isVisible());
  await page.click('#course-continue');await page.click('#btn-mode-custom-hole');
  ok('practice grid has 18 real holes',await page.locator('.hole-pick-card').count()===18);
@@ -21,7 +21,7 @@ const {chromium}=require('playwright');const fs=require('fs');const assert=requi
  await page.click('#return-title');await page.click('#btn-splash-enter');
  ok('title resume preserves game',JSON.stringify(before)===JSON.stringify(await page.evaluate(()=>({ball:ballPos.toArray(),hole:currentHoleNumber,strokes:strokesCurrentHole}))));
  // Return for a full-round MIS journey.
- await page.click('#btn-open-settings');await page.click('#return-title');await page.click('#btn-new-round');await page.click('#skill-continue');await page.click('[data-course="mis"]');await page.click('#course-continue');await page.click('#btn-mode-18holes');
+ await page.click('#btn-open-settings');await page.click('#return-title');await page.click('#btn-new-round');await page.click('#skill-continue');await page.click('[data-course="mis"]');await page.click('#btn-mode-18holes');
  ok('full-round mode',await page.evaluate(()=>gameMode==='18holes'&&currentHoleNumber===1&&brownsGroup.visible));
  // Every club selected through its actual button.
  for(let n=0;n<13;n++){await page.click('#club-trigger-card');await page.locator(`[data-club-index="${n}"]`).click();ok('club '+n,await page.evaluate(n=>currentClubIndex===n,n))}

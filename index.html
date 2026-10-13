@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="./icon-192.png">
 <link rel="stylesheet" href="./fonts/Inter.css">
 <link rel="stylesheet" href="./fonts/Vazirmatn.css">
-<link rel="stylesheet" href="./ui.css">
+<link rel="stylesheet" href="./ui.css?v=start6">
 <script>window.currentHandicap='scratch';window.handicapMultipliers={beginner:0.58,mid:0.74,low:0.87,scratch:1};</script>
 </head>
 <body data-view="menu">
@@ -47,27 +47,27 @@
  <nav class="setup-steps" aria-label="Game setup"><span data-step="handicap">01 <b>PLAYER</b></span><span data-step="course">02 <b>COURSE</b></span><span data-step="mode">03 <b>ROUND</b></span></nav>
  <main class="setup-stage">
  <section id="handicap-select-modal" class="setup-screen" hidden aria-labelledby="skill-title">
-  <div class="screen-intro"><span class="eyebrow">01 / YOUR GAME</span><h2 id="skill-title">Find your level.</h2><p lang="fa" dir="rtl">مهارت خود را انتخاب کن. برد چوب‌ها مطابق قوانین فعلی بازی تنظیم می‌شود.</p></div>
+  <div class="screen-intro"><span class="eyebrow">01 / YOUR GAME</span><h2 id="skill-title">Find your level.</h2><p lang="fa" dir="rtl">با لمس کارت مهارت، مستقیم به انتخاب زمین می‌روی. برد چوب‌ها مطابق قوانین بازی است.</p></div>
   <div class="skill-grid" role="group" aria-label="Player skill level">
    <button class="skill-card" data-skill="beginner" aria-pressed="false"><span class="choice-top"><span class="choice-number">01</span><span class="selection-tick">✓</span></span><div class="level-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></div><h3>Beginner</h3><span class="fa-sub" lang="fa">نوآموز</span><p lang="fa">فضایی برای یادگیری ضربه و شناخت میدان.</p><div class="choice-metric"><b data-driver="beginner">—</b><span>DRIVER · EST. YD</span></div></button>
    <button class="skill-card" data-skill="mid" aria-pressed="false"><span class="choice-top"><span class="choice-number">02</span><span class="selection-tick">✓</span></span><div class="level-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></div><h3>Mid Handicap</h3><span class="fa-sub" lang="fa">بازیکن باشگاهی</span><p lang="fa">تعادل میان مسافت و کنترل ضربه.</p><div class="choice-metric"><b data-driver="mid">—</b><span>DRIVER · EST. YD</span></div></button>
    <button class="skill-card" data-skill="low" aria-pressed="false"><span class="choice-top"><span class="choice-number">03</span><span class="selection-tick">✓</span></span><div class="level-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></div><h3>Low Handicap</h3><span class="fa-sub" lang="fa">بازیکن پیشرفته</span><p lang="fa">بازی دقیق با برد بیشتر چوب‌ها.</p><div class="choice-metric"><b data-driver="low">—</b><span>DRIVER · EST. YD</span></div></button>
    <button class="skill-card" data-skill="scratch" aria-pressed="true"><span class="choice-top"><span class="choice-number">04</span><span class="selection-tick">✓</span></span><div class="level-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></div><h3>Tour Pro</h3><span class="fa-sub" lang="fa">اسکرچ</span><p lang="fa">تمام ظرفیت چوب‌ها؛ بیشترین برد بازی.</p><div class="choice-metric"><b data-driver="scratch">—</b><span>DRIVER · EST. YD</span></div></button>
   </div>
-  <div class="setup-continue"><p>Distances are game estimates, not guaranteed results.</p><button id="skill-continue" class="primary-btn">Choose a course <svg class="icon"><use href="#i-arrow"/></svg></button></div>
+  <div class="setup-continue"><p>Distances are game estimates, not guaranteed results.</p><button id="skill-continue" class="primary-btn">انتخاب زمین <svg class="icon"><use href="#i-arrow"/></svg></button></div>
  </section>
  <section id="course-select-modal" class="setup-screen" hidden aria-labelledby="course-title">
-  <div class="screen-intro"><span class="eyebrow">02 / THE SETTING</span><h2 id="course-title">Choose your course.</h2><p lang="fa" dir="rtl">از براون‌های تاریخی تا فیروی‌های سبز؛ محیط بازی خود را انتخاب کن.</p></div>
+  <div class="screen-intro"><span class="eyebrow">02 / THE SETTING</span><h2 id="course-title">Choose your course.</h2><p lang="fa" dir="rtl">زمین دلخواه را لمس کن؛ سپس راند کامل یا تمرین یک حفره را انتخاب کن.</p></div>
   <div class="course-grid" role="group" aria-label="Course presentation">
    <button class="course-card" data-course="mis" aria-pressed="true"><div class="course-image"><img src="./satellite_ortho.jpg" alt="Masjed Soleyman satellite course imagery"><span class="course-chip">OILED SAND BROWNS</span></div><div class="course-copy"><span class="eyebrow">MASJED SOLEYMAN · IRAN</span><h3>The historic course</h3><span class="fa-sub" lang="fa">گلف نفت مسجدسلیمان</span><p>Sand, oil-treated browns and natural terrain.</p><span class="course-selection"><svg class="icon"><use href="#i-check"/></svg> Selected</span></div></button>
    <button class="course-card" data-course="tehran" aria-pressed="false"><div class="course-image"><img src="./tehran_satellite.jpg" alt="Tehran course surface image from existing game assets"><span class="course-chip">FAIRWAY GREENS</span></div><div class="course-copy"><span class="eyebrow">TEHRAN · IRAN</span><h3>Enghelab Golf Club</h3><span class="fa-sub" lang="fa">باشگاه انقلاب تهران</span><p>A grass-course presentation in the capital.</p><span class="course-selection"><svg class="icon"><use href="#i-check"/></svg> Selected</span></div></button>
   </div>
   <div class="course-note"><svg class="icon"><use href="#i-map"/></svg><p>Tehran changes the course surface presentation. The current engine uses the MIS terrain and hole layout for play.</p></div>
-  <div class="setup-continue"><p>Course imagery from the existing game assets.</p><button id="course-continue" class="primary-btn">Set up your round <svg class="icon"><use href="#i-arrow"/></svg></button></div>
+  <div class="setup-continue"><p>Course imagery from the existing game assets.</p><button id="course-continue" class="primary-btn">انتخاب حالت بازی <svg class="icon"><use href="#i-arrow"/></svg></button></div>
  </section>
  <section id="mode-select-modal" class="setup-screen" hidden aria-labelledby="round-title">
   <div class="screen-intro"><span class="eyebrow">03 / MAKE IT YOURS</span><h2 id="round-title">How will you play?</h2><p lang="fa" dir="rtl">یک راند کامل بازی کن یا روی یک حفره تمرین کن.</p></div>
-  <div class="mode-grid"><button id="btn-mode-18holes" class="mode-option-btn"><span class="mode-figure">18<span>HOLES</span></span><div><span class="eyebrow">THE FULL ROUND</span><h3>Play the course.</h3><p>Start at hole 1. Advance through the full round.</p><span class="fa-sub" lang="fa">راند کامل ۱۸ حفره</span></div><svg class="icon"><use href="#i-arrow"/></svg></button><button id="btn-mode-custom-hole" class="mode-option-btn"><svg class="practice-flag"><use href="#i-flag"/></svg><div><span class="eyebrow">THE PRACTICE ROUND</span><h3>Perfect a hole.</h3><p>Choose any hole. Play, review and repeat.</p><span class="fa-sub" lang="fa">انتخاب حفره و تمرین</span></div><svg class="icon"><use href="#i-arrow"/></svg></button></div>
+  <div class="mode-grid"><button id="btn-mode-18holes" class="mode-option-btn"><span class="mode-figure">18<span>HOLES</span></span><div><span class="eyebrow">THE FULL ROUND</span><h3 lang="fa">شروع راند ۱۸ حفره</h3><p>Start at hole 1. Advance through the full round.</p><span class="fa-sub" lang="fa">راند کامل ۱۸ حفره</span></div><svg class="icon"><use href="#i-arrow"/></svg></button><button id="btn-mode-custom-hole" class="mode-option-btn"><svg class="practice-flag"><use href="#i-flag"/></svg><div><span class="eyebrow">THE PRACTICE ROUND</span><h3 lang="fa">انتخاب حفره و تمرین</h3><p>Choose any hole. Play, review and repeat.</p><span class="fa-sub" lang="fa">انتخاب حفره و تمرین</span></div><svg class="icon"><use href="#i-arrow"/></svg></button></div>
   <div class="round-summary" id="round-summary"></div>
  </section>
  <section id="custom-hole-modal" class="setup-screen" hidden aria-labelledby="practice-title"><div class="screen-intro"><span class="eyebrow">PRACTICE / HOLE SELECT</span><h2 id="practice-title">One hole. Your focus.</h2><p>Choose a hole from the engine’s active layout. Distances are tee-card values.</p></div><div id="custom-hole-grid-container" class="custom-hole-grid"></div><button id="btn-close-custom-hole" class="text-btn"><svg class="icon"><use href="#i-back"/></svg> Back to round selection</button></section>
@@ -1648,6 +1648,6 @@ window.MIS_LEAF_TEX = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAY
   
   </script>
 <script>addEventListener('error',function(e){if(/WebGL|creating WebGL context/i.test(e.message)){document.getElementById('fatal-error').hidden=false}});</script>
-<script src="./game.js"></script>
-<script src="./ui.js"></script>
+<script src="./game.js?v=start6"></script>
+<script src="./ui.js?v=start6"></script>
 </body></html>

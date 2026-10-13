@@ -335,12 +335,18 @@
   document
     .querySelectorAll("[data-skill]")
     .forEach((e) =>
-      e.addEventListener("click", () => selectSkill(e.dataset.skill)),
+      e.addEventListener("click", () => {
+        selectSkill(e.dataset.skill);
+        showStep("course");
+      }),
     );
   document
     .querySelectorAll("[data-course]")
     .forEach((e) =>
-      e.addEventListener("click", () => selectCourse(e.dataset.course)),
+      e.addEventListener("click", () => {
+        selectCourse(e.dataset.course);
+        showStep("mode");
+      }),
     );
   // Derive player distance information from the unchanged bag and handicap rules.
   const savedSkill = window.currentHandicap;
