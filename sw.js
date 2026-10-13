@@ -1,70 +1,69 @@
-const CACHE_NAME = 'putt-club-v2026-phase1';
+const CACHE_PREFIX = 'putt-club-game-';
+const CACHE_NAME = CACHE_PREFIX + 'v2026-10-13-2';
 const ASSETS_TO_CACHE = [
-  './',
-  './index.html',
-  './manifest.json',
-  './icon-192.png',
-  './icon-512.png',
-  './putt_club_hero.webp',
-  './tehran_satellite.jpg',
-  './tehran_terrain.json',
-  './tehran_golf_features.json',
-  './tehran_course_18.json',
-  './pro_textures.json',
-  './mis_authentic_textures.json',
-  './mis_real_roads.json',
-  './smooth_calibrated_bag.json'
+  './', './index.html', './manifest.json',
+  './icon-192.png', './icon-512.png', './putt_club_hero.webp',
+  './three.min.js', './GLTFLoader.js', './OrbitControls.js',
+  './pro_golfer_character.glb', './golfer_360_texture.png',
+  './embedded_data.js', './tree_textures.js',
+  './satellite_ortho.jpg', './terrain_data.json', './map_meta.json',
+  './golf_features.json', './course_logic_18holes.json', './buildings_osm.json',
+  './tehran_satellite.jpg', './tehran_terrain.json',
+  './tehran_golf_features.json', './tehran_course_18.json',
+  './pro_textures.json', './mis_authentic_textures.json', './mis_real_roads.json',
+  './tracer_textures.json', './real_bark.jpg', './real_foliage.png',
+  './bark_tex.jpg', './foliage_leaf.png'
 ];
 
-self.addEventListener('install', (event) => {
-  self.skipWaiting();
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      console.log('[PWA SW] Pre-caching core game assets');
-      return cache.addAll(ASSETS_TO_CACHE).catch((err) => {
-        console.warn('[PWA SW] Partial cache install:', err);
-      });
-    })
-  );
-});
-
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            console.log('[PWA SW] Removing old cache:', key);
-            return caches.delete(key);
-          }
-        })
-      );
-    }).then(() => self.clients.claim())
-  );
-});
-
-self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return;
-
-  event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
+self.addEventListener('install', event => {
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE_NAME);
+    // A failed optional asset must not discard the whole installation.
+    await Promise.all(ASSETS_TO_CACHE.map(async path => {
+      try {
+        const response = await fetch(new Request(path, {cache: 'reload'}));
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        await cache.put(path, response);
+      } catch (error) {
+        console.warn('[PWA] Cannot precache', path, error);
       }
-      return fetch(event.request).then((networkResponse) => {
-        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
-          return networkResponse;
-        }
-        const responseToCache = networkResponse.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache);
-        });
-        return networkResponse;
-      }).catch(() => {
-        if (event.request.headers.get('accept').includes('text/html')) {
-          return caches.match('./index.html');
-        }
-      });
-    })
-  );
+    }));
+    await self.skipWaiting();
+  })());
+});
+
+self.addEventListener('activate', event => {
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.filter(key =>
+      key.startsWith(CACHE_PREFIX) && key !== CACHE_NAME
+    ).map(key => caches.delete(key)));
+    await self.clients.claim();
+  })());
+});
+
+self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') return;
+  const url = new URL(event.request.url);
+  // Avoid touching other projects sharing this GitHub Pages origin.
+  if (url.origin !== self.location.origin ||
+      !url.href.startsWith(self.registration.scope)) return;
+  event.respondWith((async () => {
+    const cache = await caches.open(CACHE_NAME);
+    const cached = await cache.match(event.request);
+    if (cached) return cached;
+    try {
+      const response = await fetch(event.request);
+      if (response.ok && response.type === 'basic') {
+        await cache.put(event.request, response.clone());
+      }
+      return response;
+    } catch (error) {
+      if (event.request.mode === 'navigate') {
+        const fallback = await cache.match('./index.html');
+        if (fallback) return fallback;
+      }
+      return Response.error();
+    }
+  })());
 });
