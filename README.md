@@ -1,30 +1,25 @@
-# MIS 3D Golf Simulation
+# PuttClub Golf — Club Edition
 
-شبیه‌ساز سه‌بعدی گلف با کاراکتر حرفه‌ای گلف‌باز (مدل واقعی `.glb`)، ساخته‌شده با Three.js.
+**Play:** https://babakmoradvand-lab.github.io/Game.PuttClub.ir/
 
-**Live:** https://babakmoradvand-lab.github.io/Game.PuttClub.ir/
+A golf simulation with a unified premium interface, bilingual player setup, 13 clubs, four swing presets, putting, live scorecard and offline support. Vanilla JavaScript / Three.js; no runtime UI framework.
 
-## ویژگی‌ها
+See [RELEASE_NOTES.md](RELEASE_NOTES.md) for implemented changes, preservation checks, tested journeys and known engine/asset limits. The current golfer is an unrigged GLB; Tehran currently uses a surface-presentation switch over the MIS layout. This UI release does not claim AAA character fidelity or independently reconstructed Tehran geography.
 
-- مدل سه‌بعدی حقیقی گلف‌باز (`pro_golfer_character.glb`) با بافت ۳۶۰ درجه، کلاه و چوب درایور
-- ۵ حالت سوینگ مستقل: Full Swing، 3/4 Swing، Half Swing، Chip، Putt
-- همگام‌سازی دقیق لحظه برخورد چوب با توپ و شروع فیزیک پرواز
-- آفلاین / PWA (Service Worker + Manifest)
-- زمین و عوارض واقعی مبتنی بر داده ماهواره‌ای
+## Run
 
-## اجرای محلی
-
-```bash
-python3 -m http.server 8080
-# سپس: http://localhost:8080
+```sh
+python3 -m http.server 8080 --bind 0.0.0.0
 ```
 
-## ساختار
+Open http://localhost:8080/. GitHub Pages serves the repository root, with all paths relative to `Game.PuttClub.ir/`.
 
-| فایل | توضیح |
-|---|---|
-| `index.html` | هسته شبیه‌ساز (Three.js + منطق سوینگ) |
-| `pro_golfer_character.glb` | مدل سه‌بعدی کاراکتر |
-| `golfer_360_texture.png` | اطلس بافت ۳۶۰ درجه |
-| `three.min.js` / `GLTFLoader.js` / `OrbitControls.js` | کتابخانه‌ها (لوکال، بدون CDN) |
-| `sw.js` / `manifest.json` | قابلیت آفلاین و نصب PWA |
+## Files
+
+- `index.html` — accessible screen structure and existing embedded course data.
+- `game.js` — preserved simulation, renderer and small UI integration hooks.
+- `ui.css` — shared tokens, component styling and responsive layout.
+- `ui.js` — setup, overlays, settings and game-state presentation.
+- `sw.js`, `manifest.json` — offline precache / PWA.
+- `fonts/` — local Inter / Vazirmatn with licenses.
+- `tests/` — browser and mathematical regression tests (development only).

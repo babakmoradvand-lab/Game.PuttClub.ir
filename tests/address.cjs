@@ -1,7 +1,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const THREE = require('../three.min.js');
-const html = fs.readFileSync('index.html', 'utf8');
+const html = fs.readFileSync('game.js', 'utf8');
 const start = html.indexOf('    function positionGolferAtBall()');
 const end = html.indexOf('    function resetGolferPosture()', start);
 const fn = html.slice(start,end);

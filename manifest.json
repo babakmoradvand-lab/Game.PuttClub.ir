@@ -4,9 +4,8 @@
   "description": "شبیه‌ساز سه‌بعدی گلف میدان تاریخی نفت مسجدسلیمان و باشگاه انقلاب تهران",
   "start_url": "./index.html",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#020617",
-  "theme_color": "#0284c7",
+  "background_color": "#101b15",
+  "theme_color": "#153b2f",
   "icons": [
     {
       "src": "./icon-192.png",
