@@ -526,7 +526,20 @@
     try {
       const existing = await navigator.serviceWorker.getRegistration();
       if (!existing) await navigator.serviceWorker.register("./sw.js");
+      else if (navigator.onLine) {
+        // Explicitly check for a release; do not leave returning players on
+        // an older cached setup flow until the browser's periodic check.
+        try { await existing.update(); } catch (error) {
+          console.warn("Offline update check:", error.message);
+        }
+      }
       const reg = await navigator.serviceWorker.ready;
+      const pending = reg.installing || reg.waiting;
+      if (pending && pending.state !== "activated" && pending.state !== "redundant") {
+        await new Promise(resolve => pending.addEventListener("statechange", () => {
+          if (pending.state === "activated" || pending.state === "redundant") resolve();
+        }));
+      }
       const expected = await fetch("./sw.js", { cache: "reload" }).then((r) =>
         r.text(),
       );

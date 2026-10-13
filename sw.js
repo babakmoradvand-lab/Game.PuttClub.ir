@@ -1,13 +1,13 @@
 const CACHE_PREFIX = 'putt-club-game-';
-const CACHE_NAME = CACHE_PREFIX + 'v2026-10-13-start-fix-6';
+const CACHE_NAME = CACHE_PREFIX + 'v2026-10-13-start-fix-7';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './manifest.json',
   './sw.js',
-  './ui.css?v=start6',
-  './ui.js?v=start6',
-  './game.js?v=start6',
+  './ui.css?v=start7',
+  './ui.js?v=start7',
+  './game.js?v=start7',
   './pro_golfer_cutout.png',
   './satellite_ortho.jpg',
   './fonts/Inter-2.ttf',
