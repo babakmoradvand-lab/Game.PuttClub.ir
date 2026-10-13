@@ -1,5 +1,5 @@
 const CACHE_PREFIX = 'putt-club-game-';
-const CACHE_NAME = CACHE_PREFIX + 'v2026-10-13-2';
+const CACHE_NAME = CACHE_PREFIX + 'v2026-10-13-3-address';
 const ASSETS_TO_CACHE = [
   './', './index.html', './manifest.json',
   './icon-192.png', './icon-512.png', './putt_club_hero.webp',
