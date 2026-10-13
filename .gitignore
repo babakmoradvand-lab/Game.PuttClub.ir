@@ -1,0 +1,8 @@
+# Blender source files (large build artifacts, not needed for the web build)
+*.blend
+*.blend1
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.tmp

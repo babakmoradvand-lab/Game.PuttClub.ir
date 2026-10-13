@@ -1,0 +1,290 @@
+{
+  "1": {
+    "hole_number": 1,
+    "name": "میدان 1 - باشگاه انقلاب تهران",
+    "tees": [
+      {
+        "tee_type": "Men",
+        "par": 5,
+        "yard": 339
+      },
+      {
+        "tee_type": "Women",
+        "par": 5,
+        "yard": 288
+      }
+    ]
+  },
+  "2": {
+    "hole_number": 2,
+    "name": "میدان 2 - باشگاه انقلاب تهران",
+    "tees": [
+      {
+        "tee_type": "Men",
+        "par": 4,
+        "yard": 300
+      },
+      {
+        "tee_type": "Women",
+        "par": 4,
+        "yard": 255
+      }
+    ]
+  },
+  "3": {
+    "hole_number": 3,
+    "name": "میدان 3 - باشگاه انقلاب تهران",
+    "tees": [
+      {
+        "tee_type": "Men",
+        "par": 4,
+        "yard": 352
+      },
+      {
+        "tee_type": "Women",
+        "par": 4,
+        "yard": 299
+      }
+    ]
+  },
+  "4": {
+    "hole_number": 4,
+    "name": "میدان 4 - باشگاه انقلاب تهران",
+    "tees": [
+      {
+        "tee_type": "Men",
+        "par": 4,
+        "yard": 256
+      },
+      {
+        "tee_type": "Women",
+        "par": 4,
+        "yard": 217
+      }
+    ]
+  },
+  "5": {
+    "hole_number": 5,
+    "name": "میدان 5 - باشگاه انقلاب تهران",
+    "tees": [
+      {
+        "tee_type": "Men",
+        "par": 5,
+        "yard": 360
+      },
+      {
+        "tee_type": "Women",
+        "par": 5,
+        "yard": 306
+      }
+    ]
+  },
+  "6": {
+    "hole_number": 6,
+    "name": "میدان 6 - باشگاه انقلاب تهران",
+    "tees": [
+      {
+        "tee_type": "Men",
+        "par": 3,
+        "yard": 123
+      },
+      {
+        "tee_type": "Women",
+        "par": 3,
+        "yard": 104
+      }
+    ]
+  },
+  "7": {
+    "hole_number": 7,
+    "name": "میدان 7 - باشگاه انقلاب تهران",
+    "tees": [
+      {
+        "tee_type": "Men",
+        "par": 3,
+        "yard": 117
+      },
+      {
+        "tee_type": "Women",
+        "par": 3,
+        "yard": 99
+      }
+    ]
+  },
+  "8": {
+    "hole_number": 8,
+    "name": "میدان 8 - باشگاه انقلاب تهران",
+    "tees": [
+      {
+        "tee_type": "Men",
+        "par": 4,
+        "yard": 293
+      },
+      {
+        "tee_type": "Women",
+        "par": 4,
+        "yard": 249
+      }
+    ]
+  },
+  "9": {
+    "hole_number": 9,
+    "name": "میدان 9 - باشگاه انقلاب تهران",
+    "tees": [
+      {
+        "tee_type": "Men",
+        "par": 4,
+        "yard": 290
+      },
+      {
+        "tee_type": "Women",
+        "par": 4,
+        "yard": 246
+      }
+    ]
+  },
+  "10": {
+    "hole_number": 10,
+    "name": "میدان 10 - باشگاه انقلاب تهران",
+    "tees": [
+      {
+        "tee_type": "Men",
+        "par": 4,
+        "yard": 336
+      },
+      {
+        "tee_type": "Women",
+        "par": 4,
+        "yard": 285
+      }
+    ]
+  },
+  "11": {
+    "hole_number": 11,
+    "name": "میدان 11 - باشگاه انقلاب تهران",
+    "tees": [
+      {
+        "tee_type": "Men",
+        "par": 3,
+        "yard": 165
+      },
+      {
+        "tee_type": "Women",
+        "par": 3,
+        "yard": 140
+      }
+    ]
+  },
+  "12": {
+    "hole_number": 12,
+    "name": "میدان 12 - باشگاه انقلاب تهران",
+    "tees": [
+      {
+        "tee_type": "Men",
+        "par": 4,
+        "yard": 256
+      },
+      {
+        "tee_type": "Women",
+        "par": 4,
+        "yard": 217
+      }
+    ]
+  },
+  "13": {
+    "hole_number": 13,
+    "name": "میدان 13 - باشگاه انقلاب تهران",
+    "tees": [
+      {
+        "tee_type": "Men",
+        "par": 4,
+        "yard": 352
+      },
+      {
+        "tee_type": "Women",
+        "par": 4,
+        "yard": 299
+      }
+    ]
+  },
+  "14": {
+    "hole_number": 14,
+    "name": "میدان 14 - باشگاه انقلاب تهران",
+    "tees": [
+      {
+        "tee_type": "Men",
+        "par": 5,
+        "yard": 360
+      },
+      {
+        "tee_type": "Women",
+        "par": 5,
+        "yard": 306
+      }
+    ]
+  },
+  "15": {
+    "hole_number": 15,
+    "name": "میدان 15 - باشگاه انقلاب تهران",
+    "tees": [
+      {
+        "tee_type": "Men",
+        "par": 3,
+        "yard": 123
+      },
+      {
+        "tee_type": "Women",
+        "par": 3,
+        "yard": 104
+      }
+    ]
+  },
+  "16": {
+    "hole_number": 16,
+    "name": "میدان 16 - باشگاه انقلاب تهران",
+    "tees": [
+      {
+        "tee_type": "Men",
+        "par": 3,
+        "yard": 117
+      },
+      {
+        "tee_type": "Women",
+        "par": 3,
+        "yard": 99
+      }
+    ]
+  },
+  "17": {
+    "hole_number": 17,
+    "name": "میدان 17 - باشگاه انقلاب تهران",
+    "tees": [
+      {
+        "tee_type": "Men",
+        "par": 4,
+        "yard": 293
+      },
+      {
+        "tee_type": "Women",
+        "par": 4,
+        "yard": 249
+      }
+    ]
+  },
+  "18": {
+    "hole_number": 18,
+    "name": "میدان 18 - باشگاه انقلاب تهران",
+    "tees": [
+      {
+        "tee_type": "Men",
+        "par": 4,
+        "yard": 263
+      },
+      {
+        "tee_type": "Women",
+        "par": 4,
+        "yard": 223
+      }
+    ]
+  }
+}
