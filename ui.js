@@ -517,58 +517,48 @@
       attributeFilter: ["class"],
     }),
   );
-  async function setupOffline() {
-    if (!("serviceWorker" in navigator)) {
-      $("offline-state").textContent =
-        "Offline caching is not supported in this browser.";
-      return;
-    }
-    try {
-      const existing = await navigator.serviceWorker.getRegistration();
-      if (!existing) await navigator.serviceWorker.register("./sw.js");
-      else if (navigator.onLine) {
-        // Explicitly check for a release; do not leave returning players on
-        // an older cached setup flow until the browser's periodic check.
-        try { await existing.update(); } catch (error) {
-          console.warn("Offline update check:", error.message);
-        }
-      }
-      const reg = await navigator.serviceWorker.ready;
-      const pending = reg.installing || reg.waiting;
-      if (pending && pending.state !== "activated" && pending.state !== "redundant") {
-        await new Promise(resolve => pending.addEventListener("statechange", () => {
-          if (pending.state === "activated" || pending.state === "redundant") resolve();
-        }));
-      }
-      const expected = await fetch("./sw.js", { cache: "reload" }).then((r) =>
-        r.text(),
-      );
-      const prefix =
-        expected.match(/CACHE_PREFIX\s*=\s*'([^']+)'/)?.[1] ||
-        "putt-club-game-";
-      const version = expected.match(
-        /CACHE_NAME\s*=\s*CACHE_PREFIX\s*\+\s*'([^']+)'/,
-      )?.[1];
-      const cache = await caches.open(prefix + version);
-      const list = expected.split("self.addEventListener")[0];
-      const required = [...list.matchAll(/'\.\/([^']*)'/g)].map(
-        (m) => new URL("./" + m[1], location.href).href,
-      );
-      let present = 0;
-      for (const url of required) {
-        if (await cache.match(url)) present++;
-      }
-      offlineReady = present === required.length && required.length > 0;
-      $("offline-state").textContent = offlineReady
-        ? `All ${present} core resources cached. Offline play is ready on this device.`
-        : `${present} of ${required.length} core resources cached. Keep the first visit open; offline support may be incomplete.`;
-    } catch (error) {
-      $("offline-state").textContent =
-        "Offline cache unavailable. The game remains playable online.";
-      console.warn("Offline setup:", error.message);
-    }
+  function refreshOffline() {
+    const result=window.PuttBoot;
+    offlineReady=!!result?.ready;
+    $("offline-state").textContent=offlineReady
+      ? `All ${result.count} game resources verified and saved (${(result.bytes/1048576).toFixed(1)} MB). ${result.status==='offline'?'Offline · saved build.':result.status==='update-unavailable'?'Update unavailable · using complete saved build.':'Version checked before play.'} iOS may remove storage when space is low.`
+      : "A complete saved build has not been verified.";
   }
+  function exportSession() {
+    if(isBallFlying||golferSwingPhase!=="idle"||isCameraTransitioning)return null;
+    return {schema:1,started,view:document.body.dataset.view,step,skill,course,mode:gameMode,hole:currentHoleNumber,single:selectedSingleHole,strokes:strokesCurrentHole,tee:isWomenTee,scores:[...holeScores],club:currentClubIndex,swing:currentSwingMode,ball:ballPos.toArray(),camera:camera.position.toArray(),target:orbitControls.target.toArray(),putt:$("putter-backswing-slider").value,celebrating:$("celebration-overlay").style.display!=="none",telemetry:["tele-carry","tele-roll","tele-total"].map(id=>$(id).textContent)};
+  }
+  function importSession(data) {
+    if(data?.schema!==1||!data.started)return;
+    selectSkill(data.skill);selectCourse(data.course);window.currentHandicap=skill;
+    if(window.activeCourseId!==course)switchActiveCourse(course);
+    gameMode=data.mode;selectedSingleHole=data.single;window.gameMode=gameMode;window.selectedSingleHole=selectedSingleHole;
+    isWomenTee=data.tee;setupHole(data.hole);strokesCurrentHole=data.strokes;
+    data.scores.forEach((score,n)=>holeScores[n]=score);
+    currentClubIndex=data.club;currentSwingMode=data.swing;
+    ballPos.fromArray(data.ball);ballMesh.position.copy(ballPos);ballVel.set(0,0,0);
+    camera.position.fromArray(data.camera);orbitControls.target.fromArray(data.target);orbitControls.update();
+    if(strokesCurrentHole>0&&teePegGroup)teePegGroup.visible=false;
+    $("putter-backswing-slider").value=data.putt;
+    ["tele-carry","tele-roll","tele-total"].forEach((id,n)=>$(id).textContent=data.telemetry[n]);
+    started=true;updateSelectedClubUI();updateHoleUI();positionGolferAtBall();sync();
+    if(data.view==='game')showGame();else if(data.view==='setup')showStep(data.step);else showTitle();
+    if(data.celebrating)handleHoleCompleted();
+    toast("Updated build loaded · round restored. An unfinished shot restarts from its pre-strike position.");
+  }
+  listen("btn-map-detail",()=>{
+    const expanded=document.body.dataset.mapExpanded!=="true";
+    document.body.dataset.mapExpanded=String(expanded);
+    $("btn-map-detail").setAttribute("aria-expanded",String(expanded));
+    $("btn-map-detail").setAttribute("aria-label",expanded?"Collapse hole map":"Expand hole map");
+  });
+  listen("btn-toggle-estimates",()=>{
+    const expanded=document.body.dataset.estimates!=="true";
+    document.body.dataset.estimates=String(expanded);
+    $("btn-toggle-estimates").setAttribute("aria-expanded",String(expanded));
+  });
   window.PuttUI = {
+    exportSession, importSession, refreshOffline,
     sync,
     updateShotState,
     renderHoles,
@@ -585,11 +575,11 @@
   renderScorecardTable();
   selectSkill(skill);
   selectCourse(course);
-  setupOffline();
+  refreshOffline();
   let readyPoll = setInterval(() => {
     if (proGolferLoaded) {
       $("title-status").innerHTML =
-        '<span class="status-dot"></span><span>Course ready · local play</span>';
+        `<span class="status-dot"></span><span>${window.PuttBoot.status==='update-unavailable'?'Saved build · update check unavailable':`All ${window.PuttBoot.count} files saved · offline ready`}</span>`;
       clearInterval(readyPoll);
     }
   }, 250);

@@ -1,3 +1,30 @@
+# pwa9 — full offline runtime, boot-time updates, compact glass / neumorphic setup
+
+Released 2026-10-13. This extends tracer8; simulation/trajectory geometry, the original floating white YDS typography, and the one-tap setup flow are preserved.
+
+## Implemented
+- Critical independent boot gate before any Three.js/game/UI scripts execute.
+- 47 required resources, about 10.4 MiB, in a scope-specific versioned CacheStorage runtime. SHA-256 per resource; explicit progress and retry; complete-build pointer committed only after successful validation of every file.
+- Online version check before entering play, plus foreground/bfcache checks. Unchanged launches download no game assets. Updates reuse unchanged content by hash. Offline or failed update checks run the verified saved build with truthful status.
+- Existing legacy installed caches migrate without deleting another project's cache. New HTML and runtime scripts are reloaded together; a previous build remains until initialization confirms HEALTHY.
+- Background physics pauses during the update gate. Idle round state survives foreground update reloads; an interrupted shot is explicitly restored to the pre-strike checkpoint, not silently marked complete.
+- Green neumorphism on title, player, course, round, practice selection and pre-game preferences. Compact glass surfaces on gameplay HUD, equipment/stroke drawers, scorecard, preferences, completion and action controls. Bounded Safari-prefixed blur, reduced-transparency fallback and preserved reduced-motion handling.
+- Mobile default map collapsed, separately expandable; its original recenter action preserved. Shot estimates expand on demand. Mobile dock reduced from 128px to 99px; main HUD-region bounding areas (including new map toggle) reduced 26% at 390×844. This is a layout measurement, not an FPS or perceptual-obstruction guarantee.
+
+## Executed evidence
+- 48 actual one-tap start journeys: 4 skills × 2 courses × round/practice × 360/390-touch/desktop.
+- 115 regression records: all 13 clubs, 5 stroke/putt animation/physics paths, real impact/launch, score fixtures, settings, keyboard/dialog focus, offline assets/GLB, 11 viewport sizes including landscape/ultrawide. No page errors, failed requests, bad HTTP or gameplay axe violations.
+- Real ServiceWorker/CacheStorage suite: SHA-256 of all 47 cached resources; failed first install blocks engine; corrupt candidate preserves previous game; unchanged reopening requests only release.json/sw.js; cold offline practice and genuine ball flight; two-file foreground update reuses 45 files and restores round; old worker migration under /Game.PuttClub.ir/; unrelated project cache survives; migrated subpath reopens offline.
+- axe WCAG2A/AA across title, skill, course, round, hole picker: no violations. All visible gameplay buttons ≥44×44px.
+- Original tracer desktop/mobile actual-shot test: 240 physics history points, correct 131yd overlay/projection, original 11/30px white vertical label, no badge, preserved legacy tracer color callback, no page/shader errors.
+- New active-shot software-GPU profiling: 29 samples, median 16.7 ms, p95 1249.9 ms, 207 draw calls / 80,367 triangles. Significant software rendering stalls remain; this is not a smooth-FPS certification.
+- The test evidence is Chromium headless with software SwiftShader, NOT native iOS/Safari, mobile GPU FPS or natural 18-hole playthrough certification. Parallel software-WebGL suites initially hit timeouts; their sequential runs completed successfully.
+
+## Limits retained
+The golfer remains the existing rejected/unrigged GLB; no new reference-matching character is claimed. Tehran remains a surface presentation over MIS geometry. Scores remain session-only except for the explicit update checkpoint transfer. iOS can evict caches; the app cannot prevent OS storage eviction or check a server while offline. No claim of guaranteed 60fps or real-iPhone verification.
+
+---
+
 # PuttClub Golf — Club Edition
 
 ## Implemented

@@ -2618,6 +2618,7 @@ group.name = name;
     function animate() {
       requestAnimationFrame(animate);
       const dt = Math.min(clock.getDelta(), 0.1);
+      if (window.PuttBootPaused) return; // Update/resume gate; physics itself is unchanged.
 
       // Animate 3D Floating Sky Arrow
       if (skyBeaconGroup && skyBeaconGroup.visible && !sceneMotionPreference.matches && document.body.dataset.reducedMotion !== 'true') {

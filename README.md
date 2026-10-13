@@ -23,3 +23,19 @@ Open http://localhost:8080/. GitHub Pages serves the repository root, with all p
 - `sw.js`, `manifest.json` — offline precache / PWA.
 - `fonts/` — local Inter / Vazirmatn with licenses.
 - `tests/` — browser and mathematical regression tests (development only).
+
+## Offline / home-screen installation — pwa9
+
+Open the game in Safari over HTTPS and keep the first visit open until **All 47 files saved · offline ready** appears. The complete runtime is about **10.4 MiB**: local fonts, libraries, both courses/data, textures, GLB, UI and engine. Then use **Share → Add to Home Screen**. Open once from the installed icon too, and wait for its own offline-ready message; storage sharing between Safari and standalone can vary by iOS version. Airplane mode can be used to verify offline reopening.
+
+- On every cold opening, and on foreground resume, play is gated while the release is checked. Unchanged openings fetch only the small release descriptor and service-worker update check; game assets are served locally.
+- All initial/new files are SHA-256 verified. Only a complete candidate runtime replaces the active cache. Unchanged assets are reused by hash. Failed updates keep the complete previous runtime; a failed initial install exposes Retry, not an unverified game.
+- Foreground updates preserve idle round state. If an update interrupts a moving ball/swing, the pre-strike checkpoint is restored and the unfinished shot must be repeated. Scores remain session-only across ordinary cold page closures.
+- iOS can evict website storage under pressure; Add to Home Screen and a best-effort persistent-storage request are not promises of permanent storage. An online check cannot be guaranteed while the phone is offline or the update server is unreachable.
+- Gameplay uses compact bounded glass surfaces; setup and pre-game preferences use sculpted green neumorphic surfaces. The map and shot estimates expand on demand; the existing map tap still recenters the camera.
+
+### Releasing another runtime build
+Change `index.html`'s `putt-release` meta to a new unique version, update its runtime files, then run `python tests/build-runtime-manifest.py`. Add new required URLs to the `release.json` inventory before generating. Publish the whole build together. Never reuse a version name for different runtime content.
+
+### Additional tests
+`node tests/pwa-runtime.cjs` uses an isolated port-8081 HTTP fixture to exercise real CacheStorage, broken first installs, integrity failures, offline cold starts, transactional updates, session restoration, and migration from the previous worker under the Pages subpath. `node tests/pwa-presentation.cjs` checks all five entrance/setup screens with axe and 44px gameplay targets against port 8080. Evidence is headless Chromium / SwiftShader, not a physical iPhone/Safari hardware test.

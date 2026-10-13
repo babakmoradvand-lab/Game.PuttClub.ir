@@ -1,0 +1,83 @@
+/* Two deliberate materials: sculpted soft surfaces before play; compact glass
+   over the course. Tracer and physics styling are intentionally untouched. */
+:root{--neo:#23342b;--neo-light:#354b3d;--neo-dark:#122018;--glass:rgba(20,38,30,.53);--glass-line:rgba(240,244,229,.24);--muted:#c5cec3}
+/* Neumorphism / entrance, every setup stage, and pre-game preferences. */
+body:not([data-view="game"]){background:var(--neo)}
+#putt-club-splash,.setup-shell{background:var(--neo);background-image:radial-gradient(ellipse at 70% 20%,#344b3a66,transparent 65%)}
+.title-grain{opacity:.035}
+#putt-club-splash .primary-btn,.setup-shell .primary-btn,body:not([data-view="game"]) .game-panel .primary-btn{border-radius:14px;box-shadow:6px 6px 14px var(--neo-dark),-5px -5px 12px var(--neo-light);border:1px solid #ead9aa55;background:#d4bd88;color:#14261a}
+#putt-club-splash .text-btn,.setup-top .text-btn,.setup-top .icon-btn{background:var(--neo);border:1px solid #ffffff0c;box-shadow:5px 5px 11px var(--neo-dark),-4px -4px 10px var(--neo-light);border-radius:12px;padding:9px 14px}
+#putt-club-splash .title-actions{gap:18px}
+#putt-club-splash .title-status{background:var(--neo);box-shadow:inset 3px 3px 8px var(--neo-dark),inset -3px -3px 8px var(--neo-light);border-radius:12px;padding:10px 14px;width:fit-content;color:#ccd6cb}
+.crest{border-radius:14px;background:var(--neo);border:1px solid #ffffff12;box-shadow:4px 4px 9px var(--neo-dark),-3px -3px 9px var(--neo-light)}
+.skill-card,.course-card,.mode-option-btn,.hole-pick-card{background:var(--neo);border:1px solid #ffffff12;border-radius:18px;box-shadow:7px 7px 17px var(--neo-dark),-5px -5px 14px var(--neo-light);overflow:hidden}
+.skill-card[aria-pressed="true"],.course-card[aria-pressed="true"],.hole-pick-card[aria-pressed="true"],.mode-option-btn:active{background:#263b2e;border-color:#d4bd8888;box-shadow:inset 5px 5px 13px var(--neo-dark),inset -4px -4px 12px #3d5343}
+.skill-card:hover,.course-card:hover,.mode-option-btn:hover,.hole-pick-card:hover{background:#293d30}
+.course-image{margin:10px;border-radius:12px;box-shadow:inset 3px 3px 8px #101c15}
+.course-copy{background:transparent}
+.choice-metric,.course-note,.round-summary{background:var(--neo);border:1px solid #ffffff09;box-shadow:inset 3px 3px 7px var(--neo-dark),inset -3px -3px 7px var(--neo-light);border-radius:12px;padding:10px 12px}
+.mode-figure,.practice-flag{background:transparent;border-color:#ffffff18}
+.setup-steps{background:var(--neo);border:1px solid #ffffff0b;box-shadow:inset 3px 3px 8px var(--neo-dark),inset -3px -3px 8px var(--neo-light);border-radius:14px;padding:9px 14px}
+.setup-steps .current{background:var(--neo);border-radius:9px;box-shadow:3px 3px 7px var(--neo-dark),-2px -2px 7px var(--neo-light)}
+.setup-footer{background:var(--neo)}
+body:not([data-view="game"]) .game-panel{background:var(--neo);backdrop-filter:none;-webkit-backdrop-filter:none;border:1px solid #ffffff16;border-radius:20px;box-shadow:10px 10px 30px #101d16,-7px -7px 22px #354b3d}
+body:not([data-view="game"]) .game-panel :is(.panel-header,.setting-row,.settings-note,.quality-setting,.panel-content){background:transparent}
+body:not([data-view="game"]) .game-panel :is(.icon-btn,.secondary-btn,.toggle,select){background:var(--neo);border:1px solid #ffffff14;box-shadow:4px 4px 9px var(--neo-dark),-3px -3px 9px var(--neo-light);border-radius:10px}
+/* Glass / edge-anchored game surfaces. Blur only bounded parent surfaces. */
+body[data-view="game"] :is(#top-hud-capsule,#minimap-container,#bottom-game-dock,#shot-telemetry-hud,.nav-buttons .icon-btn,#btn-map-detail,.game-panel,.celebration-card,.toast){background:var(--glass);border:1px solid var(--glass-line);border-radius:14px;box-shadow:0 6px 18px #07130d24,inset 0 1px 0 #ffffff16;backdrop-filter:blur(12px) saturate(125%);-webkit-backdrop-filter:blur(12px) saturate(125%)}
+#top-left-hud-column{width:184px;left:max(12px,env(safe-area-inset-left));top:calc(10px + var(--safe-top))}
+.hud-course{padding:2px 9px 5px;font-size:8px;letter-spacing:1.1px;background:transparent;border:0;text-shadow:0 1px 4px #000}
+#top-hud-capsule{padding:9px 11px}
+#hole-banner{gap:8px}#hud-hole-num{font-size:10px}.hud-meta{font-size:8px;gap:4px}.hud-meta b{font-size:10px}
+#target-hud{margin-top:6px;display:flex;align-items:baseline;justify-content:space-between;gap:5px}#target-hud .eyebrow{font-size:7px;letter-spacing:.4px;max-width:68px}#hud-dist-flag{font-size:22px;line-height:1.15;letter-spacing:-.6px;white-space:nowrap}
+.hud-bottom{margin-top:6px;padding-top:5px;font-size:8px;border-top:1px solid #ffffff20}.lie-badge{font-size:10px}
+.nav-buttons{margin-top:6px;gap:5px}.nav-buttons .icon-btn{height:44px;min-width:44px;padding:0 9px}.nav-buttons .icon-btn span{display:none}
+#minimap-container{top:calc(10px + var(--safe-top));right:max(12px,env(safe-area-inset-right));width:106px;padding:8px;min-height:60px;text-align:left}
+.minimap-label{font-size:7px;letter-spacing:.7px}.minimap-label .icon{width:12px;height:12px}
+#minimap-canvas,.map-caption{display:none}
+.wind-readout{margin-top:5px;padding-top:5px;border-top:1px solid #ffffff20;font-size:9px}.wind-readout .icon{width:13px;height:13px}
+#btn-map-detail{position:absolute;right:max(12px,env(safe-area-inset-right));top:calc(77px + var(--safe-top));height:44px;width:44px;padding:0}
+body[data-map-expanded="true"] #minimap-container{width:160px}
+body[data-map-expanded="true"] #minimap-canvas{display:block;height:86px}
+body[data-map-expanded="true"] .map-caption{display:block;font-size:8px}
+body[data-map-expanded="true"] #btn-map-detail{top:calc(181px + var(--safe-top))}
+#bottom-game-dock{bottom:calc(10px + var(--safe-bottom));width:calc(100% - 24px);max-width:690px;grid-template-columns:1fr 1fr 1.1fr;gap:0;overflow:visible}
+.dock-select{min-height:64px;padding:8px 12px;gap:8px;background:transparent;border-right:1px solid #ffffff20}
+.dock-select:first-child{border-radius:14px 0 0 14px}.dock-select>.icon{height:18px;width:18px}.dock-copy{gap:1px}.dock-copy small{font-size:7px;letter-spacing:.7px}.dock-copy strong{font-size:12px}.dock-copy>span{font-size:9px}.dock-badge{font-size:10px;padding-left:7px;border-color:#ffffff24}
+#swing-mode-panel{background:transparent;padding:8px;gap:7px;flex-direction:row;align-items:center}
+#btn-toggle-estimates{min-width:44px;min-height:44px;border-radius:10px;background:#ffffff0d;border:1px solid #ffffff20}
+#shot-estimate-card{display:none;position:absolute;bottom:calc(100% + 8px);right:0;min-width:250px;padding:10px 13px;border-radius:12px;background:rgba(20,38,30,.68);border:1px solid var(--glass-line);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-size:10px}
+body[data-estimates="true"] #shot-estimate-card{display:flex}#shot-estimate-card b{display:inline;font-size:11px;margin-left:4px}
+body[data-view="game"] :is(.primary-btn,.secondary-btn){background:rgba(213,192,146,.28);color:#fff8e9;border:1px solid #e7d7b780;border-radius:10px;box-shadow:inset 0 1px 0 #ffffff30,0 3px 8px #0001}
+#btn-launch-shot{min-height:44px;padding:8px 10px;flex:1;font-size:12px;white-space:nowrap}#btn-launch-shot .icon{width:15px;height:15px}
+#putter-meter-panel{background:transparent;min-height:64px;padding:6px 10px;grid-column:3;gap:0 8px}#putter-meter-panel label{font-size:8px}#putter-meter-panel input{width:calc(100% - 82px)}#btn-putt-action{min-width:74px;min-height:44px}
+#shot-telemetry-hud{top:auto;bottom:calc(84px + var(--safe-bottom));right:12px;left:auto;width:auto;max-width:calc(100% - 24px);padding:7px 12px;flex-direction:row;align-items:center;gap:12px;font-size:10px}
+#shot-telemetry-hud>.eyebrow{font-size:7px;letter-spacing:.5px}#shot-telemetry-hud b{font-size:10px}
+.game-hint{bottom:calc(80px + var(--safe-bottom));font-size:9px;padding:3px 8px;background:#13221948;border:1px solid #ffffff20;border-radius:8px;color:#f1eee5;text-shadow:0 1px 3px #000;max-width:calc(100% - 24px)}
+body[data-view="game"] .panel-header,body[data-view="game"] .panel-content{background:transparent}
+body[data-view="game"] .game-panel :is(.club-btn,.swing-drawer-option,.icon-btn,.score-summary,.setting-row,.settings-note,.quality-setting,select,.toggle,.utility-details,.power-readout,.stroke-estimates,.hole-nav-grid button,.scorecard-table th){background:#ffffff0c;border-color:#ffffff26;box-shadow:inset 0 1px 0 #ffffff12;border-radius:10px}
+body[data-view="game"] .game-panel :is(.club-btn.selected,.swing-drawer-option.active){background:#d4bd8825;border-color:#d4bd88a6}
+body[data-view="game"] #panel-scrim{background:#07180e35;backdrop-filter:none;-webkit-backdrop-filter:none}
+body[data-view="game"] .celebration{background:#07180e45;backdrop-filter:none;-webkit-backdrop-filter:none}
+body[data-view="game"] .celebration-stats{background:#ffffff0b;border:1px solid #ffffff26;border-radius:12px}
+@media(max-width:600px){
+ #top-left-hud-column{width:174px}.hud-course{font-size:7px}#target-hud .eyebrow{font-size:7px}#hud-dist-flag{font-size:21px}
+ #bottom-game-dock{max-width:440px;grid-template-columns:1fr 1fr;bottom:calc(8px + var(--safe-bottom))}
+ .dock-select{min-height:44px;height:44px;padding:5px 9px;gap:5px}.dock-copy small,.dock-copy>span,.dock-select>.icon{display:none}.dock-copy strong{font-size:11px}.dock-badge{font-size:9px;padding-left:6px}
+ .dock-select:first-child{border-radius:14px 0 0 0}.dock-select:nth-child(2){border-right:0;border-radius:0 14px 0 0}
+ #swing-mode-panel{grid-column:1/-1;padding:4px 6px;min-height:52px;border-top:1px solid #ffffff20;gap:7px}
+ #btn-launch-shot{width:auto;font-size:12px;min-height:44px}#btn-launch-shot>.icon{display:block}
+ #putter-meter-panel{grid-column:1/-1;min-height:60px;border-top:1px solid #ffffff20;padding:4px 9px}
+ #shot-telemetry-hud{bottom:calc(113px + var(--safe-bottom));left:12px;right:auto;gap:10px;font-size:9px;padding:7px 9px}#shot-telemetry-hud b{font-size:9px}
+ .game-hint{bottom:calc(112px + var(--safe-bottom));font-size:8px;left:12px;transform:none;max-width:calc(100% - 24px);text-align:left}
+ body[data-map-expanded="true"] #minimap-container{width:140px}
+ .skill-grid,.course-grid,.mode-grid{gap:17px}.setup-top{padding-top:20px}
+}
+@media(max-height:460px) and (min-width:601px){
+ #top-left-hud-column{width:174px;top:calc(8px + var(--safe-top))}#bottom-game-dock{width:calc(100% - 24px);max-width:660px;bottom:calc(8px + var(--safe-bottom))}
+ .dock-select{min-height:54px;padding:6px 9px}.dock-copy small,.dock-copy>span{display:none}#swing-mode-panel{padding:5px 7px}
+ #shot-telemetry-hud{bottom:calc(74px + var(--safe-bottom))}.game-hint{bottom:calc(72px + var(--safe-bottom))}
+}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){body[data-view="game"]{--glass:rgba(20,38,30,.86)}}
+@media(prefers-reduced-transparency:reduce){body[data-view="game"]{--glass:rgba(20,38,30,.9)}body[data-view="game"] :is(.game-panel,#bottom-game-dock,#top-hud-capsule,#minimap-container){backdrop-filter:none;-webkit-backdrop-filter:none}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
