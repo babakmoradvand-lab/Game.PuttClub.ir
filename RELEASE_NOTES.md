@@ -1,3 +1,32 @@
+# Rig12 — mesh and atlas repair of the golfer
+
+2026-10-14. Geometry and texture fixes performed in Blender 4.3.2, then verified in the live game.
+
+- **Hair under the cap.** 98 hair vertices that protruded through the cap shell were projected back inside it with a BVH nearest-surface solve; 93 hairline vertices were relaxed and pulled down 7.5 mm. The jagged hairline silhouette at the temple is gone.
+- **Cap.** The cap is untouched. An earlier trial inflated and tilted the crown; it read as a helmet and was reverted. The hair projection alone resolves the overlap.
+- **Polo collar.** The collar was subdivided once and relaxed with 5 Taubin passes while the 694 rim vertices were held, so it keeps its outline but loses the flat faceted look. Custom split normals on this mesh were cleared (277 extra vertices, all interior to the collar).
+- **Waist.** 67 shirt-hem vertices were projected onto the trouser shell so the hem tucks inside instead of intersecting it. Median displacement 10.2 mm; displacements above 14 mm were rejected to avoid pulling unrelated geometry. The dark gap visible below the shirt in rig11 is closed.
+- **Skin tone.** Measured pixel-wise: the photographic face patch averaged RGB(130,94,70) while the flat body fill was RGB(169,124,93) — a 23% luminance step at the jaw. The body fill was converged to RGB(156,114,85) and the patch boundary feathered over 22 px.
+- **Hair colour.** Changed from near-black (0.026,0.019,0.014) to the reference's dark brown (0.055,0.038,0.026); roughness 0.90 to 0.62.
+- **Stray geometry.** An unused 42-vertex helper sphere present in the imported scene was removed.
+- Atlas PNG re-encoded after the fill correction: 1763 KB to 976 KB. **Runtime inventory is now 13.50 MiB (was 14.1 MiB)**; 48 files, all SHA-256 verified.
+
+## Verification
+- Blender round-trip of the untouched file reproduced it pixel-identically (0 differing pixels over rest/0/40/50/100 poses), confirming the toolchain before any edit.
+- Skeleton and animation unchanged: 51 joints, 5 clips, 153 channels, 2286 keyframes, 101 keys, 1.667 s duration.
+- Live install verified: 48/48 assets accepted under the new hashes, 13.5 MB, zero console errors, wrist IK error 1.3e-7 m, real strike and ball flight exercised.
+- Seven poses from address to finish rendered in the studio: no regression.
+- Renders were taken in an isolated Three.js studio (neutral three-point light) and in the live game; none are retouched.
+
+## Not done
+- The TaylorMade and adidas marks are painted into the atlas; removing them needs manual image editing and was left alone.
+- Draco/meshopt compression is not applied. `gltfpack -cc` would save roughly 3 MB more but requires adding a decoder to `index.html`.
+
+## Limits
+Headless Chromium/SwiftShader only. No physical iPhone/Safari test. Face likeness remains an approximation of the supplied reference, not an identity-exact reproduction.
+
+---
+
 # Rig11 — self-built visual correction after the user rejected rig10
 
 2026-10-14. Actual 3D geometry/material changes, not an external handoff or an image substituted for a GLB.
