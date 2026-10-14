@@ -1,3 +1,52 @@
+# Rig13 — character detail pass: skin, cap, collar, brand marks
+
+2026-10-14. Geometry and texture work done in Blender 4.3.2 and checked in the
+live game. Skeleton and animation data are **unchanged**: the exported animation
+channel fingerprint is byte-identical to rig12 (5 clips, 765 channels, 515 keys,
+51 joints), so nothing about the swing can regress from this release.
+
+- **Face / skin atlas.** 94.8% of the 2048x2048 atlas was a single flat colour with
+  a photograph pasted on top; the hard content boundary was what made the head read
+  as a sticker. The photo patch is now feathered over 42 px into a body fill that
+  carries real skin detail (soft mottling, no per-pixel grain, so it still compresses).
+  The atlas got **smaller**: 999 KB -> 961 KB.
+- **Cap.** The crown was a 188 mm wide, 83 mm tall hemisphere with a 54 mm brim, which
+  read as a helmet. Crown squashed 10%, brim lengthened to 70 mm and curved down.
+  All 92 crown islands and 17 brim islands are transformed together so the six seams,
+  the top button and the edge strip stay welded to the surface.
+- **Collar.** The shipped collar was a 27 mm band plus ten flat plates. It is now one
+  continuous swept collar (65 verts x 9 rows) with a 45 mm fold that returns to the
+  chest and tapers into proper front points. Skin weights are transferred from the
+  nearest original vertex, so it still follows the rig.
+- **Brand marks removed.** "TaylorMade" on the cap (97 letter glyphs, 1106 verts) and
+  the adidas wordmark plus three-bar mark on the polo (142 glyphs, 1100 verts) were
+  geometry, not texture. All deleted; the shirt surface underneath is intact.
+- **Sleeve seam.** The bright line running shoulder to sleeve was a UV seam. Normals
+  unified across the polo.
+- **Eyes.** Sclera was cream (0.72, 0.69, 0.60) and read as dead; now 0.90/0.895/0.885.
+  Iris darkened to 0.135/0.085/0.042, pupil roughness lowered.
+- File size **4.90 MB -> 4.81 MB**. Runtime inventory 13.50 MB, unchanged count (48).
+
+## Correction to earlier reporting
+Two things I got wrong before and am fixing here:
+1. The rig12 notes claimed the collar was "subdivided and relaxed with rim vertices
+   held". That was true of the operation, but the operation did not fix the collar —
+   the plates were structural, not ragged. Comparing before/after proved it.
+2. The hand was reported as web-fingered from a side render. Close-up inspection shows
+   the fingers are separate; the earlier diagnosis was wrong and nothing was changed
+   in the hands, which is why they look identical in the before/after sheet.
+
+## Not done
+- The body fill still carries no photographic detail on the torso/arms; the head has
+  the photo information. A full texture bake remains future work.
+- Draco/meshopt still not applied.
+
+## Limits
+Blender Cycles renders are the author's own; the in-game captures are headless Chromium
+with SwiftShader. No physical iPhone test.
+
+---
+
 # Rig12 — mesh and atlas repair of the golfer
 
 2026-10-14. Geometry and texture fixes performed in Blender 4.3.2, then verified in the live game.
