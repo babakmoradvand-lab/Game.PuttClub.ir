@@ -24,9 +24,9 @@ Open http://localhost:8080/. GitHub Pages serves the repository root, with all p
 - `fonts/` — local Inter / Vazirmatn with licenses.
 - `tests/` — browser and mathematical regression tests (development only).
 
-## Offline / home-screen installation — rig10
+## Offline / home-screen installation — rig11
 
-Open the game in Safari over HTTPS and keep the first visit open until **All 48 files saved · offline ready** appears. The complete runtime (48 files) is about **10.6 MiB**: local fonts, libraries, both courses/data, textures, GLB, UI and engine. Then use **Share → Add to Home Screen**. Open once from the installed icon too, and wait for its own offline-ready message; storage sharing between Safari and standalone can vary by iOS version. Airplane mode can be used to verify offline reopening.
+Open the game in Safari over HTTPS and keep the first visit open until **All 48 files saved · offline ready** appears. The complete runtime (48 files) is about **14.1 MiB**: local fonts, libraries, both courses/data, textures, GLB, UI and engine. Then use **Share → Add to Home Screen**. Open once from the installed icon too, and wait for its own offline-ready message; storage sharing between Safari and standalone can vary by iOS version. Airplane mode can be used to verify offline reopening.
 
 - On every cold opening, and on foreground resume, play is gated while the release is checked. Unchanged openings fetch only the small release descriptor and service-worker update check; game assets are served locally.
 - All initial/new files are SHA-256 verified. Only a complete candidate runtime replaces the active cache. Unchanged assets are reused by hash. Failed updates keep the complete previous runtime; a failed initial install exposes Retry, not an unverified game.

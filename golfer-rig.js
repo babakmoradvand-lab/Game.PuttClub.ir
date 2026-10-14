@@ -119,7 +119,7 @@
     }
     debug() {
       const point=name=>this.bones[name].getWorldPosition(new T.Vector3());
-      return {version:'rig10',skinMeshes:this.skinMeshes.length,joints:Object.keys(this.bones).length,clips:Object.values(clips),style:this.style,frame:this.frame,head:this.headName,
+      return {version:'rig11',skinMeshes:this.skinMeshes.length,joints:Object.keys(this.bones).length,clips:Object.values(clips),style:this.style,frame:this.frame,head:this.headName,
         contact:point('ClubFaceAnchor').toArray(),target:this.contactTarget?this.model.localToWorld(this.contactTarget.clone()).toArray():null,
         wristErrors:['L','R'].map(side=>point('Hand.'+side).distanceTo(this.handTargets[side])),
         feet:['L','R'].map(side=>point('Foot.'+side).toArray())};

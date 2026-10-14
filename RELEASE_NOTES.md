@@ -1,3 +1,20 @@
+# Rig11 — self-built visual correction after the user rejected rig10
+
+2026-10-14. Actual 3D geometry/material changes, not an external handoff or an image substituted for a GLB.
+
+- Refined actual head proportions and smaller ears; smoothed the weighted anatomical mesh. Re-baked 2048px facial UV detail with revised feature alignment and feathered facial sampling (the problematic profile overlay disabled). Reduced oversized eye geometry and exaggerated hanging-head pose.
+- Replaced ellipsoid/slipper footwear with lofted leather toe/heel uppers, contoured layered soles, tongue, crossed laces, eyelets and panel outlines.
+- Added folded collar leaves, an open neckline, button placket, chest embroidery, cap seams/top button/strap, buckle, belt loops and pocket openings. Smoothed fitted cloth topology and added restrained geometric folds. Reference brand lettering is approximate, not a logo-exact recreation.
+- Preserved the 51-joint skeleton, five real GLB clips, one in-game club, grip/contact IK and existing frame-50 launch. No simulation, tracer or UI-source rewrite.
+- 686 joint/contact samples passed; 115 normal regression checks clean; actual pwa9-to-new-release upgrade preserved the round and loaded the 51-joint rig offline. Tracer checks clean. These verify functionality, NOT visual likeness.
+- Offline inventory remains 48 files, now approximately 14.1 MiB. Higher-detail meshes increase the scene to about 172k rendered triangles in the measured desktop scene. SwiftShader software rendering is slow (about 650ms median in a small six-frame sample); no native-GPU, physical iPhone or 60fps guarantee is made.
+
+## Honest status
+This is a visual refinement of the rejected model, not an identity-exact scan or a photoreal reproduction. Face/skin, garment/hand detail and reference likeness still have limitations. The multi-angle PNGs are actual Blender renders of this model; the gameplay captures are actual browser renders, not retouched replacements. Source recipes are included in `character-source/`; baked textures are supplied, while re-baking the reference requires the original user-provided picture.
+
+---
+Historical release notes follow.
+
 # Rig10 — replace the broken golfer and integrate real skeletal animation
 
 2026-10-14 · New model/rig integrated directly into the existing game. No UI redesign or simulation rewrite in this release.
