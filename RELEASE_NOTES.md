@@ -276,3 +276,12 @@ The browser suites assume the game is served at http://localhost:8080/.
 Preserves rig14's latest appearance/GLB changes. Regulation 42.67mm ball diameter; rolling contact height and visual rotation use the same radius. First and subsequent shots share address-camera framing, including portrait fitting without scaling the athlete. Independent aim controls drive shot velocity, putting, stance and the minimap. A short dashed heading guide ends before the pin and hides during the swing/flight. Aim is frozen at backswing start and preserved in update checkpoints. Ground-pose hand reach uses up to ten bounded IK reach iterations without changing body scale.
 
 Verified: 2160 stance cases; browser direction/launch/putt/ground-rest/session/mobile-layout checks; 1568 rig samples with the rig14 GLB; atomic cached rig14-to-aim15 upgrade retaining round state; complete offline reload. Headless Chromium/SwiftShader and mobile emulation, not a physical iPhone test. See AIM15_FIXES.md and tests/aim-*-results.json.
+
+
+## look16 — camera-look aiming and bold flight/putt guide (2026-10-14)
+
+Horizontal scene drag with a mouse or one finger now rotates the behind-ball view and the actual shot heading together. The golfer, guide, minimap and shot velocity remain synchronized; pointer release leaves a stable direction with no orbit inertia. Fine-angle controls remain available. Rotation is frozen at backswing start.
+
+The guide is now a screen-space 7px cyan dashed ribbon, avoiding WebGL's ignored line-width setting. Non-putts show the initial physical flight arc up to 30 horizontal yards, using the same launch and airborne integrator as the real shot, stopping at first contact if sooner. Putts use a ground-following guide up to 2 yards. Near-pin guides still end before the cup. Aim controls adapt to the actual dock height, including putting on mobile.
+
+Checks passed: real mouse/CDP touch drag and launch locking; short flight/putt guides; no shader/page errors; 360 numeric airborne-physics equivalence cases; existing browser/stance/rig checks; cached aim15-to-look16 upgrade and complete offline reload. The rig14 GLB is unchanged. See LOOK16_FIXES.md for details and limits.

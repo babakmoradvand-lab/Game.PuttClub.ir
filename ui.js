@@ -269,6 +269,7 @@
       ),
     );
     updateShotState(true);
+    syncAimControlsLayout();
   }
   function updateShotState(force = false) {
     const busy = isBallFlying || golferSwingPhase !== "idle";
@@ -297,7 +298,9 @@
         ? isBallFlying
           ? "Ball in play · controls return when the shot settles."
           : "Swing in progress · waiting for impact."
-        : "Use the 360° aim slider to set direction. Drag only to look around.";
+        : GOLF_BAG[currentClubIndex].isPutter
+          ? "دید را به چپ و راست بچرخان · راهنمای پات تا ۲ یارد روی زمین"
+          : "دید را به چپ و راست بچرخان · قوس اولیهٔ ضربه تا ۳۰ یارد";
       [...$("hole-grid-picker").children].forEach((e) => (e.disabled = busy));
       $("return-title").disabled = busy;
     }

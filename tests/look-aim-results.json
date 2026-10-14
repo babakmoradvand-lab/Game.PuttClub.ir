@@ -1,0 +1,90 @@
+{
+  "passed": true,
+  "version": "look16-20261014",
+  "checks": [
+    "look16 loaded",
+    "real mouse drag changes direction",
+    "view, athlete and aim are aligned",
+    "bold WebGL guide is a 7px triangle ribbon",
+    "no aim inertia after releasing pointer",
+    "guide finite and within cap, club 0",
+    "non-putt shows a rising flight arc up to 30 yards, club 0",
+    "guide finite and within cap, club 6",
+    "non-putt shows a rising flight arc up to 30 yards, club 6",
+    "guide finite and within cap, club 11",
+    "non-putt shows a rising flight arc up to 30 yards, club 11",
+    "guide finite and within cap, club 12",
+    "putt stays on ground and ends at two yards",
+    "preview samples use exactly the physical flight integrator",
+    "drag cannot change direction during swing",
+    "actual launch follows the dragged direction",
+    "real one-finger mobile drag rotates both look and aim",
+    "putt aim controls remain above the taller mobile dock",
+    "mobile putter mode is ground-only",
+    "no page or shader errors"
+  ],
+  "mouse": {
+    "direction": [
+      0.7969265644619249,
+      0,
+      0.6040761962326553
+    ],
+    "cameraDot": 1,
+    "leadDot": 1,
+    "yaw": -26.354319180087828,
+    "visible": true,
+    "width": 7,
+    "drawCount": 78
+  },
+  "guides": [
+    {
+      "club": 0,
+      "cap": 27.432,
+      "distance": 27.431999999999995,
+      "above": 5.3592366231472965,
+      "groundError": null,
+      "finite": true,
+      "meshDraw": 78
+    },
+    {
+      "club": 6,
+      "cap": 27.432,
+      "distance": 27.432000000000002,
+      "above": 13.483984202648443,
+      "groundError": null,
+      "finite": true,
+      "meshDraw": 162
+    },
+    {
+      "club": 11,
+      "cap": 27.432,
+      "distance": 27.43200000000001,
+      "above": 21.900863329208278,
+      "groundError": null,
+      "finite": true,
+      "meshDraw": 342
+    },
+    {
+      "club": 12,
+      "cap": 1.8288,
+      "distance": 1.828799999999999,
+      "above": -0.0713349999999977,
+      "groundError": 1.1379786002407855e-15,
+      "finite": true,
+      "meshDraw": 288
+    }
+  ],
+  "matched": {
+    "maxError": 0,
+    "points": 14
+  },
+  "touch": {
+    "changed": 0.6333359876029451,
+    "dot": 1.0000000000000002,
+    "pointerCleared": true,
+    "visible": true
+  },
+  "pageErrors": [],
+  "shaderErrors": [],
+  "environment": "Chromium headless / SwiftShader; real mouse and CDP touch events, not a physical device"
+}

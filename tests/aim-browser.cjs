@@ -13,7 +13,7 @@ const fs=require('node:fs');
  await page.waitForFunction(()=>document.body.dataset.view==='game');
  const baseline=await page.evaluate(()=>({radius:BALL_RADIUS,scale:golferGroup.scale.toArray(),offset:camera.position.clone().sub(ballPos).toArray(),version:document.querySelector('meta[name="putt-release"]').content}));
  assert.equal(baseline.radius,.021335);
- assert.equal(baseline.version,'aim15-20261014');
+ assert.equal(baseline.version,'look16-20261014');
  console.log('baseline',baseline);
  for(const degrees of [-180,-90,-45,0,45,90,179,180]) {
   await page.locator('#aim-angle-slider').fill(String(degrees));
@@ -24,7 +24,7 @@ const fs=require('node:fs');
    const geo=aimLine.geometry.attributes.position;const last=new THREE.Vector3().fromBufferAttribute(geo,geo.count-1);
    return {directionError:aimDirection.distanceTo(expected),leadDot:lead.dot(aimDirection),lineVisible:aimLine.visible,lineLength:Math.hypot(last.x-ballPos.x,last.z-ballPos.z),lineDot:last.sub(ballPos).setY(0).normalize().dot(aimDirection),ring:landingRing.visible};
   });
-  assert.ok(result.directionError<1e-8);assert.ok(result.leadDot>.99999);assert.ok(result.lineVisible);assert.ok(result.lineLength<=8.001);assert.ok(result.lineDot>.99999);assert.equal(result.ring,false);
+  assert.ok(result.directionError<1e-8);assert.ok(result.leadDot>.99999);assert.ok(result.lineVisible);assert.ok(result.lineLength<=27.433);assert.ok(result.lineDot>.995);assert.equal(result.ring,false);
  }
  console.log('PASS: all aim headings, golfer and short guide');
  await page.locator('#aim-angle-slider').fill('90');

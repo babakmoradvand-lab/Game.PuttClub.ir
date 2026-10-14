@@ -14,11 +14,11 @@
     "height": 0.021335000000000548,
     "distance": 7.271384615384613,
     "expected": 7.2713846153846164,
-    "installed": "aim15-20261014",
+    "installed": "look16-20261014",
     "controls": true
   },
   "offline": {
-    "version": "aim15-20261014",
+    "version": "look16-20261014",
     "status": "offline",
     "visible": true,
     "slider": -90,

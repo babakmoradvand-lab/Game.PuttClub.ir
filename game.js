@@ -218,7 +218,10 @@
       camera.setViewOffset(w, h, 0, Math.round(Math.min(140, h * 0.15)), w, h);
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
-      if (window.PuttUI && canAdjustAim()) setAddressCamera(true);
+      if (window.PuttUI) {
+        syncAimControlsLayout();
+        if (canAdjustAim()) {setAddressCamera(true);updateAimTracer();}
+      }
     }
     window.addEventListener('resize', handleResize);
     window.addEventListener('orientationchange', () => setTimeout(handleResize, 150));
@@ -230,6 +233,11 @@
     orbitControls.maxPolarAngle = Math.PI / 2 - 0.02;
     orbitControls.minDistance = 2;
     orbitControls.maxDistance = 8500;
+    // Aim mode uses a stable behind-ball camera, not an orbit around a distant pin.
+    // Pointer drag rotates both the view and the shot; no accumulated orbit inertia.
+    orbitControls.enableRotate = false;
+    orbitControls.enablePan = false;
+    orbitControls.enableZoom = false;
 
     // Natural 2026 Lighting
     const hemiLight = new THREE.HemisphereLight(0xdbeafe, 0x556644, 0.85);
@@ -1016,13 +1024,72 @@ group.name = name;
     teePegGroup.castShadow = true;
     scene.add(teePegGroup);
 
-    // Aim Line
-    const aimLineGeo = new THREE.BufferGeometry();
-    const aimLinePositions = new Float32Array(60 * 3);
-    aimLineGeo.setAttribute('position', new THREE.BufferAttribute(aimLinePositions, 3));
-    const aimLineMat = new THREE.LineDashedMaterial({ color: 0x38bdf8, dashSize: 0.25, gapSize: 0.16 });
-    const aimLine = new THREE.Line(aimLineGeo, aimLineMat);
-    aimLine.visible = false; // Shown only while addressing the ball.
+    // Screen-space dashed ribbon: actual 7px width on WebGL/mobile (linewidth is ignored).
+    const MAX_AIM_POINTS = 512;
+    const aimLineGeo = new THREE.BufferGeometry(); // centreline for inspection/tests
+    const aimRibbonGeo = new THREE.BufferGeometry();
+    const aimRibbonArrays = {
+      position: new Float32Array(MAX_AIM_POINTS * 2 * 3),
+      previous: new Float32Array(MAX_AIM_POINTS * 2 * 3),
+      next: new Float32Array(MAX_AIM_POINTS * 2 * 3),
+      side: new Float32Array(MAX_AIM_POINTS * 2),
+      pathDistance: new Float32Array(MAX_AIM_POINTS * 2)
+    };
+    for (const [name, array] of Object.entries(aimRibbonArrays)) {
+      aimRibbonGeo.setAttribute(name, new THREE.BufferAttribute(array, name === 'side' || name === 'pathDistance' ? 1 : 3).setUsage(THREE.DynamicDrawUsage));
+    }
+    const aimRibbonIndices = [];
+    for (let i = 0; i < MAX_AIM_POINTS - 1; i++) {
+      const k = i * 2;
+      aimRibbonIndices.push(k, k + 1, k + 2, k + 1, k + 3, k + 2);
+    }
+    aimRibbonGeo.setIndex(aimRibbonIndices);
+    aimRibbonGeo.setDrawRange(0, 0);
+    const aimLineMat = new THREE.ShaderMaterial({
+      uniforms: {
+        resolution: {value: new THREE.Vector2(window.innerWidth, window.innerHeight)},
+        width: {value: 7}, dash: {value: 1.1}, gap: {value: 0.45}
+      },
+      vertexShader: `
+        attribute vec3 previous;
+        attribute vec3 next;
+        attribute float side;
+        attribute float pathDistance;
+        uniform vec2 resolution;
+        uniform float width;
+        varying float vSide;
+        varying float vDistance;
+        void main() {
+          vec4 centre = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          vec4 a = projectionMatrix * modelViewMatrix * vec4(previous, 1.0);
+          vec4 b = projectionMatrix * modelViewMatrix * vec4(next, 1.0);
+          vec2 tangent = (b.xy / max(b.w, 0.0001) - a.xy / max(a.w, 0.0001)) * resolution;
+          vec2 normal = vec2(-tangent.y, tangent.x) / max(length(tangent), 0.0001);
+          centre.xy += normal * side * width / resolution * centre.w;
+          gl_Position = centre;
+          vSide = side;
+          vDistance = pathDistance;
+        }`,
+      fragmentShader: `
+        uniform float dash;
+        uniform float gap;
+        varying float vSide;
+        varying float vDistance;
+        void main() {
+          if (mod(vDistance, dash + gap) > dash) discard;
+          float edge = abs(vSide);
+          float alpha = 1.0 - smoothstep(0.8, 1.0, edge);
+          vec3 colour = mix(vec3(0.02, 0.96, 1.0), vec3(0.0, 0.18, 0.28), smoothstep(0.55, 0.8, edge));
+          gl_FragColor = vec4(colour, alpha * 0.98);
+        }`,
+      transparent: true, depthWrite: false, depthTest: true, side: THREE.DoubleSide
+    });
+    const aimGuideMesh = new THREE.Mesh(aimRibbonGeo, aimLineMat);
+    aimGuideMesh.frustumCulled = false;
+    const aimLine = new THREE.Group();
+    aimLine.geometry = aimLineGeo;
+    aimLine.add(aimGuideMesh);
+    aimLine.visible = false;
     scene.add(aimLine);
 
     // Landing Ring
@@ -2119,14 +2186,14 @@ group.name = name;
       syncAimControls();
     }
 
-    function setAimAngle(degrees) {
+    function setAimAngle(degrees, immediateCamera = false) {
       if (!canAdjustAim() || !Number.isFinite(degrees)) return false;
       const yaw = aimBaseYaw + THREE.MathUtils.degToRad(degrees);
       aimDirection.set(Math.sin(yaw), 0, Math.cos(yaw));
       positionGolferAtBall();
       updateAimTracer();
       drawMinimap();
-      setAddressCamera(false);
+      setAddressCamera(immediateCamera);
       syncAimControls();
       return true;
     }
@@ -2165,32 +2232,153 @@ group.name = name;
     function getAimGuideLength() {
       const pin = holePins3D[currentHoleNumber];
       const distance = pin ? Math.hypot(pin.x - ballPos.x, pin.z - ballPos.z) : 100;
-      return Math.min(8, distance * 0.65);
+      const cap = (GOLF_BAG[currentClubIndex] || {}).isPutter ? 2 * 0.9144 : 30 * 0.9144;
+      // Near the pin keep the previous promise: never draw a full guide into the cup.
+      return Math.min(cap, distance * 0.65);
+    }
+
+    function getAimSurfaceHeight(x, z) {
+      let height = getTerrainHeight(x, z);
+      if (strokesCurrentHole === 0 && Math.abs(x - teePegGroup.position.x) <= 1.015 && Math.abs(z - teePegGroup.position.z) <= 1.015) {
+        height = Math.max(height, teePegGroup.position.y);
+      }
+      return height;
+    }
+
+    function getShotLaunchVelocity(specs, direction = aimDirection) {
+      const club = GOLF_BAG[currentClubIndex];
+      const lie = detectLie(ballPos);
+      const dir = direction.clone().setY(0).normalize();
+      if (club.isPutter) {
+        const speed = club.v0 * (parseInt(putterSlider.value) / 100) * lie.penalty;
+        return dir.multiplyScalar(speed);
+      }
+      const hLevel = window.currentHandicap || 'scratch';
+      const hMult = (window.handicapMultipliers && window.handicapMultipliers[hLevel]) || 1.0;
+      const speed = club.v0 * Math.sqrt(specs.carryMultiplier) * hMult * lie.penalty;
+      const loft = THREE.MathUtils.degToRad(club.loft);
+      return new THREE.Vector3(dir.x * speed * Math.cos(loft), speed * Math.sin(loft), dir.z * speed * Math.cos(loft));
+    }
+
+    function getAimGuidePoints() {
+      const cap = getAimGuideLength();
+      if (cap < 0.001) return [];
+      const club = GOLF_BAG[currentClubIndex];
+      if (club.isPutter) {
+        const pts = [];
+        for (let i = 0; i <= 48; i++) {
+          const d = cap * i / 48;
+          const x = ballPos.x + aimDirection.x * d;
+          const z = ballPos.z + aimDirection.z * d;
+          pts.push(new THREE.Vector3(x, getAimSurfaceHeight(x, z) + 0.03, z));
+        }
+        return pts;
+      }
+      // Integrate the same launch speed, loft, drag, lift and wind as the real shot.
+      // Stop at first impact or 30 horizontal yards; do not invent a full landing path.
+      const pts = [ballPos.clone()];
+      const pos = ballPos.clone();
+      pos.y += 0.05; // same launch clearance as executeGolfShot
+      const velocity = getShotLaunchVelocity(calculateShotSpecs(currentClubIndex, currentSwingMode));
+      const dt = 1 / 120;
+      for (let step = 0; step < 1440; step++) {
+        const previous = pos.clone();
+        stepBallFlight(pos, velocity, dt, true);
+        const distance = Math.hypot(pos.x - ballPos.x, pos.z - ballPos.z);
+        const ground = getTerrainHeight(pos.x, pos.z) + BALL_RADIUS;
+        if (distance >= cap) {
+          const before = Math.hypot(previous.x - ballPos.x, previous.z - ballPos.z);
+          const fraction = THREE.MathUtils.clamp((cap - before) / Math.max(1e-8, distance - before), 0, 1);
+          pts.push(previous.lerp(pos, fraction));
+          break;
+        }
+        if (pos.y <= ground) {
+          // Interpolate the final descent rather than drawing a segment underground.
+          const beforeGround = getTerrainHeight(previous.x, previous.z) + BALL_RADIUS;
+          const h0 = previous.y - beforeGround, h1 = pos.y - ground;
+          const fraction = THREE.MathUtils.clamp(h0 / Math.max(1e-8, h0 - h1), 0, 1);
+          const contact = previous.lerp(pos, fraction);
+          contact.y = getTerrainHeight(contact.x, contact.z) + BALL_RADIUS + 0.008;
+          pts.push(contact);
+          break;
+        }
+        if (step % 4 === 3) pts.push(pos.clone());
+      }
+      return pts;
+    }
+
+    function updateAimRibbon(pts) {
+      const count = Math.min(pts.length, MAX_AIM_POINTS);
+      let distance = 0;
+      for (let i = 0; i < count; i++) {
+        if (i) distance += pts[i].distanceTo(pts[i - 1]);
+        for (let side = 0; side < 2; side++) {
+          const vertex = i * 2 + side;
+          pts[i].toArray(aimRibbonArrays.position, vertex * 3);
+          pts[Math.max(0, i - 1)].toArray(aimRibbonArrays.previous, vertex * 3);
+          pts[Math.min(count - 1, i + 1)].toArray(aimRibbonArrays.next, vertex * 3);
+          aimRibbonArrays.side[vertex] = side === 0 ? -1 : 1;
+          aimRibbonArrays.pathDistance[vertex] = distance;
+        }
+      }
+      for (const attribute of Object.values(aimRibbonGeo.attributes)) attribute.needsUpdate = true;
+      aimRibbonGeo.setDrawRange(0, Math.max(0, count - 1) * 6);
+      aimLineMat.uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
+      const isPutter = GOLF_BAG[currentClubIndex].isPutter === true;
+      aimLineMat.uniforms.dash.value = isPutter ? 0.18 : 1.1;
+      aimLineMat.uniforms.gap.value = isPutter ? 0.10 : 0.45;
+    }
+
+    function syncAimControlsLayout() {
+      const dock = document.getElementById('bottom-game-dock');
+      if (dock && dock.offsetHeight > 0) {
+        document.documentElement.style.setProperty('--shot-dock-height', `${dock.offsetHeight}px`);
+      }
     }
 
     function updateAimTracer() {
-      // A short heading guide, NOT a promise of the final wind/slope trajectory.
-      const length = getAimGuideLength();
-      const pts = [];
-      for (let i = 0; i <= 32; i++) {
-        const d = length * i / 32;
-        const x = ballPos.x + aimDirection.x * d;
-        const z = ballPos.z + aimDirection.z * d;
-        let surface = getTerrainHeight(x, z);
-        if (strokesCurrentHole === 0 && Math.abs(x - teePegGroup.position.x) <= 1.015 && Math.abs(z - teePegGroup.position.z) <= 1.015) {
-          surface = Math.max(surface, teePegGroup.position.y);
-        }
-        const y = i === 0 ? ballPos.y + 0.008 : surface + 0.03;
-        pts.push(new THREE.Vector3(x, y, z));
-      }
+      const pts = getAimGuidePoints();
       aimLine.geometry.setFromPoints(pts);
-      aimLine.geometry.computeBoundingSphere();
-      aimLine.computeLineDistances();
-      aimLine.visible = canAdjustAim() && length > 0.001;
+      if (pts.length) aimLine.geometry.computeBoundingSphere();
+      updateAimRibbon(pts);
+      aimLine.visible = canAdjustAim() && pts.length > 1;
       landingRing.visible = false;
-      ballMarker.position.set(ballPos.x, getTerrainHeight(ballPos.x, ballPos.z) + (strokesCurrentHole === 0 ? 0.15 : 0) + 0.007, ballPos.z);
+      ballMarker.position.set(ballPos.x, getAimSurfaceHeight(ballPos.x, ballPos.z) + 0.007, ballPos.z);
       ballMarker.visible = canAdjustAim();
     }
+
+    // Primary mouse/finger drag is a look-to-aim gesture. It rotates the camera
+    // around the BALL and updates the athlete/guide without a second independent heading.
+    const aimCanvas = renderer.domElement;
+    aimCanvas.style.touchAction = 'none';
+    let lookAimPointer = null;
+    function endLookAim(event) {
+      if (lookAimPointer && (!event || event.pointerId === lookAimPointer.id)) {
+        if (aimCanvas.hasPointerCapture(lookAimPointer.id)) aimCanvas.releasePointerCapture(lookAimPointer.id);
+        lookAimPointer = null;
+      }
+    }
+    aimCanvas.addEventListener('pointerdown', event => {
+      if (!event.isPrimary || event.button !== 0 || document.body.dataset.view !== 'game' || !canAdjustAim()) return;
+      lookAimPointer = {id: event.pointerId, x: event.clientX};
+      aimCanvas.setPointerCapture(event.pointerId);
+      event.preventDefault();
+    });
+    aimCanvas.addEventListener('pointermove', event => {
+      if (!lookAimPointer || event.pointerId !== lookAimPointer.id) return;
+      if (!canAdjustAim() || document.body.dataset.view !== 'game') {endLookAim(event);return;}
+      const dx = event.clientX - lookAimPointer.x;
+      lookAimPointer.x = event.clientX;
+      if (!dx) return;
+      const current = THREE.MathUtils.radToDeg(Math.atan2(aimDirection.x, aimDirection.z) - aimBaseYaw);
+      const degreesPerPixel = 180 / Math.max(360, window.innerWidth);
+      setAimAngle(current - dx * degreesPerPixel, true);
+      event.preventDefault();
+    });
+    aimCanvas.addEventListener('pointerup', endLookAim);
+    aimCanvas.addEventListener('pointercancel', endLookAim);
+    aimCanvas.addEventListener('lostpointercapture', () => {lookAimPointer = null;});
+    window.addEventListener('blur', () => endLookAim());
 
     document.getElementById('aim-angle-slider').addEventListener('input', event => {
       setAimAngle(Number(event.target.value));
@@ -2250,7 +2438,6 @@ group.name = name;
     function executeGolfShot(specs, shotDirection = aimDirection) {
       if (isBallFlying) return;
       const club = GOLF_BAG[currentClubIndex];
-      const lie = detectLie(ballPos);
 
       strokesCurrentHole++;
 
@@ -2263,29 +2450,17 @@ group.name = name;
       resetToptracer();
       if (teePegGroup) teePegGroup.visible = false;
 
-      const dir = shotDirection.clone().setY(0).normalize();
-      const loftRad = club.loft * Math.PI / 180;
+      ballVel.copy(getShotLaunchVelocity(specs, shotDirection));
 
       // Realistic audio trigger
       AudioEngine.playSwing(specs.carryMultiplier || 1.0);
       setTimeout(() => AudioEngine.playSweetSpotImpact(club.cat, specs.carryMultiplier || 1.0), 100);
 
       if (club.isPutter) {
-        const putterPower = (parseInt(putterSlider.value) / 100);
-        let speed = (club.v0 * putterPower) * lie.penalty;
-        ballVel.x = dir.x * speed;
-        ballVel.z = dir.z * speed;
-        ballVel.y = 0;
         isBallGrounded = true;
         hasImpacted = true;
         firstImpactPos.copy(ballPos);
       } else {
-        const hLevel = window.currentHandicap || 'scratch';
-        const hMult = (window.handicapMultipliers && window.handicapMultipliers[hLevel]) || 1.0;
-        let speed = (club.v0 * Math.sqrt(specs.carryMultiplier)) * (club.isPutter ? 1.0 : hMult) * lie.penalty;
-        ballVel.x = dir.x * speed * Math.cos(loftRad);
-        ballVel.z = dir.z * speed * Math.cos(loftRad);
-        ballVel.y = speed * Math.sin(loftRad);
         isBallGrounded = false;
         ballPos.y += 0.05;
       }
@@ -2301,6 +2476,42 @@ group.name = name;
     const kDrag = 0.0020;
     const kLift = 0.00078;
 
+    // The short preview and the physical ball share this exact air-step model.
+    function stepBallFlight(position, velocity, dt, applyLift) {
+      const speed = velocity.length();
+      if (speed > 0.01) {
+        const ux = velocity.x / speed;
+        const uy = velocity.y / speed;
+        const uz = velocity.z / speed;
+
+        const dragAccel = kDrag * speed * speed;
+        velocity.x -= dragAccel * ux * dt;
+        velocity.y -= dragAccel * uy * dt;
+        velocity.z -= dragAccel * uz * dt;
+
+        // Environmental wind drag
+        const windVx = Math.cos(windAngle) * (windSpeedMph * 0.447);
+        const windVz = Math.sin(windAngle) * (windSpeedMph * 0.447);
+        velocity.x += (windVx - velocity.x) * (kDrag * 0.5) * dt;
+        velocity.z += (windVz - velocity.z) * (kDrag * 0.5) * dt;
+
+        if (applyLift) {
+          const horizSpeed = Math.hypot(velocity.x, velocity.z);
+          if (horizSpeed > 1e-4) {
+            const uHoriz = horizSpeed / speed;
+            const liftAccel = kLift * speed * speed;
+            velocity.y += liftAccel * uHoriz * dt;
+            const horizFactor = (liftAccel * (velocity.y / speed)) * dt;
+            velocity.x -= horizFactor * (velocity.x / horizSpeed);
+            velocity.z -= horizFactor * (velocity.z / horizSpeed);
+          }
+        }
+      }
+      velocity.y -= gravity * dt;
+      position.addScaledVector(velocity, dt);
+
+    }
+
     function stepPhysics(dt) {
       if (!isBallFlying) return;
 
@@ -2313,36 +2524,7 @@ group.name = name;
         const groundH = getTerrainHeight(ballPos.x, ballPos.z) + BALL_RADIUS;
 
         if (!isBallGrounded) {
-          if (speed > 0.01) {
-            const ux = ballVel.x / speed;
-            const uy = ballVel.y / speed;
-            const uz = ballVel.z / speed;
-
-            const dragAccel = kDrag * speed * speed;
-            ballVel.x -= dragAccel * ux * sdt;
-            ballVel.y -= dragAccel * uy * sdt;
-            ballVel.z -= dragAccel * uz * sdt;
-
-            // Environmental wind drag
-            const windVx = Math.cos(windAngle) * (windSpeedMph * 0.447);
-            const windVz = Math.sin(windAngle) * (windSpeedMph * 0.447);
-            ballVel.x += (windVx - ballVel.x) * (kDrag * 0.5) * sdt;
-            ballVel.z += (windVz - ballVel.z) * (kDrag * 0.5) * sdt;
-
-            if (!hasImpacted && !club.isPutter) {
-              const horizSpeed = Math.hypot(ballVel.x, ballVel.z);
-              if (horizSpeed > 1e-4) {
-                const uHoriz = horizSpeed / speed;
-                const liftAccel = kLift * speed * speed;
-                ballVel.y += liftAccel * uHoriz * sdt;
-                const horizFactor = (liftAccel * (ballVel.y / speed)) * sdt;
-                ballVel.x -= horizFactor * (ballVel.x / horizSpeed);
-                ballVel.z -= horizFactor * (ballVel.z / horizSpeed);
-              }
-            }
-          }
-          ballVel.y -= gravity * sdt;
-          ballPos.addScaledVector(ballVel, sdt);
+          stepBallFlight(ballPos, ballVel, sdt, !hasImpacted && !club.isPutter);
 
           // Rotate ball in air based on forward motion
           const airDist = speed * sdt;
