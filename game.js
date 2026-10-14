@@ -1348,6 +1348,7 @@ group.name = name;
     let proGolferClub = null;
     let proGolferCap = null;
     let proGolferLoaded = false;
+    let proGolferAnimator = null;
 
     // Load authentic 3D GLTF (.glb) model
     if (typeof THREE.GLTFLoader === 'function') {
@@ -1355,14 +1356,16 @@ group.name = name;
       gltfLoader.load('pro_golfer_character.glb', (gltf) => {
         if (gltf && gltf.scene) {
           proGolferModel = gltf.scene;
-          console.log('✅ Genuine 3D Pro Golfer GLB Model loaded successfully!');
+          try { proGolferAnimator = new GolfAthlete(gltf); }
+          catch (error) { console.warn('Golfer rig rejected:',error.message);proGolferModel=null;golferHips.visible=true;return; }
+          console.info('Skinned golfer loaded: 51 joints, 5 stroke clips.');
           
           proGolferModel.traverse((child) => {
             if (child.isMesh) {
               child.castShadow = true;
               child.receiveShadow = true;
               if (child.material) {
-                child.material.roughness = 0.45;
+                // Preserve authored skin, fabric and metal PBR materials.
                 child.material.needsUpdate = true;
               }
             }
@@ -1376,6 +1379,7 @@ group.name = name;
 
           // Hide fallback procedural mannequin once authentic GLB is loaded
           golferHips.visible = false;
+          clubRig.visible = false; // The loaded athlete owns the only visible club.
         }
       }, undefined, (err) => {
         console.warn('Note on loading pro_golfer_character.glb:', err);
@@ -1595,17 +1599,21 @@ group.name = name;
       if (dirToPin.lengthSq() < 1e-8) dirToPin.set(0, 0, 1);
       dirToPin.normalize();
 
-      // Golfer stands to the left/side of the ball relative to target line
-      const sideVec = new THREE.Vector3(-dirToPin.z, 0, dirToPin.x).normalize();
+      // Right-handed athlete: anatomical left (+X) is the lead side.
+      const sideVec = new THREE.Vector3(dirToPin.z, 0, -dirToPin.x).normalize();
       
-      // Club-specific stance distance: Driver = 0.65m, Irons = 0.56m, Putter = 0.46m
+      // Club-specific stance distance: Driver = 0.65m, Irons = 0.58m, Putter = 0.46m
       const club = GOLF_BAG[currentClubIndex] || {};
       let standOffset = 0.58;
       if (club.isPutter) standOffset = 0.46;
       else if (currentClubIndex === 0) standOffset = 0.65;
       else if (currentSwingMode === 'chip') standOffset = 0.50;
 
-      const groundAtStance = getTerrainHeight(ballPos.x + sideVec.x * standOffset, ballPos.z + sideVec.z * standOffset);
+      // Tee platforms are FLAT: use their centre/top, not sloped terrain
+      // sampled under the shoes. This prevents floating or buried feet.
+      const groundAtStance = strokesCurrentHole === 0
+        ? getTerrainHeight(ballPos.x,ballPos.z) + 0.15
+        : getTerrainHeight(ballPos.x + sideVec.x * standOffset,ballPos.z + sideVec.z * standOffset);
       
       golferGroup.position.set(
         ballPos.x + sideVec.x * standOffset,
@@ -1616,8 +1624,8 @@ group.name = name;
       const angle = Math.atan2(dirToPin.x, dirToPin.z);
       // Asset front is local +Z (verified from cap visor / club-head nodes).
       // The body must face the BALL, not the target or the stance offset.
-      // With this yaw, local +Z equals -sideVec and local -X is the lead side.
-      golferGroup.rotation.y = angle + Math.PI / 2;
+      // With this yaw, local +Z equals -sideVec and local +X is the lead side.
+      golferGroup.rotation.y = angle - Math.PI / 2; // Native +X is the left/lead side, along the pin.
       
       // Reset address posture
       resetGolferPosture();
@@ -1629,13 +1637,20 @@ group.name = name;
     function resetGolferPosture() {
       golferHips.position.set(0, 0, 0);
       golferHips.rotation.set(0, 0, 0);
-      if (proGolferLoaded && proGolferModel) {
+      if (proGolferLoaded && proGolferModel && !proGolferAnimator) {
         proGolferContainer.position.set(0, 0, 0);
         proGolferContainer.rotation.set(0, 0, 0);
         proGolferContainer.scale.set(1, 1, 1);
       }
       
       const club = GOLF_BAG[currentClubIndex] || {};
+      if (proGolferAnimator) {
+        proGolferContainer.position.set(0,0,0);proGolferContainer.rotation.set(0,0,0);
+        golferGroup.updateMatrixWorld(true);
+        const localBall = proGolferModel.worldToLocal(ballPos.clone());
+        proGolferAnimator.setClub(club);proGolferAnimator.setContact(localBall,BALL_RADIUS);
+        proGolferAnimator.pose(club.isPutter ? 'putt' : currentSwingMode,'idle',0);
+      }
       if (club.isPutter || currentSwingMode === 'putt') {
         // Upright, square putting address stance
         golferTorsoGroup.rotation.set(0.32, 0, 0);
@@ -1701,7 +1716,7 @@ group.name = name;
         golferShoulderPivot.rotation.x = -0.24 + ease * cfg.backArmsX;
         clubRig.rotation.z = ease * cfg.backClubZ;
 
-        if (proGolferLoaded && proGolferModel) {
+        if (proGolferLoaded && proGolferModel && !proGolferAnimator) {
           proGolferContainer.rotation.y = ease * (cfg.backTorsoY * 0.85);
           proGolferContainer.rotation.z = -ease * 0.08;
           proGolferContainer.position.x = -p * (cfg.weightShiftLead * 0.5);
@@ -1725,13 +1740,15 @@ group.name = name;
         golferShoulderPivot.rotation.x = (-0.24 + cfg.backArmsX) - power * cfg.backArmsX;
         clubRig.rotation.z = cfg.backClubZ + power * (cfg.impactClubZ - cfg.backClubZ);
 
-        if (proGolferLoaded && proGolferModel) {
+        if (proGolferLoaded && proGolferModel && !proGolferAnimator) {
           proGolferContainer.rotation.y = (cfg.backTorsoY * 0.85) + power * (cfg.impactTorsoY - (cfg.backTorsoY * 0.85));
           proGolferContainer.rotation.z = -0.08 + power * 0.12;
           proGolferContainer.position.x = -cfg.weightShiftLead * 0.5 + p * (cfg.weightShiftLead * 1.5);
         }
 
         if (golferSwingProgress >= 1.0) {
+          // Sample the actual club-contact pose BEFORE the existing callback.
+          if (proGolferAnimator) proGolferAnimator.pose(activeSwingStyle,'downswing',1);
           // IMPACT MOMENT! Ball launched at this millisecond!
           golferSwingPhase = 'followthrough';
           golferSwingProgress = 0.0;
@@ -1754,7 +1771,7 @@ group.name = name;
         golferShoulderPivot.rotation.x = -0.24 + ease * cfg.followArmsX;
         clubRig.rotation.z = cfg.impactClubZ + ease * (cfg.followClubZ - cfg.impactClubZ);
 
-        if (proGolferLoaded && proGolferModel) {
+        if (proGolferLoaded && proGolferModel && !proGolferAnimator) {
           proGolferContainer.rotation.y = cfg.impactTorsoY + ease * (cfg.followTorsoY * 0.85 - cfg.impactTorsoY);
           proGolferContainer.rotation.z = 0.04 + ease * 0.06;
           proGolferContainer.position.x = cfg.weightShiftLead;
@@ -1770,6 +1787,10 @@ group.name = name;
         if (golferSwingProgress >= 1.0) {
           golferGroup.visible = false;
         }
+      }
+      if (proGolferAnimator) {
+        const mode = golferSwingPhase === 'idle' ? ((GOLF_BAG[currentClubIndex]||{}).isPutter ? 'putt' : currentSwingMode) : activeSwingStyle;
+        proGolferAnimator.pose(mode,golferSwingPhase,golferSwingProgress);
       }
     }
 

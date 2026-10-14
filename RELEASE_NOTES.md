@@ -1,3 +1,30 @@
+# Rig10 — replace the broken golfer and integrate real skeletal animation
+
+2026-10-14 · New model/rig integrated directly into the existing game. No UI redesign or simulation rewrite in this release.
+
+## Changed
+- Replaced the old 0-skin/0-animation GLB with one genuine skinned anatomical character: **51 joints, 5 clips**, navy/grey/white outfit, separately fitted clothes, real fingers, anatomical UV skin and PBR fabric/metal. All textures embedded.
+- Added `golfer-rig.js`, loaded before the engine by the existing boot gate and included in the verified offline inventory.
+- Existing stroke state machine drives authored Full/3⁄4/Half/Chip/Putt joint clips. Two-link arm/leg IK keeps the hands on a single grip and the shoes at stance points. Shorter clubs adjust shaft length and reach without stretching the arms.
+- Removed whole-body rotation from the loaded golfer path. Old procedural mannequin/club are hidden when the valid skin is loaded. Only one driver/iron/putter head is visible at a time.
+- Corrected right-handed stance: the anatomical left/lead side faces the pin; body faces the ball. Feet use the flat tee-platform surface at the first stroke. Head follows the target after the full follow-through rather than remaining locked at the ground.
+- Sampled the real frame-50 contact pose **before** the existing impact callback. Physics, shot specs, lies, actual-shot function and tracer source blocks unchanged.
+- Model recipe and packed editable `.blend` supplied, with CC0 anatomical asset attribution. The cap uses PuttClub lettering; this is not an identity-exact reproduction of the photo's face or logos.
+
+## Executed
+- **686** real joint/skin pose samples over 13 clubs and supported modes at mobile/desktop; all real skin-hand/grip, wrist/contact, stable idle, one-shaft/one-head and fallback-hidden checks pass. 120 repeated idle poses per selection; no additive pose drift. Each of the 5 callbacks fires once at frame 50, before ball movement.
+- **48** setup/start journeys; **115** ordinary regression records, no page errors/failed requests/bad HTTP or gameplay axe violations; **2160** stance/heading cases plus coincident-pin case.
+- Offline runtime integrity and corrupt-update/first-install failures tested with real ServiceWorker/CacheStorage. Actual pwa9 → rig10 migration: **4 changed/new resources fetched, 44 reused**, round preserved, cold offline rig/GLB reopening successful.
+- Tracer mobile/desktop actual shot still reports the correct 131 yards, original white 11/30px type, 240 ribbon-history points, legacy color material and correct screen projection; no shader errors.
+- Five entrance/setup axe checks and 44px touch controls remain clean. Testing was Chromium/SwiftShader, **not physical iPhone/Safari**. No 60fps or exact photoreal digital-double claim.
+
+## Retained limits
+Facial geometry is an approximation fitted with reference-derived UV detail; this is not a scan or a pixel-perfect reproduction. Small cloth/hair/shoe detail can still be refined. Tehran retains the MIS gameplay geometry and surface switch; scores remain session-only outside explicit update checkpoint transfer. iOS storage eviction remains possible. The raw GLB stores three interchangeable head meshes; the game displays only one.
+
+---
+
+Historical release notes below describe earlier versions, including their then-unresolved character.
+
 # pwa9 — full offline runtime, boot-time updates, compact glass / neumorphic setup
 
 Released 2026-10-13. This extends tracer8; simulation/trajectory geometry, the original floating white YDS typography, and the one-tap setup flow are preserved.

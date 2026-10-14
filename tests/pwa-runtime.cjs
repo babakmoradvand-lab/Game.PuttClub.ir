@@ -7,7 +7,7 @@ const fixtureRoot=fs.existsSync('audit/pwa9/index-before.html')?'audit/pwa9':pat
 const legacyFiles=new Map(files);
 for(const [name,backup] of [['index.html','index-before.html'],['game.js','game-before.js'],['ui.js','ui-before.js'],['sw.js','sw-before.js']])legacyFiles.set(name,fs.readFileSync(path.join(fixtureRoot,backup)));
 const nextFiles=new Map(files);
-nextFiles.set('index.html',Buffer.from(files.get('index.html').toString().replace('content="pwa9-20261013"','content="pwa9-test-update"')));
+nextFiles.set('index.html',Buffer.from(files.get('index.html').toString().replace('content="'+base.version+'"','content="pwa9-test-update"')));
 nextFiles.set('presentation.css',Buffer.concat([files.get('presentation.css'),Buffer.from('\n/* isolated update fixture */\n')]));
 const next={version:'pwa9-test-update',createdAt:new Date(Date.parse(base.createdAt)+60000).toISOString(),assets:[...nextFiles].map(([p,b])=>({url:'./'+p,bytes:b.length,sha256:crypto.createHash('sha256').update(b).digest('hex')}))};
 let mode='base', requests=[];
@@ -42,7 +42,7 @@ const record=(name,data={})=>{results.push({name,pass:true,...data});console.log
   const state=await PuttBoot.rpc('STATUS'),cache=await caches.open(state.cache);let bytes=0;
   for(const a of state.manifest.assets){const r=await cache.match(new URL(a.url,location.href));if(!r)throw Error(a.url);const data=await r.arrayBuffer();bytes+=data.byteLength;const sha=[...new Uint8Array(await crypto.subtle.digest('SHA-256',data))].map(n=>n.toString(16).padStart(2,'0')).join('');if(sha!==a.sha256)throw Error('Hash: '+a.url);}
   return {assets:state.manifest.assets.length,bytes,version:state.manifest.version};
- });assert.equal(verified.assets,47);record('all offline assets independently verified by SHA-256',verified);
+ });assert.equal(verified.assets,base.assets.length);record('all offline assets independently verified by SHA-256',verified);
  // Every unchanged reopening should fetch only small update-check files.
  requests=[];await p.reload();await ready();const warm=[...requests];assert.ok(warm.every(r=>['release.json','sw.js'].includes(r.name)),JSON.stringify(warm));
  record('unchanged online launch: zero game asset network downloads',{network:warm});
@@ -61,7 +61,7 @@ const record=(name,data={})=>{results.push({name,pass:true,...data});console.log
  const before=await p.evaluate(()=>PuttUI.exportSession());mode='update';requests=[];
  await p.evaluate(()=>document.dispatchEvent(new Event('visibilitychange')));await p.waitForFunction(()=>window.PuttBoot?.version==='pwa9-test-update'&&window.PuttUI&&document.querySelector('#runtime-boot').hidden,{timeout:60000});await ready();
  const after=await p.evaluate(()=>PuttUI.exportSession());for(const key of ['started','view','skill','course','mode','hole','single','strokes','tee','scores','club','swing','ball','camera','target','putt'])assert.deepEqual(after[key],before[key],key);
- const installed=await p.evaluate(()=>PuttBoot.rpc('STATUS'));assert.equal(installed.downloaded,2);assert.equal(installed.reused,45);
+ const installed=await p.evaluate(()=>PuttBoot.rpc('STATUS'));assert.equal(installed.downloaded,2);assert.equal(installed.reused,base.assets.length-2);
  record('foreground update: hash reuse, consistent reload, round restored',{downloaded:installed.downloaded,reused:installed.reused,strokes:after.strokes,hole:after.hole});
  const controls=await p.evaluate(()=>({map:document.querySelector('#minimap-canvas').getBoundingClientRect().height,glass:getComputedStyle(document.querySelector('#bottom-game-dock')).backdropFilter}));assert.equal(controls.map,0);assert.ok(controls.glass.includes('blur'));
  await p.tap('#btn-map-detail');assert.equal(await p.getAttribute('#btn-map-detail','aria-expanded'),'true');assert.ok(await p.locator('#minimap-canvas').isVisible());await p.tap('#btn-map-detail');await p.tap('#btn-toggle-estimates');assert.ok(await p.locator('#shot-estimate-card').isVisible());

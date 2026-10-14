@@ -1,14 +1,15 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
-const THREE = require('../three.min.js');
-const html = fs.readFileSync('game.js', 'utf8');
+const root=fs.existsSync('public/game.js')?'public':'.';
+const THREE = require(require('path').resolve(root,'three.min.js'));
+const html = fs.readFileSync(root+'/game.js', 'utf8');
 const start = html.indexOf('    function positionGolferAtBall()');
 const end = html.indexOf('    function resetGolferPosture()', start);
 const fn = html.slice(start,end);
 let ballPos=new THREE.Vector3(30,12,-20);
 let holePins3D={},currentHoleNumber=1,currentClubIndex=0,currentSwingMode='full';
 let GOLF_BAG=[{}, {isPutter:true}];
-let golferGroup=new THREE.Group(),golferSwingPhase='idle',golferSwingProgress=0;
+let golferGroup=new THREE.Group(),golferSwingPhase='idle',golferSwingProgress=0,strokesCurrentHole=0;
 const getTerrainHeight=()=>12;
 const resetGolferPosture=()=>{};
 eval(fn);
@@ -22,7 +23,7 @@ for(let i=0;i<360;i++) {
    const front=new THREE.Vector3(0,0,1).applyQuaternion(golferGroup.quaternion);
    assert.ok(front.dot(towardBall)>0.999999, 'Front must face ball');
    const target=new THREE.Vector3(Math.sin(a),0,Math.cos(a));
-   const lead=new THREE.Vector3(-1,0,0).applyQuaternion(golferGroup.quaternion);
+   const lead=new THREE.Vector3(1,0,0).applyQuaternion(golferGroup.quaternion);
    assert.ok(lead.dot(target)>0.999999, 'Lead side must face target');
    assert.ok(Math.abs(towardBall.dot(target))<1e-8, 'Stance must be perpendicular to shot');
   }

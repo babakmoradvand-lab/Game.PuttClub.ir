@@ -4,7 +4,7 @@
 
 A golf simulation with a unified premium interface, bilingual player setup, 13 clubs, four swing presets, putting, live scorecard and offline support. Vanilla JavaScript / Three.js; no runtime UI framework.
 
-See [RELEASE_NOTES.md](RELEASE_NOTES.md) for implemented changes, preservation checks, tested journeys and known engine/asset limits. The current golfer is an unrigged GLB; Tehran currently uses a surface-presentation switch over the MIS layout. This UI release does not claim AAA character fidelity or independently reconstructed Tehran geography.
+See [RELEASE_NOTES.md](RELEASE_NOTES.md) for implemented changes, preservation checks, tested journeys and known engine/asset limits. The current golfer is a genuinely skinned GLB with 51 joints and five clips; Tehran currently uses a surface-presentation switch over the MIS layout. This release does not claim identity-exact/AAA character fidelity or independently reconstructed Tehran geography.
 
 ## Run
 
@@ -24,9 +24,9 @@ Open http://localhost:8080/. GitHub Pages serves the repository root, with all p
 - `fonts/` — local Inter / Vazirmatn with licenses.
 - `tests/` — browser and mathematical regression tests (development only).
 
-## Offline / home-screen installation — pwa9
+## Offline / home-screen installation — rig10
 
-Open the game in Safari over HTTPS and keep the first visit open until **All 47 files saved · offline ready** appears. The complete runtime is about **10.4 MiB**: local fonts, libraries, both courses/data, textures, GLB, UI and engine. Then use **Share → Add to Home Screen**. Open once from the installed icon too, and wait for its own offline-ready message; storage sharing between Safari and standalone can vary by iOS version. Airplane mode can be used to verify offline reopening.
+Open the game in Safari over HTTPS and keep the first visit open until **All 48 files saved · offline ready** appears. The complete runtime (48 files) is about **10.6 MiB**: local fonts, libraries, both courses/data, textures, GLB, UI and engine. Then use **Share → Add to Home Screen**. Open once from the installed icon too, and wait for its own offline-ready message; storage sharing between Safari and standalone can vary by iOS version. Airplane mode can be used to verify offline reopening.
 
 - On every cold opening, and on foreground resume, play is gated while the release is checked. Unchanged openings fetch only the small release descriptor and service-worker update check; game assets are served locally.
 - All initial/new files are SHA-256 verified. Only a complete candidate runtime replaces the active cache. Unchanged assets are reused by hash. Failed updates keep the complete previous runtime; a failed initial install exposes Retry, not an unverified game.
@@ -39,3 +39,7 @@ Change `index.html`'s `putt-release` meta to a new unique version, update its ru
 
 ### Additional tests
 `node tests/pwa-runtime.cjs` uses an isolated port-8081 HTTP fixture to exercise real CacheStorage, broken first installs, integrity failures, offline cold starts, transactional updates, session restoration, and migration from the previous worker under the Pages subpath. `node tests/pwa-presentation.cjs` checks all five entrance/setup screens with axe and 44px gameplay targets against port 8080. Evidence is headless Chromium / SwiftShader, not a physical iPhone/Safari hardware test.
+
+## New rigged golfer
+
+See [CHARACTER.md](CHARACTER.md) for the real 3D asset, five skeletal clips, grip/foot constraints, attribution and limits. The former unrigged model and whole-body rotation have been replaced. [Download GLB](pro_golfer_character.glb) · [Packed Blender source](pro_golfer_character.blend). The in-game renderer selects one head alternative; raw asset viewers may show all three available heads.
