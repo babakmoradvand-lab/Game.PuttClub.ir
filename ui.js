@@ -276,6 +276,10 @@
       lastBusy = busy;
       for (const id of [
         "club-trigger-card",
+        "aim-angle-slider",
+        "aim-left",
+        "aim-right",
+        "aim-at-pin",
         "btn-launch-shot",
         "btn-putt-action",
         "putter-backswing-slider",
@@ -293,7 +297,7 @@
         ? isBallFlying
           ? "Ball in play · controls return when the shot settles."
           : "Swing in progress · waiting for impact."
-        : "Drag to look around. Choose your club and stroke, then strike.";
+        : "Use the 360° aim slider to set direction. Drag only to look around.";
       [...$("hole-grid-picker").children].forEach((e) => (e.disabled = busy));
       $("return-title").disabled = busy;
     }
@@ -526,7 +530,7 @@
   }
   function exportSession() {
     if(isBallFlying||golferSwingPhase!=="idle"||isCameraTransitioning)return null;
-    return {schema:1,started,view:document.body.dataset.view,step,skill,course,mode:gameMode,hole:currentHoleNumber,single:selectedSingleHole,strokes:strokesCurrentHole,tee:isWomenTee,scores:[...holeScores],club:currentClubIndex,swing:currentSwingMode,ball:ballPos.toArray(),camera:camera.position.toArray(),target:orbitControls.target.toArray(),putt:$("putter-backswing-slider").value,celebrating:$("celebration-overlay").style.display!=="none",telemetry:["tele-carry","tele-roll","tele-total"].map(id=>$(id).textContent)};
+    return {schema:1,started,view:document.body.dataset.view,step,skill,course,mode:gameMode,hole:currentHoleNumber,single:selectedSingleHole,strokes:strokesCurrentHole,tee:isWomenTee,scores:[...holeScores],club:currentClubIndex,swing:currentSwingMode,ball:ballPos.toArray(),aim:aimDirection.toArray(),camera:camera.position.toArray(),target:orbitControls.target.toArray(),putt:$("putter-backswing-slider").value,celebrating:$("celebration-overlay").style.display!=="none",telemetry:["tele-carry","tele-roll","tele-total"].map(id=>$(id).textContent)};
   }
   function importSession(data) {
     if(data?.schema!==1||!data.started)return;
@@ -536,8 +540,17 @@
     isWomenTee=data.tee;setupHole(data.hole);strokesCurrentHole=data.strokes;
     data.scores.forEach((score,n)=>holeScores[n]=score);
     currentClubIndex=data.club;currentSwingMode=data.swing;
-    ballPos.fromArray(data.ball);ballMesh.position.copy(ballPos);ballVel.set(0,0,0);
-    camera.position.fromArray(data.camera);orbitControls.target.fromArray(data.target);orbitControls.update();
+    ballPos.fromArray(data.ball);
+    if(strokesCurrentHole>0)ballPos.y=getTerrainHeight(ballPos.x,ballPos.z)+BALL_RADIUS;
+    ballMesh.position.copy(ballPos);ballVel.set(0,0,0);
+    resetAimToPin();
+    if(Array.isArray(data.aim)&&data.aim.length===3&&data.aim.every(Number.isFinite)) {
+      const restoredAim=new THREE.Vector3().fromArray(data.aim).setY(0);
+      if(restoredAim.lengthSq()>1e-8)aimDirection.copy(restoredAim.normalize());
+    }
+    syncAimControls();
+    // Use the corrected address framing even when migrating an old wide camera.
+    setAddressCamera(true);
     if(strokesCurrentHole>0&&teePegGroup)teePegGroup.visible=false;
     $("putter-backswing-slider").value=data.putt;
     ["tele-carry","tele-roll","tele-total"].forEach((id,n)=>$(id).textContent=data.telemetry[n]);

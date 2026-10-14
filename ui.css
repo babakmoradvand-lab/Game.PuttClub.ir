@@ -2447,3 +2447,10 @@ body[data-reduced-motion="true"] *:before {
     border-top: 1px solid var(--line);
   }
 }
+
+/* aim14: independent 360-degree heading, above the existing shot dock. */
+#aim-controls{position:absolute;z-index:12;left:50%;transform:translateX(-50%);bottom:calc(110px + var(--safe-bottom));width:min(400px,calc(100% - 24px));padding:9px 12px;background:rgba(20,38,30,.92);border:1px solid #ffffff30;border-radius:14px;color:#f1eee5;pointer-events:auto;box-sizing:border-box;font:12px/1.5 system-ui,sans-serif}
+.aim-heading{display:flex;align-items:center;gap:10px}.aim-heading label{flex:1}.aim-heading output{min-width:38px;text-align:center;font-variant-numeric:tabular-nums;color:#7dd3fc}.aim-heading button{border:1px solid #ffffff35;border-radius:8px;padding:4px 8px;background:#ffffff0d;color:inherit;min-height:32px;font:inherit}
+.aim-adjust{display:flex;align-items:center;gap:10px}.aim-adjust button{flex:0 0 44px;height:44px;border:0;border-radius:8px;background:transparent;color:inherit;font-size:25px}.aim-adjust input{flex:1;min-width:0;width:auto;margin:0;accent-color:#38bdf8;touch-action:pan-y}.aim-adjust button:focus-visible,.aim-heading button:focus-visible,.aim-adjust input:focus-visible{outline:2px solid #7dd3fc;outline-offset:2px}#aim-controls button:disabled,#aim-controls input:disabled{opacity:.4;cursor:wait}
+@media(max-width:600px){#aim-controls{bottom:calc(140px + var(--safe-bottom));padding:6px 10px}}
+@media(max-height:500px) and (orientation:landscape){#aim-controls{bottom:calc(92px + var(--safe-bottom));width:340px;padding:4px 10px}.aim-heading button{min-height:28px}.aim-adjust button{height:32px}}

@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "baseline": {
+    "radius": 0.021335,
+    "scale": [
+      1,
+      1,
+      1
+    ],
+    "offset": [
+      -4.125495485595621,
+      1.3500000000000014,
+      -0.7875830104377428
+    ],
+    "version": "aim15-20261014"
+  },
+  "rolled": {
+    "flying": false,
+    "height": 0.021334999999993443,
+    "scale": [
+      1,
+      1,
+      1
+    ],
+    "cameraOffset": [
+      -4.125326392941346,
+      1.3499999999999943,
+      -0.7884682312570277
+    ],
+    "line": true
+  },
+  "layout": {
+    "fits": true,
+    "separate": true,
+    "visible": true
+  },
+  "pageErrors": []
+}

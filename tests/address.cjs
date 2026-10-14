@@ -7,6 +7,7 @@ const start = html.indexOf('    function positionGolferAtBall()');
 const end = html.indexOf('    function resetGolferPosture()', start);
 const fn = html.slice(start,end);
 let ballPos=new THREE.Vector3(30,12,-20);
+const aimDirection=new THREE.Vector3(0,0,1);
 let holePins3D={},currentHoleNumber=1,currentClubIndex=0,currentSwingMode='full';
 let GOLF_BAG=[{}, {isPutter:true}];
 let golferGroup=new THREE.Group(),golferSwingPhase='idle',golferSwingProgress=0,strokesCurrentHole=0;
@@ -18,6 +19,7 @@ for(let i=0;i<360;i++) {
   for (currentClubIndex of [0,1]) {
    const a=i*Math.PI/180;
    holePins3D[1]=ballPos.clone().add(new THREE.Vector3(Math.sin(a)*100,elevation,Math.cos(a)*100));
+   aimDirection.set(Math.sin(a),0,Math.cos(a));
    positionGolferAtBall();
    const towardBall=ballPos.clone().sub(golferGroup.position).setY(0).normalize();
    const front=new THREE.Vector3(0,0,1).applyQuaternion(golferGroup.quaternion);

@@ -81,7 +81,7 @@
       const centre=grip.getWorldPosition(new T.Vector3());this.handTargets={};
       // Shorter clubs require a small knee/hip adjustment, not stretched arms.
       // Solve reach first; foot IK below keeps both shoes on their stance points.
-      for(let iteration=0;iteration<5;iteration++) {
+      for(let iteration=0;iteration<10;iteration++) {
         let adjustment=0;
         for(const [side,sign,offset] of [['L',1,-.035],['R',-1,.045]]) {
           const target=centre.clone().addScaledVector(direction,offset).add(new T.Vector3(sign*.024,0,0).applyQuaternion(modelQ));

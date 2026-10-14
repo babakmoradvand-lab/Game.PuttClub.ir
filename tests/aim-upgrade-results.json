@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "old": {
+    "x": -63.5019257470783,
+    "z": -86.85040697807779,
+    "hole": 1,
+    "strokes": 2
+  },
+  "next": {
+    "x": -63.5019257470783,
+    "z": -86.85040697807779,
+    "hole": 1,
+    "strokes": 2,
+    "height": 0.021335000000000548,
+    "distance": 7.271384615384613,
+    "expected": 7.2713846153846164,
+    "installed": "aim15-20261014",
+    "controls": true
+  },
+  "offline": {
+    "version": "aim15-20261014",
+    "status": "offline",
+    "visible": true,
+    "slider": -90,
+    "loaded": true
+  },
+  "pageErrors": [],
+  "environment": "Headless Chromium / SwiftShader, mobile touch emulation (not physical iPhone)"
+}

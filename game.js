@@ -218,6 +218,7 @@
       camera.setViewOffset(w, h, 0, Math.round(Math.min(140, h * 0.15)), w, h);
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
+      if (window.PuttUI && canAdjustAim()) setAddressCamera(true);
     }
     window.addEventListener('resize', handleResize);
     window.addEventListener('orientationchange', () => setTimeout(handleResize, 150));
@@ -987,7 +988,7 @@ group.name = name;
 
     // Ball 3D Model with Realistic Dimple Texture Simulation
     // Regulation Realistic Pro Golf Ball (Realistic scale relative to 2m tee box)
-    const BALL_RADIUS = 0.08;
+    const BALL_RADIUS = 0.021335; // metres: regulation 42.67mm diameter
     const ballMesh = new THREE.Mesh(
       new THREE.SphereGeometry(BALL_RADIUS, 32, 32),
       new THREE.MeshStandardMaterial({
@@ -1019,9 +1020,9 @@ group.name = name;
     const aimLineGeo = new THREE.BufferGeometry();
     const aimLinePositions = new Float32Array(60 * 3);
     aimLineGeo.setAttribute('position', new THREE.BufferAttribute(aimLinePositions, 3));
-    const aimLineMat = new THREE.LineDashedMaterial({ color: 0x38bdf8, dashSize: 2, gapSize: 1, linewidth: 2 });
+    const aimLineMat = new THREE.LineDashedMaterial({ color: 0x38bdf8, dashSize: 0.25, gapSize: 0.16 });
     const aimLine = new THREE.Line(aimLineGeo, aimLineMat);
-    aimLine.visible = false; // Hidden in favor of majestic 3D Sky Target Arrow!
+    aimLine.visible = false; // Shown only while addressing the ball.
     scene.add(aimLine);
 
     // Landing Ring
@@ -1197,7 +1198,7 @@ group.name = name;
         colAttr.setXYZW(vIdx + 4, 0.94, 0.12, 0.22, 0.0);
 
         // Ground-Projected Shadow (Soft feathered shadow)
-        const gH = getTerrainHeight(pt.x, pt.z) + 0.38;
+        const gH = getTerrainHeight(pt.x, pt.z) + BALL_RADIUS;
         const sIdx = i * 3;
         // s0: Left shadow edge (alpha 0)
         shadowPosAttr.setXYZ(sIdx, pt.x - side1.x * shadowW, gH, pt.z - side1.z * shadowW);
@@ -1250,6 +1251,15 @@ group.name = name;
     let isBallFlying = false;
     let ballPos = new THREE.Vector3();
     let ballVel = new THREE.Vector3();
+    // One horizontal direction drives the shot, athlete, guide and minimap.
+    const aimDirection = new THREE.Vector3(0, 0, 1);
+    let aimBaseYaw = 0;
+    const ADDRESS_CAMERA = Object.freeze({distance: 4.2, height: 1.35, lookAhead: 15, lookHeight: 0.9});
+    const ballMarker = new THREE.Mesh(
+      new THREE.RingGeometry(0.055, 0.07, 32).rotateX(-Math.PI / 2),
+      new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.DoubleSide, transparent: true, opacity: 0.65})
+    );
+    scene.add(ballMarker);
     let shotStartPos = new THREE.Vector3();
     let firstImpactPos = new THREE.Vector3();
     let hasImpacted = false;
@@ -1594,10 +1604,7 @@ group.name = name;
 
     function positionGolferAtBall() {
       if (!ballPos) return;
-      const pinPos = holePins3D[currentHoleNumber] || new THREE.Vector3(ballPos.x + 100, 0, ballPos.z - 100);
-      const dirToPin = new THREE.Vector3(pinPos.x - ballPos.x, 0, pinPos.z - ballPos.z);
-      if (dirToPin.lengthSq() < 1e-8) dirToPin.set(0, 0, 1);
-      dirToPin.normalize();
+      const dirToPin = aimDirection.clone();
 
       // Right-handed athlete: anatomical left (+X) is the lead side.
       const sideVec = new THREE.Vector3(dirToPin.z, 0, -dirToPin.x).normalize();
@@ -1683,6 +1690,8 @@ group.name = name;
       positionGolferAtBall();
       activeSwingConfig = SWING_PROFILES[activeSwingStyle];
       golferSwingPhase = 'backswing';
+      aimLine.visible = false;
+      ballMarker.visible = false;
       golferSwingProgress = 0.0;
       golferImpactCallback = onImpactCallback;
     }
@@ -1886,7 +1895,9 @@ group.name = name;
       minimapCtx.beginPath();
       minimapCtx.setLineDash([3, 3]);
       minimapCtx.moveTo(bM.mx, bM.my);
-      minimapCtx.lineTo(pM.mx, pM.my);
+      const headingLength = Math.min(span * 0.18, new THREE.Vector2(ballPos.x - targetPin.x, ballPos.z - targetPin.z).length() * 0.65);
+      const aM = mapToMinimap(ballPos.x + aimDirection.x * headingLength, ballPos.z + aimDirection.z * headingLength);
+      minimapCtx.lineTo(aM.mx, aM.my);
       minimapCtx.strokeStyle = '#d4bd88';
       minimapCtx.lineWidth = 1.5;
       minimapCtx.stroke();
@@ -1912,13 +1923,7 @@ group.name = name;
     }
 
     document.getElementById('minimap-container').addEventListener('click', () => {
-      const pinPos = holePins3D[currentHoleNumber];
-      if (pinPos) {
-        const dir = new THREE.Vector3().subVectors(pinPos, ballPos).normalize();
-        camera.position.set(ballPos.x - dir.x * 20, ballPos.y + 10, ballPos.z - dir.z * 20);
-        orbitControls.target.set(ballPos.x + dir.x * 25, ballPos.y + 2.0, ballPos.z + dir.z * 25);
-        orbitControls.update();
-      }
+      if (canAdjustAim()) setAddressCamera(false);
     });
 
     // Carry & Roll TrackMan Calculator
@@ -2076,7 +2081,8 @@ group.name = name;
     document.getElementById('btn-launch-shot').addEventListener('click', () => {
       if (isBallFlying || golferSwingPhase !== 'idle') return;
       const specs = calculateShotSpecs(currentClubIndex, currentSwingMode);
-      triggerGolferSwing(specs, () => executeGolfShot(specs));
+      const shotDirection = aimDirection.clone();
+      triggerGolferSwing(specs, () => executeGolfShot(specs, shotDirection));
     });
 
     const putterSlider = document.getElementById('putter-backswing-slider');
@@ -2094,77 +2100,110 @@ group.name = name;
       if (isBallFlying || golferSwingPhase !== 'idle') return;
       const backswingFraction = parseInt(putterSlider.value) / 100;
       const specs = { carryMultiplier: 0, rollMultiplier: backswingFraction, isPutt: true };
+      const shotDirection = aimDirection.clone();
       triggerGolferSwing(specs, () => {
-        executeGolfShot(specs);
+        executeGolfShot(specs, shotDirection);
       });
     });
 
-    function updateAimTracer() {
-      const pinPos = holePins3D[currentHoleNumber];
-      if (!pinPos) return;
-
-      const club = GOLF_BAG[currentClubIndex];
-      const dir = new THREE.Vector3().subVectors(pinPos, ballPos).normalize();
-      const loftRad = club.loft * Math.PI / 180;
-      const specs = calculateShotSpecs(currentClubIndex, currentSwingMode);
-      const isPutter = club.isPutter === true;
-
-      const pts = [ballPos.clone()];
-
-      if (isPutter) {
-        const puttRollDist = (parseInt(putterSlider.value) * 0.3) * 0.9144;
-        for (let i = 1; i <= 20; i++) {
-          const d = (i / 20) * puttRollDist;
-          const px = ballPos.x + dir.x * d;
-          const pz = ballPos.z + dir.z * d;
-          pts.push(new THREE.Vector3(px, getTerrainHeight(px, pz) + 0.4, pz));
-        }
-        landingRing.position.copy(pts[pts.length - 1]);
-        landingRing.visible = true;
-      } else {
-        let speed = (club.v0 * Math.sqrt(specs.carryMultiplier));
-        let vHoriz = speed * Math.cos(loftRad);
-        let vVert = speed * Math.sin(loftRad);
-        let simPos = ballPos.clone();
-        const simDt = 0.04;
-        const kDragSim = 0.0020;
-        const kLiftSim = 0.00078;
-        const grav = 9.81;
-
-        for (let step = 0; step < 180; step++) {
-          const curSpeed = Math.hypot(vHoriz, vVert);
-          const uH = vHoriz / Math.max(1e-5, curSpeed);
-          const uV = vVert / Math.max(1e-5, curSpeed);
-          const liftForce = kLiftSim * curSpeed * curSpeed;
-
-          const aH = -kDragSim * curSpeed * vHoriz - liftForce * uV;
-          const aV = -grav - kDragSim * curSpeed * vVert + liftForce * uH;
-
-          vHoriz += aH * simDt;
-          vVert += aV * simDt;
-
-          simPos.x += dir.x * vHoriz * simDt;
-          simPos.z += dir.z * vHoriz * simDt;
-          simPos.y += vVert * simDt;
-
-          pts.push(simPos.clone());
-
-          const gH = getTerrainHeight(simPos.x, simPos.z) + 0.38;
-          if (simPos.y <= gH && step > 5) {
-            simPos.y = gH;
-            pts[pts.length - 1].y = gH;
-            break;
-          }
-        }
-
-        const landingPt = pts[pts.length - 1];
-        landingRing.position.set(landingPt.x, getTerrainHeight(landingPt.x, landingPt.z) + 0.35, landingPt.z);
-        landingRing.visible = true;
-      }
-
-      aimLine.geometry.setFromPoints(pts);
-      aimLine.computeLineDistances();
+    function canAdjustAim() {
+      return !isBallFlying && golferSwingPhase === 'idle';
     }
+
+    function resetAimToPin() {
+      const pin = holePins3D[currentHoleNumber];
+      aimDirection.set(pin ? pin.x - ballPos.x : 0, 0, pin ? pin.z - ballPos.z : 1);
+      if (aimDirection.lengthSq() < 1e-8) aimDirection.set(0, 0, 1);
+      aimDirection.normalize();
+      aimBaseYaw = Math.atan2(aimDirection.x, aimDirection.z);
+      syncAimControls();
+    }
+
+    function setAimAngle(degrees) {
+      if (!canAdjustAim() || !Number.isFinite(degrees)) return false;
+      const yaw = aimBaseYaw + THREE.MathUtils.degToRad(degrees);
+      aimDirection.set(Math.sin(yaw), 0, Math.cos(yaw));
+      positionGolferAtBall();
+      updateAimTracer();
+      drawMinimap();
+      setAddressCamera(false);
+      syncAimControls();
+      return true;
+    }
+
+    function syncAimControls() {
+      let degrees = THREE.MathUtils.radToDeg(Math.atan2(aimDirection.x, aimDirection.z) - aimBaseYaw);
+      degrees = ((degrees + 180) % 360 + 360) % 360 - 180;
+      const slider = document.getElementById('aim-angle-slider');
+      if (slider) {
+        slider.value = String(Math.round(degrees));
+        slider.setAttribute('aria-valuetext', `${Math.round(degrees)} degrees from the pin`);
+        document.getElementById('aim-angle-value').textContent = `${Math.round(degrees)}°`;
+      }
+    }
+
+    function setAddressCamera(immediate = false) {
+      const c = ADDRESS_CAMERA;
+      // A narrower portrait frustum needs more distance, not a rescaled athlete.
+      // The same framing rule is used for the first and every subsequent shot.
+      const portraitFit = Math.max(1, 0.8 / camera.aspect);
+      targetCameraPos.set(ballPos.x - aimDirection.x * c.distance * portraitFit, ballPos.y + c.height * portraitFit, ballPos.z - aimDirection.z * c.distance * portraitFit);
+      targetOrbitTarget.set(ballPos.x + aimDirection.x * c.lookAhead, ballPos.y + c.lookHeight, ballPos.z + aimDirection.z * c.lookAhead);
+      if (immediate) {
+        isCameraTransitioning = false;
+        camera.position.copy(targetCameraPos);
+        cameraFollowLook.copy(targetOrbitTarget);
+        orbitControls.target.copy(targetOrbitTarget);
+        orbitControls.enabled = true;
+        orbitControls.update();
+      } else {
+        orbitControls.enabled = false;
+        isCameraTransitioning = true;
+      }
+    }
+
+    function getAimGuideLength() {
+      const pin = holePins3D[currentHoleNumber];
+      const distance = pin ? Math.hypot(pin.x - ballPos.x, pin.z - ballPos.z) : 100;
+      return Math.min(8, distance * 0.65);
+    }
+
+    function updateAimTracer() {
+      // A short heading guide, NOT a promise of the final wind/slope trajectory.
+      const length = getAimGuideLength();
+      const pts = [];
+      for (let i = 0; i <= 32; i++) {
+        const d = length * i / 32;
+        const x = ballPos.x + aimDirection.x * d;
+        const z = ballPos.z + aimDirection.z * d;
+        let surface = getTerrainHeight(x, z);
+        if (strokesCurrentHole === 0 && Math.abs(x - teePegGroup.position.x) <= 1.015 && Math.abs(z - teePegGroup.position.z) <= 1.015) {
+          surface = Math.max(surface, teePegGroup.position.y);
+        }
+        const y = i === 0 ? ballPos.y + 0.008 : surface + 0.03;
+        pts.push(new THREE.Vector3(x, y, z));
+      }
+      aimLine.geometry.setFromPoints(pts);
+      aimLine.geometry.computeBoundingSphere();
+      aimLine.computeLineDistances();
+      aimLine.visible = canAdjustAim() && length > 0.001;
+      landingRing.visible = false;
+      ballMarker.position.set(ballPos.x, getTerrainHeight(ballPos.x, ballPos.z) + (strokesCurrentHole === 0 ? 0.15 : 0) + 0.007, ballPos.z);
+      ballMarker.visible = canAdjustAim();
+    }
+
+    document.getElementById('aim-angle-slider').addEventListener('input', event => {
+      setAimAngle(Number(event.target.value));
+    });
+    document.getElementById('aim-left').addEventListener('click', () => {
+      const slider = document.getElementById('aim-angle-slider');
+      setAimAngle(Number(slider.value) - 2);
+    });
+    document.getElementById('aim-right').addEventListener('click', () => {
+      const slider = document.getElementById('aim-angle-slider');
+      setAimAngle(Number(slider.value) + 2);
+    });
+    document.getElementById('aim-at-pin').addEventListener('click', () => setAimAngle(0));
 
     function autoSuggestClub() {
       const pinPos = holePins3D[currentHoleNumber];
@@ -2208,9 +2247,8 @@ group.name = name;
       updateSelectedClubUI();
     }
 
-    function executeGolfShot(specs) {
+    function executeGolfShot(specs, shotDirection = aimDirection) {
       if (isBallFlying) return;
-      const pinPos = holePins3D[currentHoleNumber] || new THREE.Vector3(ballPos.x + 100, 0, ballPos.z - 100);
       const club = GOLF_BAG[currentClubIndex];
       const lie = detectLie(ballPos);
 
@@ -2225,7 +2263,7 @@ group.name = name;
       resetToptracer();
       if (teePegGroup) teePegGroup.visible = false;
 
-      let dir = new THREE.Vector3().subVectors(pinPos, ballPos).normalize();
+      const dir = shotDirection.clone().setY(0).normalize();
       const loftRad = club.loft * Math.PI / 180;
 
       // Realistic audio trigger
@@ -2254,6 +2292,7 @@ group.name = name;
 
       isBallFlying = true;
       aimLine.visible = false;
+      ballMarker.visible = false;
       landingRing.visible = false;
       orbitControls.enabled = false; // Disable orbit control during flight to prevent fight/jerk!
     }
@@ -2395,11 +2434,11 @@ group.name = name;
           // Advance ball position along terrain slope
           ballPos.x += ballVel.x * sdt;
           ballPos.z += ballVel.z * sdt;
-          ballPos.y = getTerrainHeight(ballPos.x, ballPos.z) + 0.58;
+          ballPos.y = getTerrainHeight(ballPos.x, ballPos.z) + BALL_RADIUS;
 
           // 3D Visual Ball Rolling Rotation (v / r)
           const rollDist = curSpeed * sdt;
-          const ballRadius = 0.38;
+          const ballRadius = BALL_RADIUS;
           if (curSpeed > 1e-4) {
             const rotAngle = rollDist / ballRadius;
             const dirX = ballVel.x / curSpeed;
@@ -2463,17 +2502,8 @@ group.name = name;
       document.getElementById('tele-total').textContent = `${actualTotalYards} YDS`;
       teleHUD.style.display = 'flex';
 
-      const pinPos = holePins3D[currentHoleNumber];
-      if (pinPos) {
-        const dir = new THREE.Vector3().subVectors(pinPos, ballPos).normalize();
-        targetCameraPos.set(ballPos.x - dir.x * 18, ballPos.y + 7.0, ballPos.z - dir.z * 18);
-        targetOrbitTarget.set(ballPos.x + dir.x * 25, ballPos.y + 2.0, ballPos.z + dir.z * 25);
-        orbitControls.enabled = false;
-      } else {
-        targetCameraPos.set(ballPos.x - 18, ballPos.y + 7.0, ballPos.z - 18);
-        targetOrbitTarget.copy(ballPos);
-      }
-      isCameraTransitioning = true;
+      resetAimToPin();
+      setAddressCamera(false);
 
       autoSuggestClub();
       updateHoleUI();
@@ -2610,16 +2640,8 @@ group.name = name;
         teePegGroup.visible = true;
       }
 
-      const pinPos = holePins3D[hNum] || new THREE.Vector3(startTeePos.x + 100, 0, startTeePos.z - 100);
-      const dirToPin = new THREE.Vector3().subVectors(pinPos, ballPos).normalize();
-
-      // Broadcast Behind-the-Ball Camera View (closer and nicely framed for the realistic ball and 2m tee box)
-      camera.position.set(ballPos.x - dirToPin.x * 4.2, ballPos.y + 1.35, ballPos.z - dirToPin.z * 4.2);
-      orbitControls.target.set(ballPos.x + dirToPin.x * 15, ballPos.y + 0.9, ballPos.z + dirToPin.z * 15);
-      orbitControls.update();
-      cameraFollowLook.copy(orbitControls.target);
-      targetCameraPos.copy(camera.position);
-      targetOrbitTarget.copy(orbitControls.target);
+      resetAimToPin();
+      setAddressCamera(true);
 
       autoSuggestClub();
       updateHoleUI();
@@ -2703,6 +2725,9 @@ group.name = name;
 
           if (camera.position.distanceTo(targetCameraPos) < 0.35) {
             isCameraTransitioning = false;
+            camera.position.copy(targetCameraPos);
+            cameraFollowLook.copy(targetOrbitTarget);
+            camera.lookAt(targetOrbitTarget);
             orbitControls.target.copy(targetOrbitTarget);
             orbitControls.enabled = true; // Re-enable user manual orbit controls once settled!
           }

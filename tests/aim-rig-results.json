@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "samples": 1568,
+  "maxContactError": 0.0000012670924562959758,
+  "maxWristError": 0.0000011328971331673854,
+  "worst": {
+    "strokes": 0,
+    "club": 1,
+    "heading": 0,
+    "mode": "full",
+    "phase": "followthrough",
+    "p": 1,
+    "errors": [
+      0.0000011328971331673854,
+      5.340555822512243e-7
+    ]
+  },
+  "joints": 51
+}

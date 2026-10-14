@@ -269,3 +269,10 @@ node tests/layout-setup.cjs
 node tests/panel-accessibility.cjs
 ```
 The browser suites assume the game is served at http://localhost:8080/.
+
+
+## aim15 — free 360-degree aim and consistent address framing (2026-10-14)
+
+Preserves rig14's latest appearance/GLB changes. Regulation 42.67mm ball diameter; rolling contact height and visual rotation use the same radius. First and subsequent shots share address-camera framing, including portrait fitting without scaling the athlete. Independent aim controls drive shot velocity, putting, stance and the minimap. A short dashed heading guide ends before the pin and hides during the swing/flight. Aim is frozen at backswing start and preserved in update checkpoints. Ground-pose hand reach uses up to ten bounded IK reach iterations without changing body scale.
+
+Verified: 2160 stance cases; browser direction/launch/putt/ground-rest/session/mobile-layout checks; 1568 rig samples with the rig14 GLB; atomic cached rig14-to-aim15 upgrade retaining round state; complete offline reload. Headless Chromium/SwiftShader and mobile emulation, not a physical iPhone test. See AIM15_FIXES.md and tests/aim-*-results.json.

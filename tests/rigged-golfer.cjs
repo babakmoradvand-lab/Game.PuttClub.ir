@@ -1,7 +1,9 @@
 const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=require('node:fs');
 const root=fs.existsSync('public/game.js')?'public':'.';const game=fs.readFileSync(root+'/game.js','utf8'),old=fs.readFileSync(fs.existsSync('audit/character10/game-before.js')?'audit/character10/game-before.js':root+'/tests/fixtures/pwa9/game-before.js','utf8');fs.mkdirSync('audit/character10',{recursive:true});
 const block=(s,name)=>{const start=s.indexOf('    function '+name+'(');let i=s.indexOf('{',start),depth=1;for(i++;depth&&i<s.length;i++){if(s[i]==='{')depth++;if(s[i]==='}')depth--;}return s.slice(start,i);};
-for(const name of ['calculateShotSpecs','executeGolfShot','stepPhysics','detectLie','updateToptracerYardageTag','updateToptracerRibbon'])assert.equal(block(game,name),block(old,name),'Preserve engine '+name);
+// aim14 intentionally changes shot heading, radius handling and tracer height.
+// Preserve only the engine blocks not changed by this release.
+for(const name of ['calculateShotSpecs','detectLie','updateToptracerYardageTag'])assert.equal(block(game,name),block(old,name),'Preserve engine '+name);
 (async()=>{const b=await chromium.launch({args:['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader']});const results=[],errors=[],shader=[];try{
 for(const [width,height]of [[390,844],[1366,768]]){
 const p=await b.newPage({viewport:{width,height},reducedMotion:'reduce'});p.setDefaultTimeout(90000);p.on('pageerror',e=>errors.push(e.message));p.on('console',m=>{if(m.type()==='error')shader.push(m.text())});await p.goto(process.env.GAME_URL||'http://localhost:8080/');await p.waitForFunction(()=>window.PuttUI&&proGolferLoaded&&document.querySelector('#runtime-boot').hidden,{timeout:90000});await p.click('#btn-splash-enter');await p.click('[data-skill="scratch"]');await p.click('[data-course="mis"]');await p.click('#btn-mode-18holes');
@@ -42,4 +44,4 @@ const launches=await p.evaluate(()=>{
 });for(const launch of launches){assert.equal(launch.frame,50);assert.equal(launch.hit,1);assert.equal(launch.preLaunchFlying,false);assert.ok(launch.contactError<.00001);}
 results.push({width,height,samples:audit.values.length,maxWristError:Math.max(...audit.values.flatMap(v=>v.wristErrors)),maxHandDistance:Math.max(...audit.values.flatMap(v=>Object.values(v.handDistances))),maxContactError:Math.max(...audit.values.map(v=>v.contactError||0)),oneShaft:true,oneVisibleHead:true,skeleton:audit.skeleton,launches});await p.close();
 }
-assert.deepEqual(errors,[]);assert.deepEqual(shader,[]);fs.writeFileSync('audit/character10/rig-results.json',JSON.stringify({results,errors,shader,physicsSourceEquality:true,environment:'Chromium / real Three.js skinning and clips / SwiftShader; no physical iPhone test'},null,2));console.log(JSON.stringify({results,errors,shader},null,2));}finally{await b.close()}})();
+assert.deepEqual(errors,[]);assert.deepEqual(shader,[]);fs.writeFileSync('audit/character10/rig-results.json',JSON.stringify({results,errors,shader,physicsSourceEquality:false,unchangedSourceBlocks:['calculateShotSpecs','detectLie','updateToptracerYardageTag'],environment:'Chromium / real Three.js skinning and clips / SwiftShader; no physical iPhone test'},null,2));console.log(JSON.stringify({results,errors,shader},null,2));}finally{await b.close()}})();
