@@ -13,12 +13,12 @@ const fs=require('node:fs');
  await page.waitForFunction(()=>document.body.dataset.view==='game');
  const baseline=await page.evaluate(()=>({radius:BALL_RADIUS,scale:golferGroup.scale.toArray(),offset:camera.position.clone().sub(ballPos).toArray(),version:document.querySelector('meta[name="putt-release"]').content}));
  assert.equal(baseline.radius,.021335);
- assert.equal(baseline.version,'look16-20261014');
+ assert.equal(baseline.version,'look17-20261014');
  console.log('baseline',baseline);
  for(const degrees of [-180,-90,-45,0,45,90,179,180]) {
-  await page.locator('#aim-angle-slider').fill(String(degrees));
+  await page.evaluate(d=>setAimAngle(d),degrees);
   const result=await page.evaluate(()=>{
-   const yaw=aimBaseYaw+THREE.MathUtils.degToRad(Number(document.getElementById('aim-angle-slider').value));
+   const yaw=aimBaseYaw+THREE.MathUtils.degToRad(Math.round(THREE.MathUtils.radToDeg(Math.atan2(aimDirection.x,aimDirection.z)-aimBaseYaw)));
    const expected=new THREE.Vector3(Math.sin(yaw),0,Math.cos(yaw));
    const lead=new THREE.Vector3(1,0,0).applyQuaternion(golferGroup.quaternion);
    const geo=aimLine.geometry.attributes.position;const last=new THREE.Vector3().fromBufferAttribute(geo,geo.count-1);
@@ -27,7 +27,7 @@ const fs=require('node:fs');
   assert.ok(result.directionError<1e-8);assert.ok(result.leadDot>.99999);assert.ok(result.lineVisible);assert.ok(result.lineLength<=27.433);assert.ok(result.lineDot>.995);assert.equal(result.ring,false);
  }
  console.log('PASS: all aim headings, golfer and short guide');
- await page.locator('#aim-angle-slider').fill('90');
+ await page.evaluate(()=>setAimAngle(90));
  await page.waitForFunction(()=>!isCameraTransitioning,{},{timeout:20000});
  await page.screenshot({path:'aim-desktop.png'});
  // Shot starts through the real button: aim is locked as soon as backswing starts.
@@ -35,7 +35,7 @@ const fs=require('node:fs');
  const swing=await page.evaluate(()=>({phase:golferSwingPhase,visible:aimLine.visible,accepted:setAimAngle(-90)}));
  assert.notEqual(swing.phase,'idle');assert.equal(swing.visible,false);assert.equal(swing.accepted,false);
  await page.waitForFunction(()=>isBallFlying,{},{timeout:15000});
- const launch=await page.evaluate(()=>({dot:ballVel.clone().setY(0).normalize().dot(aimDirection),guide:aimLine.visible,disabled:document.getElementById('aim-angle-slider').disabled}));
+ const launch=await page.evaluate(()=>({dot:ballVel.clone().setY(0).normalize().dot(aimDirection),guide:aimLine.visible,disabled:!canAdjustAim()}));
  assert.ok(launch.dot>.98);assert.equal(launch.guide,false);assert.equal(launch.disabled,true);
  console.log('PASS: real launch at 90 degrees, aim lock and hidden guide');
  // Deterministic physical rolling on flat ground, including the real rest callback.
@@ -78,10 +78,10 @@ const fs=require('node:fs');
  console.log('PASS: aim session restoration');
  // Small-screen control layout and touch input.
  await page.setViewportSize({width:390,height:844});await page.evaluate(()=>{setupHole(1);PuttUI.sync()});
- await page.locator('#aim-angle-slider').fill('-60');
+ await page.evaluate(()=>setAimAngle(-60));
  const layout=await page.evaluate(()=>{
-  const a=document.getElementById('aim-controls').getBoundingClientRect(),d=document.getElementById('bottom-game-dock').getBoundingClientRect();
-  return {fits:a.left>=0&&a.right<=innerWidth,separate:a.bottom<=d.top,visible:aimLine.visible};
+  const d=document.getElementById('bottom-game-dock').getBoundingClientRect();
+  return {fits:d.left>=0&&d.right<=innerWidth,separate:!document.getElementById('aim-controls'),visible:aimLine.visible};
  });
  assert.ok(layout.fits);assert.ok(layout.separate);assert.ok(layout.visible);
  await page.waitForFunction(()=>!isCameraTransitioning);

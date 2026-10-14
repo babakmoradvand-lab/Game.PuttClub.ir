@@ -277,10 +277,6 @@
       lastBusy = busy;
       for (const id of [
         "club-trigger-card",
-        "aim-angle-slider",
-        "aim-left",
-        "aim-right",
-        "aim-at-pin",
         "btn-launch-shot",
         "btn-putt-action",
         "putter-backswing-slider",
@@ -551,7 +547,6 @@
       const restoredAim=new THREE.Vector3().fromArray(data.aim).setY(0);
       if(restoredAim.lengthSq()>1e-8)aimDirection.copy(restoredAim.normalize());
     }
-    syncAimControls();
     // Use the corrected address framing even when migrating an old wide camera.
     setAddressCamera(true);
     if(strokesCurrentHole>0&&teePegGroup)teePegGroup.visible=false;

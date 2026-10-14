@@ -1024,7 +1024,7 @@ group.name = name;
     teePegGroup.castShadow = true;
     scene.add(teePegGroup);
 
-    // Screen-space dashed ribbon: actual 7px width on WebGL/mobile (linewidth is ignored).
+    // Screen-space dashed ribbon: actual 2px width on WebGL/mobile (linewidth is ignored).
     const MAX_AIM_POINTS = 512;
     const aimLineGeo = new THREE.BufferGeometry(); // centreline for inspection/tests
     const aimRibbonGeo = new THREE.BufferGeometry();
@@ -1048,7 +1048,7 @@ group.name = name;
     const aimLineMat = new THREE.ShaderMaterial({
       uniforms: {
         resolution: {value: new THREE.Vector2(window.innerWidth, window.innerHeight)},
-        width: {value: 7}, dash: {value: 1.1}, gap: {value: 0.45}
+        width: {value: 2}, dash: {value: 1.1}, gap: {value: 0.45}
       },
       vertexShader: `
         attribute vec3 previous;
@@ -2183,7 +2183,6 @@ group.name = name;
       if (aimDirection.lengthSq() < 1e-8) aimDirection.set(0, 0, 1);
       aimDirection.normalize();
       aimBaseYaw = Math.atan2(aimDirection.x, aimDirection.z);
-      syncAimControls();
     }
 
     function setAimAngle(degrees, immediateCamera = false) {
@@ -2194,19 +2193,7 @@ group.name = name;
       updateAimTracer();
       drawMinimap();
       setAddressCamera(immediateCamera);
-      syncAimControls();
       return true;
-    }
-
-    function syncAimControls() {
-      let degrees = THREE.MathUtils.radToDeg(Math.atan2(aimDirection.x, aimDirection.z) - aimBaseYaw);
-      degrees = ((degrees + 180) % 360 + 360) % 360 - 180;
-      const slider = document.getElementById('aim-angle-slider');
-      if (slider) {
-        slider.value = String(Math.round(degrees));
-        slider.setAttribute('aria-valuetext', `${Math.round(degrees)} degrees from the pin`);
-        document.getElementById('aim-angle-value').textContent = `${Math.round(degrees)}°`;
-      }
     }
 
     function setAddressCamera(immediate = false) {
@@ -2379,19 +2366,6 @@ group.name = name;
     aimCanvas.addEventListener('pointercancel', endLookAim);
     aimCanvas.addEventListener('lostpointercapture', () => {lookAimPointer = null;});
     window.addEventListener('blur', () => endLookAim());
-
-    document.getElementById('aim-angle-slider').addEventListener('input', event => {
-      setAimAngle(Number(event.target.value));
-    });
-    document.getElementById('aim-left').addEventListener('click', () => {
-      const slider = document.getElementById('aim-angle-slider');
-      setAimAngle(Number(slider.value) - 2);
-    });
-    document.getElementById('aim-right').addEventListener('click', () => {
-      const slider = document.getElementById('aim-angle-slider');
-      setAimAngle(Number(slider.value) + 2);
-    });
-    document.getElementById('aim-at-pin').addEventListener('click', () => setAimAngle(0));
 
     function autoSuggestClub() {
       const pinPos = holePins3D[currentHoleNumber];

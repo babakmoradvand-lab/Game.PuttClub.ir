@@ -285,3 +285,8 @@ Horizontal scene drag with a mouse or one finger now rotates the behind-ball vie
 The guide is now a screen-space 7px cyan dashed ribbon, avoiding WebGL's ignored line-width setting. Non-putts show the initial physical flight arc up to 30 horizontal yards, using the same launch and airborne integrator as the real shot, stopping at first contact if sooner. Putts use a ground-following guide up to 2 yards. Near-pin guides still end before the cup. Aim controls adapt to the actual dock height, including putting on mobile.
 
 Checks passed: real mouse/CDP touch drag and launch locking; short flight/putt guides; no shader/page errors; 360 numeric airborne-physics equivalence cases; existing browser/stance/rig checks; cached aim15-to-look16 upgrade and complete offline reload. The rig14 GLB is unchanged. See LOOK16_FIXES.md for details and limits.
+
+
+## look17 — thin guide, scene-only aiming (2026-10-14)
+
+Reduced the dashed screen-space guide from 7px to 2px CSS width. Removed the entire independent rotation panel, its slider/buttons/readout and UI handlers/styles. Mouse and one-finger horizontal scene drag remain the aiming input. The shared 30yd initial flight arc, 2yd ground-putt guide, swing lock, regulation ball size/height and latest character asset are unchanged. Verified desktop/mobile control absence, pointer/touch aiming, thin shader ribbon, prior functional checks, cached look16-to-look17 upgrade and complete offline reload. See LOOK17_FIXES.md.

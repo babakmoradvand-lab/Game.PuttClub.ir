@@ -14,7 +14,8 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
  }
  function check(name,value){assert.ok(value,name);checks.push(name);console.log('PASS:',name)}
  await boot(page);
- check('look16 loaded',await page.evaluate(()=>PuttBoot.version==='look16-20261014'));
+ check('separate rotation controls removed from desktop',await page.evaluate(()=>!document.getElementById('aim-controls')&&!document.getElementById('aim-angle-slider')));
+ check('look17 loaded',await page.evaluate(()=>PuttBoot.version==='look17-20261014'));
  const before=await page.evaluate(()=>aimDirection.toArray());
  await page.mouse.move(980,400);await page.mouse.down();await page.mouse.move(1180,400,{steps:8});await page.mouse.up();
  const mouse=await page.evaluate(()=>{
@@ -25,7 +26,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
  });
  check('real mouse drag changes direction',new (require('../three.min.js').Vector3)().fromArray(before).distanceTo(new (require('../three.min.js').Vector3)().fromArray(mouse.direction))>.2);
  check('view, athlete and aim are aligned',mouse.cameraDot>.999999&&mouse.leadDot>.999999);
- check('bold WebGL guide is a 7px triangle ribbon',mouse.width===7&&mouse.drawCount>0&&mouse.visible);
+ check('thin WebGL guide is a 2px triangle ribbon',mouse.width===2&&mouse.drawCount>0&&mouse.visible);
  const releaseHeading=mouse.direction;
  await page.waitForTimeout(300);
  check('no aim inertia after releasing pointer',await page.evaluate(v=>aimDirection.distanceTo(new THREE.Vector3().fromArray(v))<1e-9,releaseHeading));
@@ -57,7 +58,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
   return {maxError,points:pts.length};
  });
  check('preview samples use exactly the physical flight integrator',matched.maxError<1e-9&&matched.points>2);
- await page.screenshot({path:'look16-desktop.png'});
+ await page.screenshot({path:'look17-desktop.png'});
  // Launch by real button, then try dragging: direction is frozen from backswing.
  const launchDir=await page.evaluate(()=>aimDirection.toArray());await page.click('#btn-launch-shot');
  await page.mouse.move(980,400);await page.mouse.down();await page.mouse.move(1120,400,{steps:4});await page.mouse.up();
@@ -74,14 +75,13 @@ const assert=require('node:assert/strict'),fs=require('node:fs');
  await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
  const touch=await mobile.evaluate(v=>({changed:aimDirection.distanceTo(new THREE.Vector3().fromArray(v)),dot:camera.getWorldDirection(new THREE.Vector3()).setY(0).normalize().dot(aimDirection),pointerCleared:lookAimPointer===null,visible:aimLine.visible}),initial);
  check('real one-finger mobile drag rotates both look and aim',touch.changed>.2&&touch.dot>.999999&&touch.pointerCleared&&touch.visible);
- await mobile.screenshot({path:'look16-mobile.png'});
+ await mobile.screenshot({path:'look17-mobile.png'});
  // Putting view uses the shorter, ground-only ribbon.
  await mobile.evaluate(()=>{currentClubIndex=12;currentSwingMode='full';updateSelectedClubUI();setAddressCamera(true)});
- await mobile.screenshot({path:'look16-putt.png'});
- const mobileLayout=await mobile.evaluate(()=>{const a=document.getElementById('aim-controls').getBoundingClientRect(),d=document.getElementById('bottom-game-dock').getBoundingClientRect();return {aimBottom:a.bottom,dockTop:d.top,fits:a.left>=0&&a.right<=innerWidth}});
- check('putt aim controls remain above the taller mobile dock',mobileLayout.aimBottom<mobileLayout.dockTop&&mobileLayout.fits);
+ await mobile.screenshot({path:'look17-putt.png'});
+ check('separate rotation controls removed from mobile',await mobile.evaluate(()=>!document.getElementById('aim-controls')&&!document.getElementById('aim-angle-slider')));
  check('mobile putter mode is ground-only',await mobile.evaluate(()=>Math.abs(getAimGuideLength()-1.8288)<1e-9&&aimLineMat.uniforms.dash.value===.18));
  check('no page or shader errors',errors.length===0&&shaderErrors.length===0);
- fs.writeFileSync('tests/look-aim-results.json',JSON.stringify({passed:true,version:'look16-20261014',checks,mouse,guides,matched,touch,pageErrors:errors,shaderErrors,environment:'Chromium headless / SwiftShader; real mouse and CDP touch events, not a physical device'},null,2));
+ fs.writeFileSync('tests/look-aim-results.json',JSON.stringify({passed:true,version:'look17-20261014',checks,mouse,guides,matched,touch,pageErrors:errors,shaderErrors,environment:'Chromium headless / SwiftShader; real mouse and CDP touch events, not a physical device'},null,2));
  }finally{await browser.close()}
 })().catch(e=>{console.error(e);process.exit(1)});

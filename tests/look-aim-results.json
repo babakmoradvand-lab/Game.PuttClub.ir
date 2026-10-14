@@ -1,11 +1,12 @@
 {
   "passed": true,
-  "version": "look16-20261014",
+  "version": "look17-20261014",
   "checks": [
-    "look16 loaded",
+    "separate rotation controls removed from desktop",
+    "look17 loaded",
     "real mouse drag changes direction",
     "view, athlete and aim are aligned",
-    "bold WebGL guide is a 7px triangle ribbon",
+    "thin WebGL guide is a 2px triangle ribbon",
     "no aim inertia after releasing pointer",
     "guide finite and within cap, club 0",
     "non-putt shows a rising flight arc up to 30 yards, club 0",
@@ -19,7 +20,7 @@
     "drag cannot change direction during swing",
     "actual launch follows the dragged direction",
     "real one-finger mobile drag rotates both look and aim",
-    "putt aim controls remain above the taller mobile dock",
+    "separate rotation controls removed from mobile",
     "mobile putter mode is ground-only",
     "no page or shader errors"
   ],
@@ -33,7 +34,7 @@
     "leadDot": 1,
     "yaw": -26.354319180087828,
     "visible": true,
-    "width": 7,
+    "width": 2,
     "drawCount": 78
   },
   "guides": [
