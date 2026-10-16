@@ -1,0 +1,2130 @@
+{
+  "passed": true,
+  "records": [
+    {
+      "course": "mis",
+      "widths": [
+        {
+          "i": 0,
+          "putter": false,
+          "width": 2
+        },
+        {
+          "i": 1,
+          "putter": false,
+          "width": 2
+        },
+        {
+          "i": 2,
+          "putter": false,
+          "width": 2
+        },
+        {
+          "i": 3,
+          "putter": false,
+          "width": 2
+        },
+        {
+          "i": 4,
+          "putter": false,
+          "width": 2
+        },
+        {
+          "i": 5,
+          "putter": false,
+          "width": 2
+        },
+        {
+          "i": 6,
+          "putter": false,
+          "width": 2
+        },
+        {
+          "i": 7,
+          "putter": false,
+          "width": 2
+        },
+        {
+          "i": 8,
+          "putter": false,
+          "width": 2
+        },
+        {
+          "i": 9,
+          "putter": false,
+          "width": 2
+        },
+        {
+          "i": 10,
+          "putter": false,
+          "width": 2
+        },
+        {
+          "i": 11,
+          "putter": false,
+          "width": 2
+        },
+        {
+          "i": 12,
+          "putter": true,
+          "width": 0.5
+        }
+      ]
+    },
+    {
+      "course": "mis",
+      "name": "before stroke / zoom in",
+      "before": {
+        "zoom": 1,
+        "aim": [
+          0.9822608299037182,
+          0,
+          0.18751976438993959
+        ],
+        "pos": [
+          -93.5019257470783,
+          57.60684946736332,
+          -86.85040697807779
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 0,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "phase": "idle",
+        "flying": false,
+        "grounded": false
+      },
+      "after": {
+        "zoom": 2,
+        "aim": [
+          0.9822608299037182,
+          0,
+          0.18751976438993959
+        ],
+        "pos": [
+          -93.5019257470783,
+          57.60684946736332,
+          -86.85040697807779
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 0,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "touches": 0,
+        "look": null,
+        "browserScale": 1,
+        "phase": "idle",
+        "flying": false,
+        "grounded": false
+      }
+    },
+    {
+      "course": "mis",
+      "name": "before stroke / zoom out",
+      "before": {
+        "zoom": 2,
+        "aim": [
+          0.9822608299037182,
+          0,
+          0.18751976438993959
+        ],
+        "pos": [
+          -93.5019257470783,
+          57.60684946736332,
+          -86.85040697807779
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 0,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "phase": "idle",
+        "flying": false,
+        "grounded": false
+      },
+      "after": {
+        "zoom": 1,
+        "aim": [
+          0.9822608299037182,
+          0,
+          0.18751976438993959
+        ],
+        "pos": [
+          -93.5019257470783,
+          57.60684946736332,
+          -86.85040697807779
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 0,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "touches": 0,
+        "look": null,
+        "browserScale": 1,
+        "phase": "idle",
+        "flying": false,
+        "grounded": false
+      }
+    },
+    {
+      "course": "mis",
+      "name": "backswing",
+      "before": {
+        "zoom": 1,
+        "aim": [
+          0.9822608299037182,
+          0,
+          0.18751976438993959
+        ],
+        "pos": [
+          -93.5019257470783,
+          57.60684946736332,
+          -86.85040697807779
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 0,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "phase": "backswing",
+        "flying": false,
+        "grounded": false
+      },
+      "after": {
+        "zoom": 1.5,
+        "aim": [
+          0.9822608299037182,
+          0,
+          0.18751976438993959
+        ],
+        "pos": [
+          -93.5019257470783,
+          57.60684946736332,
+          -86.85040697807779
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 0,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "touches": 0,
+        "look": null,
+        "browserScale": 1,
+        "phase": "backswing",
+        "flying": false,
+        "grounded": false
+      }
+    },
+    {
+      "course": "mis",
+      "name": "airborne / orbit controls disabled",
+      "before": {
+        "zoom": 1.5,
+        "aim": [
+          0.9822608299037182,
+          0,
+          0.18751976438993959
+        ],
+        "pos": [
+          -93.5019257470783,
+          57.656849467363315,
+          -86.85040697807779
+        ],
+        "velocity": [
+          22.284958667071745,
+          13.902865531333426,
+          4.254338635389188
+        ],
+        "strokes": 1,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "phase": "followthrough",
+        "flying": true,
+        "grounded": false
+      },
+      "after": {
+        "zoom": 1,
+        "aim": [
+          0.9822608299037182,
+          0,
+          0.18751976438993959
+        ],
+        "pos": [
+          -93.5019257470783,
+          57.656849467363315,
+          -86.85040697807779
+        ],
+        "velocity": [
+          22.284958667071745,
+          13.902865531333426,
+          4.254338635389188
+        ],
+        "strokes": 1,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "touches": 0,
+        "look": null,
+        "browserScale": 1,
+        "phase": "followthrough",
+        "flying": true,
+        "grounded": false
+      }
+    },
+    {
+      "course": "mis",
+      "name": "ground roll",
+      "before": {
+        "zoom": 1,
+        "aim": [
+          0.9822608299037182,
+          0,
+          0.18751976438993959
+        ],
+        "pos": [
+          -25.935009928695585,
+          55.87162290839786,
+          -73.40250518304559
+        ],
+        "velocity": [
+          9.91386274121784,
+          0,
+          3.095541199303535
+        ],
+        "strokes": 1,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "phase": "fade",
+        "flying": true,
+        "grounded": true
+      },
+      "after": {
+        "zoom": 1.5,
+        "aim": [
+          0.9822608299037182,
+          0,
+          0.18751976438993959
+        ],
+        "pos": [
+          -25.935009928695585,
+          55.87162290839786,
+          -73.40250518304559
+        ],
+        "velocity": [
+          9.91386274121784,
+          0,
+          3.095541199303535
+        ],
+        "strokes": 1,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "touches": 0,
+        "look": null,
+        "browserScale": 1,
+        "phase": "fade",
+        "flying": true,
+        "grounded": true
+      }
+    },
+    {
+      "course": "mis",
+      "name": "camera return after real stroke",
+      "before": {
+        "zoom": 1.5,
+        "aim": [
+          0.9960956542709252,
+          0,
+          0.08828050488402042
+        ],
+        "pos": [
+          -6.4655455207484405,
+          55.00143888023451,
+          -60.98135572589522
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 1,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "phase": "idle",
+        "flying": false,
+        "grounded": true
+      },
+      "after": {
+        "zoom": 1,
+        "aim": [
+          0.9960956542709252,
+          0,
+          0.08828050488402042
+        ],
+        "pos": [
+          -6.4655455207484405,
+          55.00143888023451,
+          -60.98135572589522
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 1,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "touches": 0,
+        "look": null,
+        "browserScale": 1,
+        "phase": "idle",
+        "flying": false,
+        "grounded": true
+      }
+    },
+    {
+      "course": "mis",
+      "name": "putter / zoom in",
+      "before": {
+        "zoom": 1,
+        "aim": [
+          0.9960956542709252,
+          0,
+          0.08828050488402042
+        ],
+        "pos": [
+          -6.4655455207484405,
+          55.00143888023451,
+          -60.98135572589522
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 1,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "phase": "idle",
+        "flying": false,
+        "grounded": true
+      },
+      "after": {
+        "zoom": 2,
+        "aim": [
+          0.9960956542709252,
+          0,
+          0.08828050488402042
+        ],
+        "pos": [
+          -6.4655455207484405,
+          55.00143888023451,
+          -60.98135572589522
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 1,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "touches": 0,
+        "look": null,
+        "browserScale": 1,
+        "phase": "idle",
+        "flying": false,
+        "grounded": true
+      }
+    },
+    {
+      "course": "mis",
+      "name": "putter / zoom out",
+      "before": {
+        "zoom": 2,
+        "aim": [
+          0.9960956542709252,
+          0,
+          0.08828050488402042
+        ],
+        "pos": [
+          -6.4655455207484405,
+          55.00143888023451,
+          -60.98135572589522
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 1,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "phase": "idle",
+        "flying": false,
+        "grounded": true
+      },
+      "after": {
+        "zoom": 1,
+        "aim": [
+          0.9960956542709252,
+          0,
+          0.08828050488402042
+        ],
+        "pos": [
+          -6.4655455207484405,
+          55.00143888023451,
+          -60.98135572589522
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 1,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "touches": 0,
+        "look": null,
+        "browserScale": 1,
+        "phase": "idle",
+        "flying": false,
+        "grounded": true
+      }
+    },
+    {
+      "course": "mis",
+      "name": "zoom maximum clamp",
+      "before": {
+        "zoom": 1,
+        "aim": [
+          0.9960956542709252,
+          0,
+          0.08828050488402042
+        ],
+        "pos": [
+          -6.4655455207484405,
+          55.00143888023451,
+          -60.98135572589522
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 1,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "phase": "idle",
+        "flying": false,
+        "grounded": true
+      },
+      "after": {
+        "zoom": 3,
+        "aim": [
+          0.9960956542709252,
+          0,
+          0.08828050488402042
+        ],
+        "pos": [
+          -6.4655455207484405,
+          55.00143888023451,
+          -60.98135572589522
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 1,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "touches": 0,
+        "look": null,
+        "browserScale": 1,
+        "phase": "idle",
+        "flying": false,
+        "grounded": true
+      }
+    },
+    {
+      "course": "mis",
+      "name": "zoom minimum clamp",
+      "before": {
+        "zoom": 3,
+        "aim": [
+          0.9960956542709252,
+          0,
+          0.08828050488402042
+        ],
+        "pos": [
+          -6.4655455207484405,
+          55.00143888023451,
+          -60.98135572589522
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 1,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "phase": "idle",
+        "flying": false,
+        "grounded": true
+      },
+      "after": {
+        "zoom": 0.5,
+        "aim": [
+          0.9960956542709252,
+          0,
+          0.08828050488402042
+        ],
+        "pos": [
+          -6.4655455207484405,
+          55.00143888023451,
+          -60.98135572589522
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 1,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "touches": 0,
+        "look": null,
+        "browserScale": 1,
+        "phase": "idle",
+        "flying": false,
+        "grounded": true
+      }
+    },
+    {
+      "course": "mis",
+      "name": "camera and hole transitions preserve zoom",
+      "zoom": 1.6,
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "width": 0.5
+    },
+    {
+      "course": "puttclub",
+      "widths": [
+        {
+          "i": 0,
+          "putter": false,
+          "width": 2
+        },
+        {
+          "i": 1,
+          "putter": false,
+          "width": 2
+        },
+        {
+          "i": 2,
+          "putter": false,
+          "width": 2
+        },
+        {
+          "i": 3,
+          "putter": false,
+          "width": 2
+        },
+        {
+          "i": 4,
+          "putter": false,
+          "width": 2
+        },
+        {
+          "i": 5,
+          "putter": false,
+          "width": 2
+        },
+        {
+          "i": 6,
+          "putter": false,
+          "width": 2
+        },
+        {
+          "i": 7,
+          "putter": false,
+          "width": 2
+        },
+        {
+          "i": 8,
+          "putter": false,
+          "width": 2
+        },
+        {
+          "i": 9,
+          "putter": false,
+          "width": 2
+        },
+        {
+          "i": 10,
+          "putter": false,
+          "width": 2
+        },
+        {
+          "i": 11,
+          "putter": false,
+          "width": 2
+        },
+        {
+          "i": 12,
+          "putter": true,
+          "width": 0.5
+        }
+      ]
+    },
+    {
+      "course": "puttclub",
+      "name": "before stroke / zoom in",
+      "before": {
+        "zoom": 1,
+        "aim": [
+          -0.8712643305972919,
+          0,
+          -0.4908140851981051
+        ],
+        "pos": [
+          -174.554,
+          6.621755833311271,
+          18.437
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 0,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "phase": "idle",
+        "flying": false,
+        "grounded": false
+      },
+      "after": {
+        "zoom": 2,
+        "aim": [
+          -0.8712643305972919,
+          0,
+          -0.4908140851981051
+        ],
+        "pos": [
+          -174.554,
+          6.621755833311271,
+          18.437
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 0,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "touches": 0,
+        "look": null,
+        "browserScale": 1,
+        "phase": "idle",
+        "flying": false,
+        "grounded": false
+      }
+    },
+    {
+      "course": "puttclub",
+      "name": "before stroke / zoom out",
+      "before": {
+        "zoom": 2,
+        "aim": [
+          -0.8712643305972919,
+          0,
+          -0.4908140851981051
+        ],
+        "pos": [
+          -174.554,
+          6.621755833311271,
+          18.437
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 0,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "phase": "idle",
+        "flying": false,
+        "grounded": false
+      },
+      "after": {
+        "zoom": 1,
+        "aim": [
+          -0.8712643305972919,
+          0,
+          -0.4908140851981051
+        ],
+        "pos": [
+          -174.554,
+          6.621755833311271,
+          18.437
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 0,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "touches": 0,
+        "look": null,
+        "browserScale": 1,
+        "phase": "idle",
+        "flying": false,
+        "grounded": false
+      }
+    },
+    {
+      "course": "puttclub",
+      "name": "backswing",
+      "before": {
+        "zoom": 1,
+        "aim": [
+          -0.8712643305972919,
+          0,
+          -0.4908140851981051
+        ],
+        "pos": [
+          -174.554,
+          6.621755833311271,
+          18.437
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 0,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "phase": "backswing",
+        "flying": false,
+        "grounded": false
+      },
+      "after": {
+        "zoom": 1.5,
+        "aim": [
+          -0.8712643305972919,
+          0,
+          -0.4908140851981051
+        ],
+        "pos": [
+          -174.554,
+          6.621755833311271,
+          18.437
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 0,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "touches": 0,
+        "look": null,
+        "browserScale": 1,
+        "phase": "backswing",
+        "flying": false,
+        "grounded": false
+      }
+    },
+    {
+      "course": "puttclub",
+      "name": "airborne / orbit controls disabled",
+      "before": {
+        "zoom": 1.5,
+        "aim": [
+          -0.8712643305972919,
+          0,
+          -0.4908140851981051
+        ],
+        "pos": [
+          -174.554,
+          6.671755833311271,
+          18.437
+        ],
+        "velocity": [
+          -19.76673507112948,
+          13.902865531333426,
+          -11.135302629270605
+        ],
+        "strokes": 1,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "phase": "followthrough",
+        "flying": true,
+        "grounded": false
+      },
+      "after": {
+        "zoom": 1,
+        "aim": [
+          -0.8712643305972919,
+          0,
+          -0.4908140851981051
+        ],
+        "pos": [
+          -174.554,
+          6.671755833311271,
+          18.437
+        ],
+        "velocity": [
+          -19.76673507112948,
+          13.902865531333426,
+          -11.135302629270605
+        ],
+        "strokes": 1,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "touches": 0,
+        "look": null,
+        "browserScale": 1,
+        "phase": "followthrough",
+        "flying": true,
+        "grounded": false
+      }
+    },
+    {
+      "course": "puttclub",
+      "name": "ground roll",
+      "before": {
+        "zoom": 1,
+        "aim": [
+          -0.8712643305972919,
+          0,
+          -0.4908140851981051
+        ],
+        "pos": [
+          -229.4579224767487,
+          8.723426837155912,
+          -12.527486161026799
+        ],
+        "velocity": [
+          -8.606780263662296,
+          0,
+          -4.915512947212934
+        ],
+        "strokes": 1,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "phase": "fade",
+        "flying": true,
+        "grounded": true
+      },
+      "after": {
+        "zoom": 1.5,
+        "aim": [
+          -0.8712643305972919,
+          0,
+          -0.4908140851981051
+        ],
+        "pos": [
+          -229.4579224767487,
+          8.723426837155912,
+          -12.527486161026799
+        ],
+        "velocity": [
+          -8.606780263662296,
+          0,
+          -4.915512947212934
+        ],
+        "strokes": 1,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "touches": 0,
+        "look": null,
+        "browserScale": 1,
+        "phase": "fade",
+        "flying": true,
+        "grounded": true
+      }
+    },
+    {
+      "course": "puttclub",
+      "name": "camera return after real stroke",
+      "before": {
+        "zoom": 1.5,
+        "aim": [
+          -0.8734751373362207,
+          0,
+          -0.4868687548564504
+        ],
+        "pos": [
+          -252.16633108392546,
+          9.712753536023907,
+          -25.917638024180764
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 1,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "phase": "idle",
+        "flying": false,
+        "grounded": true
+      },
+      "after": {
+        "zoom": 1,
+        "aim": [
+          -0.8734751373362207,
+          0,
+          -0.4868687548564504
+        ],
+        "pos": [
+          -252.16633108392546,
+          9.712753536023907,
+          -25.917638024180764
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 1,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "touches": 0,
+        "look": null,
+        "browserScale": 1,
+        "phase": "idle",
+        "flying": false,
+        "grounded": true
+      }
+    },
+    {
+      "course": "puttclub",
+      "name": "putter / zoom in",
+      "before": {
+        "zoom": 1,
+        "aim": [
+          -0.8734751373362207,
+          0,
+          -0.4868687548564504
+        ],
+        "pos": [
+          -252.16633108392546,
+          9.712753536023907,
+          -25.917638024180764
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 1,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "phase": "idle",
+        "flying": false,
+        "grounded": true
+      },
+      "after": {
+        "zoom": 2,
+        "aim": [
+          -0.8734751373362207,
+          0,
+          -0.4868687548564504
+        ],
+        "pos": [
+          -252.16633108392546,
+          9.712753536023907,
+          -25.917638024180764
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 1,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "touches": 0,
+        "look": null,
+        "browserScale": 1,
+        "phase": "idle",
+        "flying": false,
+        "grounded": true
+      }
+    },
+    {
+      "course": "puttclub",
+      "name": "putter / zoom out",
+      "before": {
+        "zoom": 2,
+        "aim": [
+          -0.8734751373362207,
+          0,
+          -0.4868687548564504
+        ],
+        "pos": [
+          -252.16633108392546,
+          9.712753536023907,
+          -25.917638024180764
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 1,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "phase": "idle",
+        "flying": false,
+        "grounded": true
+      },
+      "after": {
+        "zoom": 1,
+        "aim": [
+          -0.8734751373362207,
+          0,
+          -0.4868687548564504
+        ],
+        "pos": [
+          -252.16633108392546,
+          9.712753536023907,
+          -25.917638024180764
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 1,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "touches": 0,
+        "look": null,
+        "browserScale": 1,
+        "phase": "idle",
+        "flying": false,
+        "grounded": true
+      }
+    },
+    {
+      "course": "puttclub",
+      "name": "zoom maximum clamp",
+      "before": {
+        "zoom": 1,
+        "aim": [
+          -0.8734751373362207,
+          0,
+          -0.4868687548564504
+        ],
+        "pos": [
+          -252.16633108392546,
+          9.712753536023907,
+          -25.917638024180764
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 1,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "phase": "idle",
+        "flying": false,
+        "grounded": true
+      },
+      "after": {
+        "zoom": 3,
+        "aim": [
+          -0.8734751373362207,
+          0,
+          -0.4868687548564504
+        ],
+        "pos": [
+          -252.16633108392546,
+          9.712753536023907,
+          -25.917638024180764
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 1,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "touches": 0,
+        "look": null,
+        "browserScale": 1,
+        "phase": "idle",
+        "flying": false,
+        "grounded": true
+      }
+    },
+    {
+      "course": "puttclub",
+      "name": "zoom minimum clamp",
+      "before": {
+        "zoom": 3,
+        "aim": [
+          -0.8734751373362207,
+          0,
+          -0.4868687548564504
+        ],
+        "pos": [
+          -252.16633108392546,
+          9.712753536023907,
+          -25.917638024180764
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 1,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "phase": "idle",
+        "flying": false,
+        "grounded": true
+      },
+      "after": {
+        "zoom": 0.5,
+        "aim": [
+          -0.8734751373362207,
+          0,
+          -0.4868687548564504
+        ],
+        "pos": [
+          -252.16633108392546,
+          9.712753536023907,
+          -25.917638024180764
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 1,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "touches": 0,
+        "look": null,
+        "browserScale": 1,
+        "phase": "idle",
+        "flying": false,
+        "grounded": true
+      }
+    },
+    {
+      "course": "puttclub",
+      "name": "camera and hole transitions preserve zoom",
+      "zoom": 1.6,
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "width": 0.5
+    },
+    {
+      "course": "puttclub",
+      "name": "putt backswing",
+      "before": {
+        "zoom": 1,
+        "aim": [
+          -1,
+          0,
+          0
+        ],
+        "pos": [
+          -148.354,
+          21.45031119189372,
+          -313.198
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 1,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "phase": "backswing",
+        "flying": false,
+        "grounded": false
+      },
+      "after": {
+        "zoom": 1.5,
+        "aim": [
+          -1,
+          0,
+          0
+        ],
+        "pos": [
+          -148.354,
+          21.45031119189372,
+          -313.198
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 1,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "touches": 0,
+        "look": null,
+        "browserScale": 1,
+        "phase": "backswing",
+        "flying": false,
+        "grounded": false
+      }
+    },
+    {
+      "course": "puttclub",
+      "name": "real putt rolling",
+      "before": {
+        "zoom": 1.5,
+        "aim": [
+          -1,
+          0,
+          0
+        ],
+        "pos": [
+          -148.354,
+          21.45031119189372,
+          -313.198
+        ],
+        "velocity": [
+          -0.6000000000000001,
+          0,
+          0
+        ],
+        "strokes": 2,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "phase": "followthrough",
+        "flying": true,
+        "grounded": true
+      },
+      "after": {
+        "zoom": 1,
+        "aim": [
+          -1,
+          0,
+          0
+        ],
+        "pos": [
+          -148.354,
+          21.45031119189372,
+          -313.198
+        ],
+        "velocity": [
+          -0.6000000000000001,
+          0,
+          0
+        ],
+        "strokes": 2,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "touches": 0,
+        "look": null,
+        "browserScale": 1,
+        "phase": "followthrough",
+        "flying": true,
+        "grounded": true
+      }
+    },
+    {
+      "course": "puttclub",
+      "name": "cold offline resume / putting",
+      "before": {
+        "zoom": 1.8,
+        "aim": [
+          -0.9999889910927661,
+          0,
+          -0.004692301489875072
+        ],
+        "pos": [
+          -148.91265561845066,
+          21.437676385690132,
+          -313.1818519968594
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 2,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "phase": "idle",
+        "flying": false,
+        "grounded": false
+      },
+      "after": {
+        "zoom": 0.9,
+        "aim": [
+          -0.9999889910927661,
+          0,
+          -0.004692301489875072
+        ],
+        "pos": [
+          -148.91265561845066,
+          21.437676385690132,
+          -313.1818519968594
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 2,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "touches": 0,
+        "look": null,
+        "browserScale": 1,
+        "phase": "idle",
+        "flying": false,
+        "grounded": false
+      }
+    },
+    {
+      "course": "puttclub",
+      "name": "resized 360x640",
+      "before": {
+        "zoom": 1,
+        "aim": [
+          -0.9999889910927661,
+          0,
+          -0.004692301489875072
+        ],
+        "pos": [
+          -148.91265561845066,
+          21.437676385690132,
+          -313.1818519968594
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 2,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "phase": "idle",
+        "flying": false,
+        "grounded": false
+      },
+      "after": {
+        "zoom": 2,
+        "aim": [
+          -0.9999889910927661,
+          0,
+          -0.004692301489875072
+        ],
+        "pos": [
+          -148.91265561845066,
+          21.437676385690132,
+          -313.1818519968594
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 2,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "touches": 0,
+        "look": null,
+        "browserScale": 1,
+        "phase": "idle",
+        "flying": false,
+        "grounded": false
+      }
+    },
+    {
+      "course": "puttclub",
+      "name": "resized 360x800",
+      "before": {
+        "zoom": 1,
+        "aim": [
+          -0.9999889910927661,
+          0,
+          -0.004692301489875072
+        ],
+        "pos": [
+          -148.91265561845066,
+          21.437676385690132,
+          -313.1818519968594
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 2,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "phase": "idle",
+        "flying": false,
+        "grounded": false
+      },
+      "after": {
+        "zoom": 2,
+        "aim": [
+          -0.9999889910927661,
+          0,
+          -0.004692301489875072
+        ],
+        "pos": [
+          -148.91265561845066,
+          21.437676385690132,
+          -313.1818519968594
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 2,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "touches": 0,
+        "look": null,
+        "browserScale": 1,
+        "phase": "idle",
+        "flying": false,
+        "grounded": false
+      }
+    },
+    {
+      "course": "puttclub",
+      "name": "resized 390x844",
+      "before": {
+        "zoom": 1,
+        "aim": [
+          -0.9999889910927661,
+          0,
+          -0.004692301489875072
+        ],
+        "pos": [
+          -148.91265561845066,
+          21.437676385690132,
+          -313.1818519968594
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 2,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "phase": "idle",
+        "flying": false,
+        "grounded": false
+      },
+      "after": {
+        "zoom": 2,
+        "aim": [
+          -0.9999889910927661,
+          0,
+          -0.004692301489875072
+        ],
+        "pos": [
+          -148.91265561845066,
+          21.437676385690132,
+          -313.1818519968594
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 2,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "touches": 0,
+        "look": null,
+        "browserScale": 1,
+        "phase": "idle",
+        "flying": false,
+        "grounded": false
+      }
+    },
+    {
+      "course": "puttclub",
+      "name": "resized 414x896",
+      "before": {
+        "zoom": 1,
+        "aim": [
+          -0.9999889910927661,
+          0,
+          -0.004692301489875072
+        ],
+        "pos": [
+          -148.91265561845066,
+          21.437676385690132,
+          -313.1818519968594
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 2,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "phase": "idle",
+        "flying": false,
+        "grounded": false
+      },
+      "after": {
+        "zoom": 2,
+        "aim": [
+          -0.9999889910927661,
+          0,
+          -0.004692301489875072
+        ],
+        "pos": [
+          -148.91265561845066,
+          21.437676385690132,
+          -313.1818519968594
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 2,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "touches": 0,
+        "look": null,
+        "browserScale": 1,
+        "phase": "idle",
+        "flying": false,
+        "grounded": false
+      }
+    },
+    {
+      "course": "puttclub",
+      "name": "resized 723x1278",
+      "before": {
+        "zoom": 1,
+        "aim": [
+          -0.9999889910927661,
+          0,
+          -0.004692301489875072
+        ],
+        "pos": [
+          -148.91265561845066,
+          21.437676385690132,
+          -313.1818519968594
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 2,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "phase": "idle",
+        "flying": false,
+        "grounded": false
+      },
+      "after": {
+        "zoom": 2,
+        "aim": [
+          -0.9999889910927661,
+          0,
+          -0.004692301489875072
+        ],
+        "pos": [
+          -148.91265561845066,
+          21.437676385690132,
+          -313.1818519968594
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 2,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "touches": 0,
+        "look": null,
+        "browserScale": 1,
+        "phase": "idle",
+        "flying": false,
+        "grounded": false
+      }
+    },
+    {
+      "course": "puttclub",
+      "name": "resized 768x1024",
+      "before": {
+        "zoom": 1,
+        "aim": [
+          -0.9999889910927661,
+          0,
+          -0.004692301489875072
+        ],
+        "pos": [
+          -148.91265561845066,
+          21.437676385690132,
+          -313.1818519968594
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 2,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "phase": "idle",
+        "flying": false,
+        "grounded": false
+      },
+      "after": {
+        "zoom": 2,
+        "aim": [
+          -0.9999889910927661,
+          0,
+          -0.004692301489875072
+        ],
+        "pos": [
+          -148.91265561845066,
+          21.437676385690132,
+          -313.1818519968594
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 2,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "touches": 0,
+        "look": null,
+        "browserScale": 1,
+        "phase": "idle",
+        "flying": false,
+        "grounded": false
+      }
+    },
+    {
+      "course": "puttclub",
+      "name": "resized 1024x768",
+      "before": {
+        "zoom": 1,
+        "aim": [
+          -0.9999889910927661,
+          0,
+          -0.004692301489875072
+        ],
+        "pos": [
+          -148.91265561845066,
+          21.437676385690132,
+          -313.1818519968594
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 2,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "phase": "idle",
+        "flying": false,
+        "grounded": false
+      },
+      "after": {
+        "zoom": 2,
+        "aim": [
+          -0.9999889910927661,
+          0,
+          -0.004692301489875072
+        ],
+        "pos": [
+          -148.91265561845066,
+          21.437676385690132,
+          -313.1818519968594
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 2,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "touches": 0,
+        "look": null,
+        "browserScale": 1,
+        "phase": "idle",
+        "flying": false,
+        "grounded": false
+      }
+    },
+    {
+      "course": "puttclub",
+      "name": "resized 1366x768",
+      "before": {
+        "zoom": 1,
+        "aim": [
+          -0.9999889910927661,
+          0,
+          -0.004692301489875072
+        ],
+        "pos": [
+          -148.91265561845066,
+          21.437676385690132,
+          -313.1818519968594
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 2,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "phase": "idle",
+        "flying": false,
+        "grounded": false
+      },
+      "after": {
+        "zoom": 2,
+        "aim": [
+          -0.9999889910927661,
+          0,
+          -0.004692301489875072
+        ],
+        "pos": [
+          -148.91265561845066,
+          21.437676385690132,
+          -313.1818519968594
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 2,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "touches": 0,
+        "look": null,
+        "browserScale": 1,
+        "phase": "idle",
+        "flying": false,
+        "grounded": false
+      }
+    },
+    {
+      "course": "puttclub",
+      "name": "resized 1920x1080",
+      "before": {
+        "zoom": 1,
+        "aim": [
+          -0.9999889910927661,
+          0,
+          -0.004692301489875072
+        ],
+        "pos": [
+          -148.91265561845066,
+          21.437676385690132,
+          -313.1818519968594
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 2,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "phase": "idle",
+        "flying": false,
+        "grounded": false
+      },
+      "after": {
+        "zoom": 2,
+        "aim": [
+          -0.9999889910927661,
+          0,
+          -0.004692301489875072
+        ],
+        "pos": [
+          -148.91265561845066,
+          21.437676385690132,
+          -313.1818519968594
+        ],
+        "velocity": [
+          0,
+          0,
+          0
+        ],
+        "strokes": 2,
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "touches": 0,
+        "look": null,
+        "browserScale": 1,
+        "phase": "idle",
+        "flying": false,
+        "grounded": false
+      }
+    }
+  ],
+  "restored": {
+    "zoom": 1.8,
+    "course": "puttclub",
+    "club": 12,
+    "width": 0.5,
+    "count": 63
+  },
+  "axeViolations": [],
+  "errors": [],
+  "warnings": [],
+  "environment": "Chromium SwiftShader, genuine CDP two-touch events at 390x844; not a physical iPhone"
+}

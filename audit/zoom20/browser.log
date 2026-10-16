@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "gestureChecks": 32,
+  "realUIShots": 3,
+  "restored": {
+    "zoom": 1.8,
+    "course": "puttclub",
+    "club": 12,
+    "width": 0.5,
+    "count": 63
+  },
+  "errors": [],
+  "warnings": []
+}

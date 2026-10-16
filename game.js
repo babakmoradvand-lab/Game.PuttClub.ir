@@ -2332,6 +2332,8 @@ group.name = name;
       aimRibbonGeo.setDrawRange(0, Math.max(0, count - 1) * 6);
       aimLineMat.uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
       const isPutter = GOLF_BAG[currentClubIndex].isPutter === true;
+      // Hairline in CSS pixels ONLY for putting; all other guides stay at 2px.
+      aimLineMat.uniforms.width.value = isPutter ? 0.5 : 2;
       aimLineMat.uniforms.dash.value = isPutter ? 0.18 : 1.1;
       aimLineMat.uniforms.gap.value = isPutter ? 0.10 : 0.45;
     }
@@ -2354,38 +2356,102 @@ group.name = name;
       ballMarker.visible = canAdjustAim();
     }
 
-    // Primary mouse/finger drag is a look-to-aim gesture. It rotates the camera
-    // around the BALL and updates the athlete/guide without a second independent heading.
+    // Single-pointer look/aim and independent two-finger lens zoom. Lens zoom
+    // survives automated flight/roll/address cameras; it never moves the ball,
+    // rescales the athlete, changes shot heading or enables orbit inertia.
     const aimCanvas = renderer.domElement;
     aimCanvas.style.touchAction = 'none';
+    const gameplayTouches = new Map();
+    let gameplayPinch = null, gameplayHadPinch = false;
     let lookAimPointer = null;
+    function setGameplayZoom(value) {
+      if (!Number.isFinite(value)) return false;
+      camera.zoom = THREE.MathUtils.clamp(value, 0.5, 3);
+      camera.updateProjectionMatrix();
+      const control=document.getElementById('camera-zoom-slider');
+      const readout=document.getElementById('camera-zoom-value');
+      if (control) {control.value=String(camera.zoom);control.setAttribute('aria-valuetext',camera.zoom.toFixed(2)+' times');}
+      if (readout) readout.textContent=camera.zoom.toFixed(2)+'×';
+      if (isBallFlying) updateToptracerYardageTag(ballPos);
+      return true;
+    }
+    function gameplayTouchDistance() {
+      const [a,b] = [...gameplayTouches.values()];
+      return a && b ? Math.hypot(a.x-b.x,a.y-b.y) : 0;
+    }
     function endLookAim(event) {
       if (lookAimPointer && (!event || event.pointerId === lookAimPointer.id)) {
-        if (aimCanvas.hasPointerCapture(lookAimPointer.id)) aimCanvas.releasePointerCapture(lookAimPointer.id);
-        lookAimPointer = null;
+        const id=lookAimPointer.id;
+        lookAimPointer=null;
+        if (aimCanvas.hasPointerCapture(id)) aimCanvas.releasePointerCapture(id);
       }
     }
+    function clearGameplayGesture() {
+      const ids=[...gameplayTouches.keys()];
+      if (lookAimPointer) ids.push(lookAimPointer.id);
+      gameplayTouches.clear();gameplayPinch=null;gameplayHadPinch=false;lookAimPointer=null;
+      for (const id of ids) if (aimCanvas.hasPointerCapture(id)) aimCanvas.releasePointerCapture(id);
+    }
     aimCanvas.addEventListener('pointerdown', event => {
-      if (!event.isPrimary || event.button !== 0 || document.body.dataset.view !== 'game' || !canAdjustAim()) return;
-      lookAimPointer = {id: event.pointerId, x: event.clientX};
+      if (document.body.dataset.view !== 'game') return;
+      if (event.pointerType === 'touch') {
+        gameplayTouches.set(event.pointerId,{x:event.clientX,y:event.clientY});
+        aimCanvas.setPointerCapture(event.pointerId);
+        if (gameplayTouches.size >= 2) {
+          // Retain the first finger's capture, but end its aim gesture. Never
+          // resume aiming from a surviving finger after a pinch; require lift.
+          lookAimPointer=null;gameplayHadPinch=true;
+          gameplayPinch={distance:Math.max(1,gameplayTouchDistance()),zoom:camera.zoom};
+          event.preventDefault();return;
+        }
+        if (gameplayHadPinch) {event.preventDefault();return;}
+      }
+      if (!event.isPrimary || event.button !== 0 || !canAdjustAim()) return;
+      lookAimPointer = {id:event.pointerId,x:event.clientX};
       aimCanvas.setPointerCapture(event.pointerId);
       event.preventDefault();
     });
     aimCanvas.addEventListener('pointermove', event => {
+      if (document.body.dataset.view !== 'game') {clearGameplayGesture();return;}
+      if (gameplayTouches.has(event.pointerId)) {
+        gameplayTouches.set(event.pointerId,{x:event.clientX,y:event.clientY});
+        if (gameplayHadPinch) {
+          // Deliberately no canAdjustAim / OrbitControls.enabled check here:
+          // zoom works during backswing, flight, ground roll and camera return.
+          if (gameplayPinch && gameplayTouches.size >= 2)
+            setGameplayZoom(gameplayPinch.zoom*gameplayTouchDistance()/gameplayPinch.distance);
+          event.preventDefault();return;
+        }
+      }
       if (!lookAimPointer || event.pointerId !== lookAimPointer.id) return;
-      if (!canAdjustAim() || document.body.dataset.view !== 'game') {endLookAim(event);return;}
+      if (!canAdjustAim()) {
+        // Keep tracking a held touch across a shot starting: the second finger
+        // must still be able to begin a pinch once aiming becomes unavailable.
+        if (event.pointerType === 'touch') lookAimPointer=null;
+        else endLookAim(event);
+        return;
+      }
       const dx = event.clientX - lookAimPointer.x;
       lookAimPointer.x = event.clientX;
       if (!dx) return;
-      const current = THREE.MathUtils.radToDeg(Math.atan2(aimDirection.x, aimDirection.z) - aimBaseYaw);
-      const degreesPerPixel = 180 / Math.max(360, window.innerWidth);
-      setAimAngle(current - dx * degreesPerPixel, true);
+      const current = THREE.MathUtils.radToDeg(Math.atan2(aimDirection.x,aimDirection.z)-aimBaseYaw);
+      const degreesPerPixel = 180 / Math.max(360,window.innerWidth);
+      setAimAngle(current-dx*degreesPerPixel,true);
       event.preventDefault();
     });
-    aimCanvas.addEventListener('pointerup', endLookAim);
-    aimCanvas.addEventListener('pointercancel', endLookAim);
-    aimCanvas.addEventListener('lostpointercapture', () => {lookAimPointer = null;});
-    window.addEventListener('blur', () => endLookAim());
+    function finishGameplayPointer(event) {
+      gameplayTouches.delete(event.pointerId);
+      if (lookAimPointer?.id===event.pointerId) lookAimPointer=null;
+      if (gameplayTouches.size<2) gameplayPinch=null;
+      if (!gameplayTouches.size) gameplayHadPinch=false;
+      if (aimCanvas.hasPointerCapture(event.pointerId)) aimCanvas.releasePointerCapture(event.pointerId);
+    }
+    aimCanvas.addEventListener('pointerup',finishGameplayPointer);
+    aimCanvas.addEventListener('pointercancel',finishGameplayPointer);
+    aimCanvas.addEventListener('lostpointercapture',finishGameplayPointer);
+    window.addEventListener('blur',clearGameplayGesture);
+    window.addEventListener('orientationchange',clearGameplayGesture);
+    document.addEventListener('visibilitychange',()=>{if(document.hidden)clearGameplayGesture();});
 
     function autoSuggestClub() {
       const pinPos = holePins3D[currentHoleNumber];

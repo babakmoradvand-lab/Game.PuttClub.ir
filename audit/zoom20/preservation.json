@@ -1,0 +1,46 @@
+{
+  "passed": true,
+  "unchangedEngineAndTracerFunctions": [
+    "stepPhysics",
+    "stepBallFlight",
+    "calculateShotSpecs",
+    "getShotLaunchVelocity",
+    "executeGolfShot",
+    "detectLie",
+    "getTerrainHeight",
+    "getTerrainNormal",
+    "positionGolferAtBall",
+    "getAimGuidePoints",
+    "getAimGuideLength",
+    "getAimSurfaceHeight",
+    "updateToptracerRibbon",
+    "updateToptracerYardageTag",
+    "resetToptracer",
+    "setAddressCamera",
+    "updateAddressCamera"
+  ],
+  "unchangedRuntimeFiles": 59,
+  "changedAssets": [
+    {
+      "url": "./game.js",
+      "bytes": 128707,
+      "sha256": "4006b38768681db6bf97e5fd591159cad0f86f45e25bb277e1be43d5054a2bd5"
+    },
+    {
+      "url": "./index.html",
+      "bytes": 1469100,
+      "sha256": "2c39351aaec522c7dd4503262e8a35049d27706bda8c95a1869855c9084b9ef4"
+    },
+    {
+      "url": "./ui.css",
+      "bytes": 45811,
+      "sha256": "f80603f288fcc282c01c3ee4dfe90d519cb7cb3942104510f29d4dad5d41ff85"
+    },
+    {
+      "url": "./ui.js",
+      "bytes": 25809,
+      "sha256": "2114eca58ac4e29ce34575608431a1bbe20f422edc96dc226ba3ef2ec280cd77"
+    }
+  ],
+  "totalChangedDownloadBytes": 1669427
+}

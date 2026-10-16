@@ -2457,3 +2457,6 @@ body[data-view="game"] #shot-status{bottom:calc(var(--shot-dock-height, 66px) + 
 .course-relief{position:fixed;inset:0;z-index:1200;display:grid;place-items:center;padding:20px;background:rgba(12,25,19,.45);backdrop-filter:blur(9px)}
 .course-relief-card{width:min(460px,100%);max-height:90dvh;overflow:auto;padding:24px;border:1px solid #ffffff48;border-radius:24px;background:rgba(27,51,41,.82);box-shadow:0 20px 70px #0005;color:#f4f1e8}
 .course-relief h2{font-size:1.25rem;margin:0 0 12px}.course-relief p{line-height:1.9;font-size:.88rem}.course-relief-footnote{opacity:.7;font-size:.75rem!important}.course-relief #course-relief-options{display:grid;gap:10px}.course-relief button{min-height:48px;width:100%;white-space:normal;line-height:1.6;text-align:right;color:#f4f1e8;background:#ffffff12;border:1px solid #ffffff38;border-radius:13px;padding:12px;font:inherit}.course-relief button:hover{background:#ffffff25}.course-relief button:focus-visible{outline:3px solid #d4bd88;outline-offset:3px}.lie-sand{background:#ddc78d22;color:#d4bd88}
+
+/* Zoom is a gameplay camera control, not browser/page magnification. */
+body:not([data-view="game"]) #camera-zoom-control { display:none; }

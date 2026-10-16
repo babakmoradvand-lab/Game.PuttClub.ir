@@ -474,6 +474,7 @@
     );
   }
   $("quality-select").addEventListener("change", setQuality);
+  $("camera-zoom-slider").addEventListener("input",e=>setGameplayZoom(Number(e.target.value)));
   addEventListener("resize", () => {
     const q = $("quality-select").value;
     if (q !== "auto") {
@@ -544,7 +545,7 @@
   }
   function exportSession() {
     if(isBallFlying||golferSwingPhase!=="idle"||isCameraTransitioning)return null;
-    return {schema:1,started,view:document.body.dataset.view,step,skill,course,mode:gameMode,hole:currentHoleNumber,single:selectedSingleHole,strokes:strokesCurrentHole,tee:isWomenTee,courseTee:courseTeeColor,scores:[...holeScores],courseState:isPuttClub()?exportPuttClubState():null,club:currentClubIndex,swing:currentSwingMode,ball:ballPos.toArray(),aim:aimDirection.toArray(),camera:camera.position.toArray(),target:orbitControls.target.toArray(),putt:$("putter-backswing-slider").value,celebrating:$("celebration-overlay").style.display!=="none",telemetry:["tele-carry","tele-roll","tele-total"].map(id=>$(id).textContent)};
+    return {schema:1,started,view:document.body.dataset.view,step,skill,course,mode:gameMode,hole:currentHoleNumber,single:selectedSingleHole,strokes:strokesCurrentHole,tee:isWomenTee,courseTee:courseTeeColor,scores:[...holeScores],courseState:isPuttClub()?exportPuttClubState():null,club:currentClubIndex,swing:currentSwingMode,ball:ballPos.toArray(),aim:aimDirection.toArray(),camera:camera.position.toArray(),zoom:camera.zoom,target:orbitControls.target.toArray(),putt:$("putter-backswing-slider").value,celebrating:$("celebration-overlay").style.display!=="none",telemetry:["tele-carry","tele-roll","tele-total"].map(id=>$(id).textContent)};
   }
   async function importSession(data) {
     if(data?.schema!==1||!data.started)return;
@@ -562,6 +563,7 @@
       const restoredAim=new THREE.Vector3().fromArray(data.aim).setY(0);
       if(restoredAim.lengthSq()>1e-8)aimDirection.copy(restoredAim.normalize());
     }
+    setGameplayZoom(Number.isFinite(data.zoom)?data.zoom:1);
     // Use the corrected address framing even when migrating an old wide camera.
     setAddressCamera(true);
     if(strokesCurrentHole>0&&teePegGroup)teePegGroup.visible=false;

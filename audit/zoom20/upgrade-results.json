@@ -1,0 +1,66 @@
+{
+  "previous": "course19-20261016",
+  "current": "zoom20-20261016",
+  "downloaded": 4,
+  "reused": 59,
+  "network": [
+    "sw.js",
+    "release.json",
+    "game.js",
+    "index.html",
+    "ui.js",
+    "ui.css",
+    "sw.js",
+    "release.json"
+  ],
+  "migrated": {
+    "version": "zoom20-20261016",
+    "character": {
+      "version": "detail18",
+      "skinMeshes": 16,
+      "joints": 51,
+      "clips": [
+        "FullSwing",
+        "ThreeQuarter",
+        "HalfSwing",
+        "Chip",
+        "Putt"
+      ],
+      "style": "half",
+      "frame": 0,
+      "head": "IronHead",
+      "contact": [
+        356.2359613932854,
+        49.67526656280183,
+        72.6183761481849
+      ],
+      "target": [
+        356.23596094648383,
+        49.675267566158404,
+        72.6183758694863
+      ],
+      "wristErrors": [
+        4.1967309334086474e-7,
+        5.96985372281983e-7
+      ],
+      "feet": [
+        [
+          356.59325355986476,
+          49.746402496559426,
+          73.10467737359104
+        ],
+        [
+          356.8072636146294,
+          49.756850782816315,
+          72.76157880467721
+        ]
+      ]
+    },
+    "strokes": 2,
+    "hole": 3
+  },
+  "offlineCharacterLoaded": true,
+  "offlineNewCourseLoaded": true,
+  "offlineAssetsSha256Verified": 63,
+  "errors": []
+}
