@@ -1,3 +1,14 @@
+# Detail18 current character and scale contract
+
+The actual shipped GLB is refined from the published look17/rig14 asset, not rebuilt with the older rig11 recipe. Native metres, upright +Y, front +Z, left/lead +X. Object scale stays (1,1,1) on every shot. Body ~1.80m, whole bind geometry ~1.8215m including cap/shoes; ball diameter 0.04267m.
+
+`golfer-rig.js` retains authored five clips and contact IK, adds independent terrain-normal/height shoe placement and a releaseable hip hinge to reach shorter clubs without a deep squat. Runtime joint/animation byte arrays are preserved. Cap/collar geometry, cloth detail and packed editable `.blend` updated. See RELEASE_NOTES for tests and limitations. The source generator from rig11 is historical; `character-source/refine_detail18.py` is this revision's reproducible patch (uses the pinned public look17 GLB and included cloth texture).
+
+The face is still an approximation. Passing geometric/contact tests is not a likeness or iPhone-performance certification. Raw GLB stores three alternative club heads; the game exposes only one.
+
+---
+Historical character documentation follows.
+
 # Rig11 — skinned PuttClub golfer
 
 `pro_golfer_character.glb` is a genuine 3D skinned character, not a sprite, billboard or photographic body plane. `pro_golfer_character.blend` is the packed, editable Blender source.

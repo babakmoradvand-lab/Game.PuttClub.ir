@@ -1292,6 +1292,11 @@ group.name = name;
       updateToptracerYardageTag(currentPt);
     }
 
+    function hideToptracerYardageTag() {
+      const tag = document.getElementById('toptracer-yardage-tag');
+      if (tag) tag.style.display = 'none';
+    }
+
     function updateToptracerYardageTag(currentPt) {
       const tag = document.getElementById('toptracer-yardage-tag');
       if (!tag) return;
@@ -1722,6 +1727,10 @@ group.name = name;
         proGolferContainer.position.set(0,0,0);proGolferContainer.rotation.set(0,0,0);
         golferGroup.updateMatrixWorld(true);
         const localBall = proGolferModel.worldToLocal(ballPos.clone());
+        proGolferAnimator.setGroundSampler(
+          (x,z) => strokesCurrentHole === 0 ? getTerrainHeight(ballPos.x,ballPos.z)+0.15 : getTerrainHeight(x,z),
+          (x,z) => strokesCurrentHole === 0 ? new THREE.Vector3(0,1,0) : getTerrainNormal(x,z)
+        );
         proGolferAnimator.setClub(club);proGolferAnimator.setContact(localBall,BALL_RADIUS);
         proGolferAnimator.pose(club.isPutter ? 'putt' : currentSwingMode,'idle',0);
       }
@@ -1754,6 +1763,9 @@ group.name = name;
       }
 
       // Re-evaluate address after changing club/mode, before the stroke starts.
+      hideToptracerYardageTag();
+      // A fast next-shot tap must not start with the camera passing the athlete.
+      if (isCameraTransitioning) setAddressCamera(true);
       positionGolferAtBall();
       activeSwingConfig = SWING_PROFILES[activeSwingStyle];
       golferSwingPhase = 'backswing';
@@ -2642,6 +2654,7 @@ group.name = name;
     }
 
     function handleBallCameToRest() {
+      hideToptracerYardageTag();
       aimLine.visible = false;
 
       const carryMeters = new THREE.Vector2(firstImpactPos.x - shotStartPos.x, firstImpactPos.z - shotStartPos.z).length();
@@ -2668,6 +2681,7 @@ group.name = name;
     }
 
     function handleHoleCompleted() {
+      hideToptracerYardageTag();
       holeScores[currentHoleNumber] = strokesCurrentHole;
       const holeData = courseHoles[currentHoleNumber] || {};
       const par = (holeData.tees && holeData.tees[0] && holeData.tees[0].par) || 4;
@@ -2814,6 +2828,26 @@ group.name = name;
 
     let clock = new THREE.Clock();
     const sceneMotionPreference = matchMedia('(prefers-reduced-motion: reduce)');
+    function updateAddressCamera(dt) {
+        if (isCameraTransitioning) {
+          camera.position.lerp(targetCameraPos, dt * 2.6);
+          cameraFollowLook.lerp(targetOrbitTarget, dt * 3.0);
+          camera.lookAt(cameraFollowLook.x, cameraFollowLook.y, cameraFollowLook.z);
+
+          if (camera.position.distanceTo(targetCameraPos) < 0.35) {
+            isCameraTransitioning = false;
+            camera.position.copy(targetCameraPos);
+            cameraFollowLook.copy(targetOrbitTarget);
+            camera.lookAt(targetOrbitTarget);
+            orbitControls.target.copy(targetOrbitTarget);
+            orbitControls.enabled = true; // Re-enable user manual orbit controls once settled!
+          }
+        } else {
+          orbitControls.update();
+        }
+      if (golferSwingPhase === 'idle') golferGroup.visible = !isCameraTransitioning;
+    }
+
     function animate() {
       requestAnimationFrame(animate);
       const dt = Math.min(clock.getDelta(), 0.1);
@@ -2874,22 +2908,7 @@ group.name = name;
           camera.lookAt(cameraFollowLook.x, cameraFollowLook.y + 0.4, cameraFollowLook.z);
         }
       } else {
-        if (isCameraTransitioning) {
-          camera.position.lerp(targetCameraPos, dt * 2.6);
-          cameraFollowLook.lerp(targetOrbitTarget, dt * 3.0);
-          camera.lookAt(cameraFollowLook.x, cameraFollowLook.y, cameraFollowLook.z);
-
-          if (camera.position.distanceTo(targetCameraPos) < 0.35) {
-            isCameraTransitioning = false;
-            camera.position.copy(targetCameraPos);
-            cameraFollowLook.copy(targetOrbitTarget);
-            camera.lookAt(targetOrbitTarget);
-            orbitControls.target.copy(targetOrbitTarget);
-            orbitControls.enabled = true; // Re-enable user manual orbit controls once settled!
-          }
-        } else {
-          orbitControls.update();
-        }
+        updateAddressCamera(dt);
       }
 
       // Keep Toptracer live floating yardage badge pinned to ball tip during camera movement

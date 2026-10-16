@@ -43,3 +43,7 @@ Change `index.html`'s `putt-release` meta to a new unique version, update its ru
 ## New rigged golfer
 
 See [CHARACTER.md](CHARACTER.md) for the real 3D asset, five skeletal clips, grip/foot constraints, attribution and limits. The former unrigged model and whole-body rotation have been replaced. [Download GLB](pro_golfer_character.glb) · [Packed Blender source](pro_golfer_character.blend). The in-game renderer selects one head alternative; raw asset viewers may show all three available heads.
+
+## Detail18 — model, units and after-shot view
+
+Latest: `detail18-20261016` (2026-10-16), preserving look17 aim controls. Fixed unit scales and regulation ball, individually planted feet, natural hip reach on turf, no giant idle golfer during camera return, stale floating yardage hidden after rest. Actual cap/collar/cloth geometry refinement; face still approximate. 48 required offline resources, about 15 MiB. See RELEASE_NOTES and CHARACTER for evidence and hardware limits.

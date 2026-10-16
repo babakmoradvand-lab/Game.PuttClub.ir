@@ -1,3 +1,37 @@
+# Detail18 — model refinement, stale yardage label, scale after later shots
+
+2026-10-16. Based on **look17 / 44f60c6**, retaining its look-to-aim controls, 2px short guide, physical flight preview and regulation ball. Older local files were not used to overwrite those newer changes.
+
+## What the floating 22 meant
+`updateToptracerYardageTag` displays travelled horizontal distance in yards. The user's 22 corresponds to the 16yd carry + 6yd roll shown in the last-shot summary. It remained displayed after the ball stopped and was projected over the player during camera movement. Hide that floating label at rest, on holing out and before a new backswing. Keep the last-shot summary/ribbon and the original white YDS/number during the shot; no colour/type redesign.
+
+## Fixed units and later-shot posture
+- Preserve 1.80m anatomical body, about 1.82m with cap/shoes, unit object scales, regulation 42.67mm ball diameter and existing terrain/ball equations. Never shrink/enlarge the athlete to fit a frame.
+- Sample each shoe's ground height and normal separately. Solve planted ankles to those surfaces, rather than using one centre terrain height for both feet.
+- Use a hip hinge for a lower ball/short club, rather than a deep knee squat; release the extra hinge into the follow-through. Keep original bone lengths and the two-hand grip solve.
+- Retain look17's common first/later-shot portrait-aware address framing. Hide the relocated idle golfer during return-camera travel, then show at address. A fast next-shot tap settles the camera before backswing, avoiding a swing while the camera passes the figure.
+
+## Actual model changes
+- Replace the cap crown/visor, including its centre notch, with continuous fitted geometry, a closed-thickness swept visor, panel seams, top button and rear strap.
+- Replace collar/placket accessories with a coherent folded loft/open front and fitted placket.
+- Add restrained millimetre-scale cloth folds and de-lit fabric microdetail derived from the reference. All images embedded; no extra runtime request/CDN.
+- Directly edit the GLB geometry/material buffers. Every joint node, inverse-bind matrix and animation channel/sampler byte array is unchanged from look17; 51 joints and five clips preserved. No re-rigging/retargeting of the real runtime asset.
+- Synchronize packed editable Blender source by importing the final shipped GLB. The older recipe/saved scene did not represent all later published GLB fixes; use `character-source/refine_detail18.py` for this pass.
+
+## Executed evidence
+- 686 full joint/real-hand-skin/contact samples and 10 real impact callbacks; no page/shader errors.
+- 1568 tee/turf × club × heading × mode/phase cases: contact error <0.000002m, wrist error <0.000002m, no scale accumulation.
+- Six actual UI-triggered shots on real course physics, nine address frames spanning shots 1–3 at 390×844, 723×1278, 1366×768. Unit scales unchanged, identical ~1.8215m bind height; grounded ball clearance 0.021335m; measured sole minimum about 0.0048–0.0050m. In portrait no figure fills/clips the viewport. Slight screen-height changes are club posture, not rescaling.
+- Floating 22 formatter reproduced; gone at rest while summary remains. No idle player visible while return camera transitions.
+- 115 general regression records, no page/request/HTTP/axe failures. Original tracer shader, white 11/30px type and projection tests pass. Existing mouse/touch look-to-aim and 30yd/2yd guide tests pass.
+- Actual cached look17→detail18: four runtime files downloaded, 44 reused, round/ball/club/mode/heading preserved, cold offline model reopened. 48 verified resources / about 15.0 MiB.
+
+## Limits
+Face remains an approximation, not an identity-exact photoreal scan. Tests ran in Chromium/SwiftShader, not a physical iPhone/Safari; no native-GPU 60fps or universal-cliff foot-contact claim. iOS may evict cached storage. Reference comparison and gameplay captures are real model/browser renders, not generated-image stand-ins.
+
+---
+Historical release notes below.
+
 # Rig14 — character appearance pass: five fixes
 
 2026-10-14. Geometry and texture work in Blender 4.3.2, verified by Cycles renders

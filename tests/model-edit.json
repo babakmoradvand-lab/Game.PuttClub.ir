@@ -1,0 +1,18 @@
+{
+  "revision": "detail18",
+  "cap": {
+    "oldVertices": 3072,
+    "retainedVertices": 2310,
+    "newVertices": 3258,
+    "removedTriangles": 1404
+  },
+  "collar": {
+    "oldVertices": 7791,
+    "retainedVertices": 6340,
+    "newVertices": 1711,
+    "removedTriangles": 2580
+  },
+  "skeletonAndAnimationBytesUnchanged": true,
+  "bytes": 6690736,
+  "sha256": "5a4af205f0ccab7d462a739fb48bf1e559a3f515ef600212cb992c260bd7fb01"
+}

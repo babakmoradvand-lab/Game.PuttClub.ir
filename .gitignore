@@ -6,3 +6,8 @@
 .DS_Store
 Thumbs.db
 *.tmp
+
+# Never publish personal access tokens or credential uploads
+ghp_*.txt
+github_pat*
+.git-credentials

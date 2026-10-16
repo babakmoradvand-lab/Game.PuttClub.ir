@@ -1,0 +1,477 @@
+{
+  "rows": [
+    {
+      "width": 390,
+      "height": 844,
+      "shot": 1,
+      "strokes": 0,
+      "club": "1W",
+      "ballRadius": 0.021335,
+      "ballGroundClearance": 0.2513349999999974,
+      "bindHeight": 1.8215010869316757,
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "modelScale": [
+        1,
+        1,
+        1
+      ],
+      "screenMin": [
+        90.97414764581941,
+        327.23306130979165
+      ],
+      "screenMax": [
+        167.05398036989155,
+        555.5816134494661
+      ],
+      "screenHeight": 228.34855213967444,
+      "cameraDistance": 7.637779906065057,
+      "soles": {
+        "L": 0.004999968024314683,
+        "R": 0.004999894496222623
+      },
+      "tagVisible": false,
+      "heading": [
+        0.9822608299037182,
+        0,
+        0.18751976438993959
+      ]
+    },
+    {
+      "width": 390,
+      "launchedShot": 1,
+      "result": {
+        "started": "backswing",
+        "frames": 1656,
+        "strokes": 1,
+        "distance": 333,
+        "stale": false,
+        "transition": false,
+        "oversized": 0,
+        "visible": true,
+        "summary": "333 YDS"
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "shot": 2,
+      "strokes": 1,
+      "club": "9I",
+      "ballRadius": 0.021335,
+      "ballGroundClearance": 0.021335000000000548,
+      "bindHeight": 1.8215010869316757,
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "modelScale": [
+        1,
+        1,
+        1
+      ],
+      "screenMin": [
+        101.47540029771936,
+        333.78009745173796
+      ],
+      "screenMax": [
+        193.71450909239348,
+        546.7436411930031
+      ],
+      "screenHeight": 212.96354374126514,
+      "cameraDistance": 7.6377799060650515,
+      "soles": {
+        "L": 0.004810501127145983,
+        "R": 0.004811503503809433
+      },
+      "tagVisible": false,
+      "heading": [
+        -0.9834504969322881,
+        0,
+        -0.18117704071883783
+      ]
+    },
+    {
+      "width": 390,
+      "launchedShot": 2,
+      "result": {
+        "started": "backswing",
+        "frames": 1058,
+        "strokes": 2,
+        "distance": 106,
+        "stale": false,
+        "transition": false,
+        "oversized": 0,
+        "visible": true,
+        "summary": "106 YDS"
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "shot": 3,
+      "strokes": 2,
+      "club": "SW",
+      "ballRadius": 0.021335,
+      "ballGroundClearance": 0.021335000000000548,
+      "bindHeight": 1.8215010869316757,
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "modelScale": [
+        1,
+        1,
+        1
+      ],
+      "screenMin": [
+        101.71739077921224,
+        336.93492065895055
+      ],
+      "screenMax": [
+        195.6418046559461,
+        545.5540891101867
+      ],
+      "screenHeight": 208.6191684512362,
+      "cameraDistance": 7.637779906065055,
+      "soles": {
+        "L": 0.004998424583376959,
+        "R": 0.004999431369519414
+      },
+      "tagVisible": false,
+      "heading": [
+        -0.9823455789369965,
+        0,
+        -0.1870752884347291
+      ]
+    },
+    {
+      "width": 390,
+      "tag": {
+        "number": "YDS22",
+        "display": "none"
+      }
+    },
+    {
+      "width": 723,
+      "height": 1278,
+      "shot": 1,
+      "strokes": 0,
+      "club": "1W",
+      "ballRadius": 0.021335,
+      "ballGroundClearance": 0.2513349999999974,
+      "bindHeight": 1.8215010869316757,
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "modelScale": [
+        1,
+        1,
+        1
+      ],
+      "screenMin": [
+        167.82932439936528,
+        499.9567112077593
+      ],
+      "screenMax": [
+        309.5239647634652,
+        926.7116300878989
+      ],
+      "screenHeight": 426.7549188801396,
+      "cameraDistance": 6.238524087990641,
+      "soles": {
+        "L": 0.004999968024314683,
+        "R": 0.004999894496222623
+      },
+      "tagVisible": false,
+      "heading": [
+        0.9822608299037182,
+        0,
+        0.18751976438993959
+      ]
+    },
+    {
+      "width": 723,
+      "launchedShot": 1,
+      "result": {
+        "started": "backswing",
+        "frames": 1656,
+        "strokes": 1,
+        "distance": 333,
+        "stale": false,
+        "transition": false,
+        "oversized": 0,
+        "visible": true,
+        "summary": "333 YDS"
+      }
+    },
+    {
+      "width": 723,
+      "height": 1278,
+      "shot": 2,
+      "strokes": 1,
+      "club": "9I",
+      "ballRadius": 0.021335,
+      "ballGroundClearance": 0.021335000000000548,
+      "bindHeight": 1.8215010869316757,
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "modelScale": [
+        1,
+        1,
+        1
+      ],
+      "screenMin": [
+        187.07359483157109,
+        512.193485038393
+      ],
+      "screenMax": [
+        359.1042616116483,
+        910.0522076578827
+      ],
+      "screenHeight": 397.85872261948975,
+      "cameraDistance": 6.2385240879906405,
+      "soles": {
+        "L": 0.0048104954693997115,
+        "R": 0.004811497743069992
+      },
+      "tagVisible": false,
+      "heading": [
+        -0.9835280917858771,
+        0,
+        -0.18075533925179435
+      ]
+    },
+    {
+      "width": 723,
+      "launchedShot": 2,
+      "result": {
+        "started": "backswing",
+        "frames": 1057,
+        "strokes": 2,
+        "distance": 106,
+        "stale": false,
+        "transition": false,
+        "oversized": 0,
+        "visible": true,
+        "summary": "106 YDS"
+      }
+    },
+    {
+      "width": 723,
+      "height": 1278,
+      "shot": 3,
+      "strokes": 2,
+      "club": "SW",
+      "ballRadius": 0.021335,
+      "ballGroundClearance": 0.021335000000000548,
+      "bindHeight": 1.8215010869316757,
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "modelScale": [
+        1,
+        1,
+        1
+      ],
+      "screenMin": [
+        187.51955805289367,
+        518.0775280818706
+      ],
+      "screenMax": [
+        362.69333798077747,
+        907.8098775794232
+      ],
+      "screenHeight": 389.7323494975526,
+      "cameraDistance": 6.238524087990641,
+      "soles": {
+        "L": 0.0049984247577441465,
+        "R": 0.004999431000648258
+      },
+      "tagVisible": false,
+      "heading": [
+        -0.9827050216517256,
+        0,
+        -0.18517786158307825
+      ]
+    },
+    {
+      "width": 723,
+      "tag": {
+        "number": "YDS22",
+        "display": "none"
+      }
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "shot": 1,
+      "strokes": 0,
+      "club": "1W",
+      "ballRadius": 0.021335,
+      "ballGroundClearance": 0.2513349999999974,
+      "bindHeight": 1.8215010869316757,
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "modelScale": [
+        1,
+        1,
+        1
+      ],
+      "screenMin": [
+        517.20341975881,
+        193.44294093102943
+      ],
+      "screenMax": [
+        638.6762309116135,
+        560.5570730154448
+      ],
+      "screenHeight": 367.11413208441536,
+      "cameraDistance": 4.411632350955827,
+      "soles": {
+        "L": 0.004999968024314683,
+        "R": 0.004999894496222623
+      },
+      "tagVisible": false,
+      "heading": [
+        0.9822608299037182,
+        0,
+        0.18751976438993959
+      ]
+    },
+    {
+      "width": 1366,
+      "launchedShot": 1,
+      "result": {
+        "started": "backswing",
+        "frames": 1656,
+        "strokes": 1,
+        "distance": 333,
+        "stale": false,
+        "transition": false,
+        "oversized": 0,
+        "visible": true,
+        "summary": "333 YDS"
+      }
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "shot": 2,
+      "strokes": 1,
+      "club": "9I",
+      "ballRadius": 0.021335,
+      "ballGroundClearance": 0.021335000000000548,
+      "bindHeight": 1.8215010869316757,
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "modelScale": [
+        1,
+        1,
+        1
+      ],
+      "screenMin": [
+        533.251846151725,
+        203.93025658452143
+      ],
+      "screenMax": [
+        680.962822517158,
+        545.914175300622
+      ],
+      "screenHeight": 341.98391871610056,
+      "cameraDistance": 4.411632350955821,
+      "soles": {
+        "L": 0.004810504057907394,
+        "R": 0.004811506464747595
+      },
+      "tagVisible": false,
+      "heading": [
+        -0.9834285208685659,
+        0,
+        -0.18129628882650764
+      ]
+    },
+    {
+      "width": 1366,
+      "launchedShot": 2,
+      "result": {
+        "started": "backswing",
+        "frames": 1057,
+        "strokes": 2,
+        "distance": 106,
+        "stale": false,
+        "transition": false,
+        "oversized": 0,
+        "visible": true,
+        "summary": "106 YDS"
+      }
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "shot": 3,
+      "strokes": 2,
+      "club": "SW",
+      "ballRadius": 0.021335,
+      "ballGroundClearance": 0.021335000000000548,
+      "bindHeight": 1.8215010869316757,
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "modelScale": [
+        1,
+        1,
+        1
+      ],
+      "screenMin": [
+        533.6220538188537,
+        208.9764805660295
+      ],
+      "screenMax": [
+        684.0179413416396,
+        543.9578700524693
+      ],
+      "screenHeight": 334.98138948643975,
+      "cameraDistance": 4.411632350955823,
+      "soles": {
+        "L": 0.0049984245343352995,
+        "R": 0.004999431472889171
+      },
+      "tagVisible": false,
+      "heading": [
+        -0.982244191553986,
+        0,
+        -0.1876068979500931
+      ]
+    },
+    {
+      "width": 1366,
+      "tag": {
+        "number": "YDS22",
+        "display": "none"
+      }
+    }
+  ],
+  "errors": [],
+  "shader": []
+}

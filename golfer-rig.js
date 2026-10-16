@@ -37,6 +37,17 @@
         const object=this.model.getObjectByName(name);if(object)object.visible=name===this.headName;
       }
     }
+    setGroundSampler(height,normal) {
+      this.groundHeight=height;this.groundNormal=normal;
+    }
+    footTarget(side) {
+      const target=this.model.localToWorld(this.feet[side].clone());
+      if(this.groundHeight) {
+        const base=this.model.localToWorld(new T.Vector3(this.feet[side].x,0,this.feet[side].z));
+        target.y+=this.groundHeight(target.x,target.z)-base.y;
+      }
+      return target;
+    }
     setContact(localBall,radius) {
       // Native +X is the target/lead side, +Z faces the ball. The front face
       // touches the ball surface, not the centre; the feet remain planted.
@@ -77,6 +88,27 @@
       this.bones.Chest.quaternion.multiply(new T.Quaternion().setFromAxisAngle(new T.Vector3(1,0,0),(1-this.lengthFactor)*.35));
       this.model.updateMatrixWorld(true);
       const modelQ=this.model.getWorldQuaternion(new T.Quaternion());
+      // A ball on the turf (especially below the feet) needs a hip hinge,
+      // not the deep knee squat previously used to reach a shorter grip.
+      // Physical height and all bone lengths remain untouched.
+      const release=phase==='followthrough'?1-p:phase==='fade'?0:1;
+      const hinge=T.MathUtils.clamp((.101-this.contactTarget.y)*2.2+(1-this.lengthFactor)*.7,0,.42)*release;
+      if(hinge>0) {
+        const axis=new T.Vector3(1,0,0).applyQuaternion(modelQ);
+        this.rotateWorld(this.bones.Hips,new T.Quaternion().setFromAxisAngle(axis,hinge).multiply(this.bones.Hips.getWorldQuaternion(new T.Quaternion())));
+      }
+      // Solve the low foot first on uneven lies so the leg is not stretched.
+      for(let i=0;i<3;i++) {
+        let down=0;
+        for(const side of ['L','R']) {
+          const delta=this.footTarget(side).sub(this.bones['Thigh.'+side].getWorldPosition(new T.Vector3()));
+          const max=this.restLengths['leg'+side].reduce((a,b)=>a+b,0)-.004;
+          if(delta.y<0 && delta.length()>max)down=Math.max(down,Math.min(.04,(delta.length()-max)/Math.max(.5,Math.abs(delta.y)/delta.length())));
+        }
+        if(down<1e-6)break;
+        this.bones.Hips.position.y-=down;this.model.updateMatrixWorld(true);
+      }
+
       const direction=Y.clone().applyQuaternion(grip.getWorldQuaternion(new T.Quaternion())).normalize();
       const centre=grip.getWorldPosition(new T.Vector3());this.handTargets={};
       // Shorter clubs require a small knee/hip adjustment, not stretched arms.
@@ -107,10 +139,15 @@
         this.rotateWorld(this.bones['Hand.'+side],q);
       }
       for(const [side,sign] of [['L',1],['R',-1]]) {
-        const target=this.model.localToWorld(this.feet[side].clone());
+        const target=this.footTarget(side);
         const pole=new T.Vector3(sign*.1,0,1).applyQuaternion(modelQ);
         this.ik('Thigh.'+side,'Shin.'+side,target,pole,this.restLengths['leg'+side]);
-        this.rotateWorld(this.bones['Foot.'+side],modelQ.clone().multiply(this.footRotations[side]));
+        const rest=modelQ.clone().multiply(this.footRotations[side]);
+        if(this.groundNormal) {
+          const normal=this.groundNormal(target.x,target.z).normalize();
+          rest.premultiply(new T.Quaternion().setFromUnitVectors(Y,normal));
+        }
+        this.rotateWorld(this.bones['Foot.'+side],rest);
       }
       this.model.updateMatrixWorld(true);
       // Make static bounds irrelevant to moving skinned limbs; renderer updates
@@ -119,7 +156,7 @@
     }
     debug() {
       const point=name=>this.bones[name].getWorldPosition(new T.Vector3());
-      return {version:'rig11',skinMeshes:this.skinMeshes.length,joints:Object.keys(this.bones).length,clips:Object.values(clips),style:this.style,frame:this.frame,head:this.headName,
+      return {version:'detail18',skinMeshes:this.skinMeshes.length,joints:Object.keys(this.bones).length,clips:Object.values(clips),style:this.style,frame:this.frame,head:this.headName,
         contact:point('ClubFaceAnchor').toArray(),target:this.contactTarget?this.model.localToWorld(this.contactTarget.clone()).toArray():null,
         wristErrors:['L','R'].map(side=>point('Hand.'+side).distanceTo(this.handTargets[side])),
         feet:['L','R'].map(side=>point('Foot.'+side).toArray())};
