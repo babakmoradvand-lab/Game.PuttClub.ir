@@ -1195,9 +1195,11 @@ group.name = name;
     scene.add(shadowRibbon);
 
     let ribbonHistory = [];
+    let tracerShotIsPutt = false;
 
     function resetToptracer() {
       ribbonHistory = [];
+      tracerShotIsPutt = false;
       tracerGeo.setDrawRange(0, 0);
       shadowGeo.setDrawRange(0, 0);
       const tag = document.getElementById('toptracer-yardage-tag');
@@ -1222,8 +1224,10 @@ group.name = name;
       const shadowPosAttr = shadowGeo.attributes.position;
       const shadowColAttr = shadowGeo.attributes.color;
 
-      const baseR = 0.54;
-      const baseShadowW = 0.62;
+      // Only the moving PUTT trail is a fine hairline (millimetres, not a
+      // metre-wide flight ribbon). Snapshot the shot, not the next club hint.
+      const baseR = tracerShotIsPutt ? 0.002 : 0.54;
+      const baseShadowW = tracerShotIsPutt ? 0 : 0.62;
       const up = new THREE.Vector3(0, 1, 0);
 
       for (let i = 0; i < n; i++) {
@@ -1290,7 +1294,7 @@ group.name = name;
       tracerGeo.setDrawRange(0, tracerIndexCount);
 
       const shadowIndexCount = (n - 1) * 12;
-      shadowGeo.setDrawRange(0, shadowIndexCount);
+      shadowGeo.setDrawRange(0, tracerShotIsPutt ? 0 : shadowIndexCount);
 
       updateToptracerYardageTag(currentPt);
     }
@@ -1765,6 +1769,9 @@ group.name = name;
         if (!SWING_PROFILES[activeSwingStyle]) activeSwingStyle = 'full';
       }
 
+      // Clear the previous putt path AT SWING START, not one backswing later
+      // at impact. Ordinary non-putt flight trails keep their existing behavior.
+      if (club.isPutter || specs.isPutt || tracerShotIsPutt) resetToptracer();
       // Re-evaluate address after changing club/mode, before the stroke starts.
       hideToptracerYardageTag();
       // A fast next-shot tap must not start with the camera passing the athlete.
@@ -2332,8 +2339,8 @@ group.name = name;
       aimRibbonGeo.setDrawRange(0, Math.max(0, count - 1) * 6);
       aimLineMat.uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
       const isPutter = GOLF_BAG[currentClubIndex].isPutter === true;
-      // Hairline in CSS pixels ONLY for putting; all other guides stay at 2px.
-      aimLineMat.uniforms.width.value = isPutter ? 0.5 : 2;
+      // The pre-shot aim guide is unchanged; the putt-only hairline is its moving trail.
+      aimLineMat.uniforms.width.value = 2;
       aimLineMat.uniforms.dash.value = isPutter ? 0.18 : 1.1;
       aimLineMat.uniforms.gap.value = isPutter ? 0.10 : 0.45;
     }
@@ -2509,6 +2516,7 @@ group.name = name;
       ballRestTimer = 0;
       isBallSettled = false;
       resetToptracer();
+      tracerShotIsPutt = !!(club.isPutter || specs.isPutt);
       if (teePegGroup) teePegGroup.visible = false;
 
       ballVel.copy(getShotLaunchVelocity(specs, shotDirection));

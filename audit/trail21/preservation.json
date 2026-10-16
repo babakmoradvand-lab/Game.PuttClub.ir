@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "unchangedFunctions": [
+    "stepPhysics",
+    "stepBallFlight",
+    "getShotLaunchVelocity",
+    "calculateShotSpecs",
+    "detectLie",
+    "positionGolferAtBall",
+    "getTerrainHeight",
+    "getTerrainNormal",
+    "setAddressCamera",
+    "updateAddressCamera",
+    "getAimGuidePoints",
+    "getAimGuideLength",
+    "updateToptracerYardageTag",
+    "setGameplayZoom"
+  ],
+  "executeGolfShotOnlyAddsVisualShotType": true,
+  "zoomGestureCodeIdentical": true,
+  "unchangedAssetsComparedToZoom20": 61,
+  "changedAssetsComparedToZoom20": [
+    "./game.js",
+    "./index.html"
+  ],
+  "verifiedAssetHashes": 63
+}

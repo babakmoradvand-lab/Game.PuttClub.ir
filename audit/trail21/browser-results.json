@@ -1,0 +1,139 @@
+{
+  "passed": true,
+  "controlledRealUIShots": 4,
+  "records": [
+    {
+      "nonPuttPreserved": {
+        "equal": true,
+        "flightRadius": 0.6209999989734494,
+        "flightShadow": 24
+      }
+    },
+    {
+      "course": "mis",
+      "putt": 1,
+      "start": {
+        "phase": "backswing",
+        "flying": false,
+        "points": 0,
+        "draw": 0,
+        "shadow": 0,
+        "strokes": 1,
+        "tag": "none"
+      },
+      "running": {
+        "putt": true,
+        "radius": 0.002296498446998106,
+        "shadow": 0,
+        "points": 4,
+        "strokes": 2
+      },
+      "rest": {
+        "points": 9,
+        "draw": 192,
+        "putt": true,
+        "shadow": 0,
+        "guideWidth": 2
+      }
+    },
+    {
+      "course": "mis",
+      "putt": 2,
+      "start": {
+        "phase": "backswing",
+        "flying": false,
+        "points": 0,
+        "draw": 0,
+        "shadow": 0,
+        "strokes": 2,
+        "tag": "none"
+      },
+      "running": {
+        "putt": true,
+        "radius": 0.002304127673675123,
+        "shadow": 0,
+        "points": 4,
+        "strokes": 3
+      },
+      "rest": {
+        "points": 4,
+        "draw": 72,
+        "putt": true,
+        "shadow": 0,
+        "guideWidth": 2
+      }
+    },
+    {
+      "course": "mis",
+      "snapshot": {
+        "putt": true,
+        "radius": 0.002304127673675123,
+        "shadow": 0
+      }
+    },
+    {
+      "course": "puttclub",
+      "putt": 1,
+      "start": {
+        "phase": "backswing",
+        "flying": false,
+        "points": 0,
+        "draw": 0,
+        "shadow": 0,
+        "strokes": 1,
+        "tag": "none"
+      },
+      "running": {
+        "putt": true,
+        "radius": 0.002288818359375,
+        "shadow": 0,
+        "points": 4,
+        "strokes": 2
+      },
+      "rest": {
+        "points": 36,
+        "draw": 840,
+        "putt": true,
+        "shadow": 0,
+        "guideWidth": 2
+      }
+    },
+    {
+      "course": "puttclub",
+      "putt": 2,
+      "start": {
+        "phase": "backswing",
+        "flying": false,
+        "points": 0,
+        "draw": 0,
+        "shadow": 0,
+        "strokes": 2,
+        "tag": "none"
+      },
+      "running": {
+        "putt": true,
+        "radius": 0.0022888692214400805,
+        "shadow": 0,
+        "points": 4,
+        "strokes": 3
+      },
+      "rest": {
+        "points": 42,
+        "draw": 984,
+        "putt": true,
+        "shadow": 0,
+        "guideWidth": 2
+      }
+    },
+    {
+      "course": "puttclub",
+      "snapshot": {
+        "putt": true,
+        "radius": 0.0022888692214400805,
+        "shadow": 0
+      }
+    }
+  ],
+  "errors": [],
+  "warnings": []
+}

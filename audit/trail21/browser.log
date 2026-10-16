@@ -1,0 +1,22 @@
+CASE mis 1
+MOVING {"putt":true,"radius":0.002296498446998106,"shadow":0,"points":4,"strokes":2}
+REST {"points":9,"draw":192,"putt":true,"shadow":0,"guideWidth":2}
+CASE mis 2
+MOVING {"putt":true,"radius":0.002304127673675123,"shadow":0,"points":4,"strokes":3}
+REST {"points":4,"draw":72,"putt":true,"shadow":0,"guideWidth":2}
+CASE puttclub 1
+MOVING {"putt":true,"radius":0.002288818359375,"shadow":0,"points":4,"strokes":2}
+REST {"points":36,"draw":840,"putt":true,"shadow":0,"guideWidth":2}
+CASE puttclub 2
+MOVING {"putt":true,"radius":0.0022888692214400805,"shadow":0,"points":4,"strokes":3}
+REST {"points":42,"draw":984,"putt":true,"shadow":0,"guideWidth":2}
+{
+  "passed": true,
+  "controlledRealUIShots": 4,
+  "nonPuttExact": true,
+  "puttRadiusM": 0.0023,
+  "shadowDuringPutt": false,
+  "clearedAtBackswing": true,
+  "errors": [],
+  "warnings": []
+}
