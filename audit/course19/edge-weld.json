@@ -1,0 +1,432 @@
+[
+  {
+    "kind": "collision",
+    "mesh": "COLL_FAIRWAY_01",
+    "verticesWelded": 85
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FAIRWAY_02",
+    "verticesWelded": 42
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FAIRWAY_03",
+    "verticesWelded": 39
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FAIRWAY_04",
+    "verticesWelded": 40
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FAIRWAY_05",
+    "verticesWelded": 35
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FAIRWAY_06",
+    "verticesWelded": 39
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FAIRWAY_07",
+    "verticesWelded": 41
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FAIRWAY_08",
+    "verticesWelded": 39
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FAIRWAY_09",
+    "verticesWelded": 36
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FAIRWAY_10",
+    "verticesWelded": 35
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FAIRWAY_11",
+    "verticesWelded": 41
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FAIRWAY_12",
+    "verticesWelded": 41
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FAIRWAY_13",
+    "verticesWelded": 44
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FAIRWAY_14",
+    "verticesWelded": 40
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FAIRWAY_15",
+    "verticesWelded": 41
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FAIRWAY_16",
+    "verticesWelded": 38
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FAIRWAY_17",
+    "verticesWelded": 38
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FAIRWAY_18",
+    "verticesWelded": 45
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FRINGE_01",
+    "verticesWelded": 35
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FRINGE_02",
+    "verticesWelded": 19
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FRINGE_03",
+    "verticesWelded": 19
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FRINGE_04",
+    "verticesWelded": 21
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FRINGE_05",
+    "verticesWelded": 17
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FRINGE_06",
+    "verticesWelded": 20
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FRINGE_07",
+    "verticesWelded": 17
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FRINGE_08",
+    "verticesWelded": 19
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FRINGE_09",
+    "verticesWelded": 80
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FRINGE_10",
+    "verticesWelded": 19
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FRINGE_11",
+    "verticesWelded": 82
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FRINGE_12",
+    "verticesWelded": 19
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FRINGE_13",
+    "verticesWelded": 21
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FRINGE_14",
+    "verticesWelded": 18
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FRINGE_15",
+    "verticesWelded": 19
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FRINGE_16",
+    "verticesWelded": 23
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FRINGE_17",
+    "verticesWelded": 21
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_FRINGE_18",
+    "verticesWelded": 21
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_LAKE_BASIN_POND_06_WEST_CHANNEL",
+    "verticesWelded": 110
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_LAKE_BASIN_POND_09_NE_LAGOON",
+    "verticesWelded": 120
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_LAKE_BASIN_POND_11_NW_POND",
+    "verticesWelded": 83
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_ROUGH_PRIMARY",
+    "verticesWelded": 5546
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_ROUGH_HEAVY",
+    "verticesWelded": 2787
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_ROUGH_NATIVE",
+    "verticesWelded": 628
+  },
+  {
+    "kind": "collision",
+    "mesh": "COLL_TERRAIN_BASE",
+    "verticesWelded": 11569
+  },
+  {
+    "kind": "visual",
+    "mesh": "Fairway_01_Turf_GG02",
+    "verticesWelded": 85
+  },
+  {
+    "kind": "visual",
+    "mesh": "Fairway_02_Turf_GG02",
+    "verticesWelded": 42
+  },
+  {
+    "kind": "visual",
+    "mesh": "Fairway_03_Turf_GG02",
+    "verticesWelded": 39
+  },
+  {
+    "kind": "visual",
+    "mesh": "Fairway_04_Turf_GG02",
+    "verticesWelded": 40
+  },
+  {
+    "kind": "visual",
+    "mesh": "Fairway_05_Turf_GG02",
+    "verticesWelded": 35
+  },
+  {
+    "kind": "visual",
+    "mesh": "Fairway_06_Turf_GG02",
+    "verticesWelded": 39
+  },
+  {
+    "kind": "visual",
+    "mesh": "Fairway_07_Turf_GG02",
+    "verticesWelded": 41
+  },
+  {
+    "kind": "visual",
+    "mesh": "Fairway_08_Turf_GG02",
+    "verticesWelded": 39
+  },
+  {
+    "kind": "visual",
+    "mesh": "Fairway_09_Turf_GG02",
+    "verticesWelded": 36
+  },
+  {
+    "kind": "visual",
+    "mesh": "Fairway_10_Turf_GG02",
+    "verticesWelded": 35
+  },
+  {
+    "kind": "visual",
+    "mesh": "Fairway_11_Turf_GG02",
+    "verticesWelded": 41
+  },
+  {
+    "kind": "visual",
+    "mesh": "Fairway_12_Turf_GG02",
+    "verticesWelded": 41
+  },
+  {
+    "kind": "visual",
+    "mesh": "Fairway_13_Turf_GG02",
+    "verticesWelded": 44
+  },
+  {
+    "kind": "visual",
+    "mesh": "Fairway_14_Turf_GG02",
+    "verticesWelded": 40
+  },
+  {
+    "kind": "visual",
+    "mesh": "Fairway_15_Turf_GG02",
+    "verticesWelded": 41
+  },
+  {
+    "kind": "visual",
+    "mesh": "Fairway_16_Turf_GG02",
+    "verticesWelded": 38
+  },
+  {
+    "kind": "visual",
+    "mesh": "Fairway_17_Turf_GG02",
+    "verticesWelded": 38
+  },
+  {
+    "kind": "visual",
+    "mesh": "Fairway_18_Turf_GG02",
+    "verticesWelded": 45
+  },
+  {
+    "kind": "visual",
+    "mesh": "FirstCut_01_Turf_GG03",
+    "verticesWelded": 35
+  },
+  {
+    "kind": "visual",
+    "mesh": "FirstCut_02_Turf_GG03",
+    "verticesWelded": 19
+  },
+  {
+    "kind": "visual",
+    "mesh": "FirstCut_03_Turf_GG03",
+    "verticesWelded": 19
+  },
+  {
+    "kind": "visual",
+    "mesh": "FirstCut_04_Turf_GG03",
+    "verticesWelded": 21
+  },
+  {
+    "kind": "visual",
+    "mesh": "FirstCut_05_Turf_GG03",
+    "verticesWelded": 17
+  },
+  {
+    "kind": "visual",
+    "mesh": "FirstCut_06_Turf_GG03",
+    "verticesWelded": 20
+  },
+  {
+    "kind": "visual",
+    "mesh": "FirstCut_07_Turf_GG03",
+    "verticesWelded": 17
+  },
+  {
+    "kind": "visual",
+    "mesh": "FirstCut_08_Turf_GG03",
+    "verticesWelded": 19
+  },
+  {
+    "kind": "visual",
+    "mesh": "FirstCut_09_Turf_GG03",
+    "verticesWelded": 80
+  },
+  {
+    "kind": "visual",
+    "mesh": "FirstCut_10_Turf_GG03",
+    "verticesWelded": 19
+  },
+  {
+    "kind": "visual",
+    "mesh": "FirstCut_11_Turf_GG03",
+    "verticesWelded": 82
+  },
+  {
+    "kind": "visual",
+    "mesh": "FirstCut_12_Turf_GG03",
+    "verticesWelded": 19
+  },
+  {
+    "kind": "visual",
+    "mesh": "FirstCut_13_Turf_GG03",
+    "verticesWelded": 21
+  },
+  {
+    "kind": "visual",
+    "mesh": "FirstCut_14_Turf_GG03",
+    "verticesWelded": 18
+  },
+  {
+    "kind": "visual",
+    "mesh": "FirstCut_15_Turf_GG03",
+    "verticesWelded": 19
+  },
+  {
+    "kind": "visual",
+    "mesh": "FirstCut_16_Turf_GG03",
+    "verticesWelded": 23
+  },
+  {
+    "kind": "visual",
+    "mesh": "FirstCut_17_Turf_GG03",
+    "verticesWelded": 21
+  },
+  {
+    "kind": "visual",
+    "mesh": "FirstCut_18_Turf_GG03",
+    "verticesWelded": 21
+  },
+  {
+    "kind": "visual",
+    "mesh": "Pond_06_West_Channel_Basin_And_Beach",
+    "verticesWelded": 110
+  },
+  {
+    "kind": "visual",
+    "mesh": "Pond_09_NE_Lagoon_Basin_And_Beach",
+    "verticesWelded": 120
+  },
+  {
+    "kind": "visual",
+    "mesh": "Pond_11_NW_Pond_Basin_And_Beach",
+    "verticesWelded": 83
+  },
+  {
+    "kind": "visual",
+    "mesh": "Rough_Tier2_Primary_GG04",
+    "verticesWelded": 5546
+  },
+  {
+    "kind": "visual",
+    "mesh": "Rough_Tier3_Heavy_GG05",
+    "verticesWelded": 2787
+  },
+  {
+    "kind": "visual",
+    "mesh": "Rough_Tier4_Native_GG06",
+    "verticesWelded": 628
+  },
+  {
+    "kind": "visual",
+    "mesh": "Conceptual_Terrain_100ha",
+    "verticesWelded": 11569
+  }
+]

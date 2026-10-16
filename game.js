@@ -159,7 +159,8 @@
 
     const terrainData = window.MIS_TERRAIN;
     const golfFeatures = window.MIS_FEATURES;
-    const courseHoles = window.MIS_COURSE_18;
+    let courseHoles = window.MIS_COURSE_18;
+    function isPuttClub(){return !!window.PuttClubCourse?.active;}
     const osmBuildings = window.MIS_BUILDINGS || [];
     const satelliteTexUrl = window.MIS_TEXTURE_B64;
     const proTextures = window.MIS_PRO_TEXTURES || {};
@@ -282,6 +283,7 @@
     let verticalExaggeration = 1.5;
 
     function getTerrainHeight(x, z) {
+      if(isPuttClub())return window.PuttClubCourse.height(x,z);
       const u = (x / worldWidth) + 0.5;
       const v = (z / worldLength) + 0.5;
       if (u < 0 || u > 1 || v < 0 || v > 1) return (terrainData.elev_min - 290) * verticalExaggeration;
@@ -301,6 +303,7 @@
     }
 
     function getTerrainNormal(x, z) {
+      if(isPuttClub())return window.PuttClubCourse.height(x,z,true).normal;
       // Sensitive gradient sampling (0.5m delta) to capture MIS hills, mounds, and ravines
       const delta = 0.5;
       const hL = getTerrainHeight(x - delta, z);
@@ -1691,7 +1694,7 @@ group.name = name;
       // Tee platforms are FLAT: use their centre/top, not sloped terrain
       // sampled under the shoes. This prevents floating or buried feet.
       const groundAtStance = strokesCurrentHole === 0
-        ? getTerrainHeight(ballPos.x,ballPos.z) + 0.15
+        ? getTerrainHeight(ballPos.x,ballPos.z) + (isPuttClub()?0:0.15)
         : getTerrainHeight(ballPos.x + sideVec.x * standOffset,ballPos.z + sideVec.z * standOffset);
       
       golferGroup.position.set(
@@ -1728,8 +1731,8 @@ group.name = name;
         golferGroup.updateMatrixWorld(true);
         const localBall = proGolferModel.worldToLocal(ballPos.clone());
         proGolferAnimator.setGroundSampler(
-          (x,z) => strokesCurrentHole === 0 ? getTerrainHeight(ballPos.x,ballPos.z)+0.15 : getTerrainHeight(x,z),
-          (x,z) => strokesCurrentHole === 0 ? new THREE.Vector3(0,1,0) : getTerrainNormal(x,z)
+          (x,z) => strokesCurrentHole === 0 ? getTerrainHeight(ballPos.x,ballPos.z)+(isPuttClub()?0:0.15) : getTerrainHeight(x,z),
+          (x,z) => strokesCurrentHole === 0 && !isPuttClub() ? new THREE.Vector3(0,1,0) : getTerrainNormal(x,z)
         );
         proGolferAnimator.setClub(club);proGolferAnimator.setContact(localBall,BALL_RADIUS);
         proGolferAnimator.pose(club.isPutter ? 'putt' : currentSwingMode,'idle',0);
@@ -1899,6 +1902,7 @@ group.name = name;
     }
 
     function detectLie(pos) {
+      if(isPuttClub())return window.PuttClubCourse.lie(pos,typeof courseBallPlugged!=="undefined"&&courseBallPlugged);
       const teePos = teeBoxes3D[currentHoleNumber];
       if (teePos) {
         const distToTee = new THREE.Vector2(pos.x - teePos.x, pos.z - teePos.z).length();
@@ -1948,8 +1952,9 @@ group.name = name;
         return { mx, my };
       }
 
-      // Draw Fairway
-      fairwayPolygons.forEach(fp => {
+      if(isPuttClub())window.PuttClubCourse.drawMap(minimapCtx,mapToMinimap,currentHoleNumber);
+      // Draw original fairways only on the original course.
+      if(!isPuttClub())fairwayPolygons.forEach(fp => {
         if (fp.hole === currentHoleNumber && fp.pts && fp.pts.length > 2) {
           minimapCtx.beginPath();
           const p0 = mapToMinimap(fp.pts[0].x, fp.pts[0].z);
@@ -2053,11 +2058,14 @@ group.name = name;
     const btnCloseClub = document.getElementById('btn-close-club-picker');
 
         window.switchActiveCourse = switchActiveCourse;
-    function switchActiveCourse(courseId) {
+    async function switchActiveCourse(courseId) {
+      await activatePuttClubCourse(courseId==='puttclub');
       window.activeCourseId = courseId;
       console.log('Switching course to:', courseId);
 
-      if (courseId === 'tehran') {
+      if(courseId==='puttclub'){
+        const titleBadge=document.querySelector('.splash-tag');if(titleBadge)titleBadge.textContent='زمین باشگاه پات کلاب';
+      }else if (courseId === 'tehran') {
         // Load Tehran Texture
         if (window.TEHRAN_TEXTURE_B64 && satMaterial) {
           const tLoader = new THREE.TextureLoader();
@@ -2186,7 +2194,7 @@ group.name = name;
     });
 
     function canAdjustAim() {
-      return !isBallFlying && golferSwingPhase === 'idle';
+      return !isBallFlying && golferSwingPhase === 'idle' && !(typeof courseRelief!=='undefined'&&courseRelief);
     }
 
     function resetAimToPin() {
@@ -2422,7 +2430,8 @@ group.name = name;
     }
 
     function executeGolfShot(specs, shotDirection = aimDirection) {
-      if (isBallFlying) return;
+      if (isBallFlying || (isPuttClub()&&courseRelief)) return;
+      if(isPuttClub())beginPuttClubShot();
       const club = GOLF_BAG[currentClubIndex];
 
       strokesCurrentHole++;
@@ -2437,6 +2446,7 @@ group.name = name;
       if (teePegGroup) teePegGroup.visible = false;
 
       ballVel.copy(getShotLaunchVelocity(specs, shotDirection));
+      if(isPuttClub())courseBallPlugged=false;
 
       // Realistic audio trigger
       AudioEngine.playSwing(specs.carryMultiplier || 1.0);
@@ -2500,6 +2510,7 @@ group.name = name;
 
     function stepPhysics(dt) {
       if (!isBallFlying) return;
+      if(isPuttClub()){stepPuttClubPhysics(dt);return;}
 
       const subSteps = 6;
       const sdt = dt / subSteps;
@@ -2777,6 +2788,7 @@ group.name = name;
 
     window.setupHole = setupHole;
     function setupHole(hNum) {
+      if(isPuttClub())resetPuttClubHole();
       updateHoleVisualIsolation(hNum);
       currentHoleNumber = hNum;
       strokesCurrentHole = 0;
@@ -2790,7 +2802,9 @@ group.name = name;
       resetToptracer();
 
       let startTeePos = teeBoxes3D[hNum] || new THREE.Vector3(0, getTerrainHeight(0,0), 0);
-      if (isWomenTee) {
+      if(isPuttClub()){
+        const h=window.PuttClubCourse.data.holes[hNum-1],t=h.tees.find(t=>t.color===(isWomenTee?'red':courseTeeColor));startTeePos=new THREE.Vector3().fromArray(t.position);
+      }else if (isWomenTee) {
         const pinPos = holePins3D[hNum] || new THREE.Vector3(100, 0, 100);
         startTeePos = startTeePos.clone().lerp(pinPos, 0.18);
         startTeePos.y = getTerrainHeight(startTeePos.x, startTeePos.z);
@@ -2799,7 +2813,7 @@ group.name = name;
       ballPos.copy(startTeePos);
       const groundAtTee = getTerrainHeight(ballPos.x, ballPos.z);
       // Tee box platform surface is exactly 15cm (0.15m) above ground
-      const platformSurfaceY = groundAtTee + 0.15;
+      const platformSurfaceY = groundAtTee + (isPuttClub()?0:0.15);
       // Ball sits elevated on the plastic tee peg (8cm tee peg + ball radius)
       ballPos.y = platformSurfaceY + 0.08 + BALL_RADIUS;
       ballMesh.position.copy(ballPos);
@@ -2867,6 +2881,8 @@ group.name = name;
         const pulse = 1.0 + Math.sin(time * 3.2) * 0.15;
         beaconHalo.scale.set(pulse, pulse, 1.0);
       }
+
+      if(isPuttClub())window.PuttClubCourse.update(camera,dt);
 
       // Physics & Dynamic Broadcast Camera
       if (isBallFlying) {

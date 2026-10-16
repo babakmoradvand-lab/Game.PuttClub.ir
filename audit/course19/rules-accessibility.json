@@ -1,0 +1,328 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "state": "title",
+      "violations": []
+    },
+    {
+      "state": "skills",
+      "violations": []
+    },
+    {
+      "state": "three-course selector",
+      "violations": []
+    },
+    {
+      "state": "new-course round selection",
+      "violations": []
+    },
+    {
+      "state": "eighteen practice holes",
+      "violations": []
+    },
+    {
+      "state": "new-course gameplay",
+      "violations": []
+    },
+    {
+      "state": "glass settings panel",
+      "violations": []
+    },
+    {
+      "state": "legal relief dialog",
+      "violations": []
+    }
+  ],
+  "layouts": [
+    {
+      "w": 360,
+      "h": 640,
+      "overflow": false,
+      "rects": [
+        {
+          "id": "top-left-hud-column",
+          "x": 12,
+          "y": 10,
+          "right": 186,
+          "bottom": 180.09375
+        },
+        {
+          "id": "bottom-game-dock",
+          "x": 12,
+          "y": 533,
+          "right": 348,
+          "bottom": 632
+        }
+      ]
+    },
+    {
+      "w": 360,
+      "h": 800,
+      "overflow": false,
+      "rects": [
+        {
+          "id": "top-left-hud-column",
+          "x": 12,
+          "y": 10,
+          "right": 186,
+          "bottom": 180.09375
+        },
+        {
+          "id": "bottom-game-dock",
+          "x": 12,
+          "y": 693,
+          "right": 348,
+          "bottom": 792
+        }
+      ]
+    },
+    {
+      "w": 390,
+      "h": 844,
+      "overflow": false,
+      "rects": [
+        {
+          "id": "top-left-hud-column",
+          "x": 12,
+          "y": 10,
+          "right": 186,
+          "bottom": 180.09375
+        },
+        {
+          "id": "bottom-game-dock",
+          "x": 12,
+          "y": 737,
+          "right": 378,
+          "bottom": 836
+        }
+      ]
+    },
+    {
+      "w": 414,
+      "h": 896,
+      "overflow": false,
+      "rects": [
+        {
+          "id": "top-left-hud-column",
+          "x": 12,
+          "y": 10,
+          "right": 186,
+          "bottom": 180.09375
+        },
+        {
+          "id": "bottom-game-dock",
+          "x": 12,
+          "y": 789,
+          "right": 402,
+          "bottom": 888
+        }
+      ]
+    },
+    {
+      "w": 723,
+      "h": 1278,
+      "overflow": false,
+      "rects": [
+        {
+          "id": "top-left-hud-column",
+          "x": 12,
+          "y": 10,
+          "right": 196,
+          "bottom": 182.59375
+        },
+        {
+          "id": "bottom-game-dock",
+          "x": 16.5,
+          "y": 1142,
+          "right": 706.5,
+          "bottom": 1268
+        }
+      ]
+    },
+    {
+      "w": 768,
+      "h": 1024,
+      "overflow": false,
+      "rects": [
+        {
+          "id": "top-left-hud-column",
+          "x": 12,
+          "y": 10,
+          "right": 196,
+          "bottom": 182.59375
+        },
+        {
+          "id": "bottom-game-dock",
+          "x": 39,
+          "y": 948,
+          "right": 729,
+          "bottom": 1014
+        }
+      ]
+    },
+    {
+      "w": 1024,
+      "h": 768,
+      "overflow": false,
+      "rects": [
+        {
+          "id": "top-left-hud-column",
+          "x": 12,
+          "y": 10,
+          "right": 196,
+          "bottom": 182.59375
+        },
+        {
+          "id": "bottom-game-dock",
+          "x": 167,
+          "y": 692,
+          "right": 857,
+          "bottom": 758
+        }
+      ]
+    },
+    {
+      "w": 1366,
+      "h": 768,
+      "overflow": false,
+      "rects": [
+        {
+          "id": "top-left-hud-column",
+          "x": 12,
+          "y": 10,
+          "right": 196,
+          "bottom": 182.59375
+        },
+        {
+          "id": "bottom-game-dock",
+          "x": 338,
+          "y": 692,
+          "right": 1028,
+          "bottom": 758
+        }
+      ]
+    },
+    {
+      "w": 1920,
+      "h": 1080,
+      "overflow": false,
+      "rects": [
+        {
+          "id": "top-left-hud-column",
+          "x": 12,
+          "y": 10,
+          "right": 196,
+          "bottom": 182.59375
+        },
+        {
+          "id": "bottom-game-dock",
+          "x": 615,
+          "y": 1004,
+          "right": 1305,
+          "bottom": 1070
+        }
+      ]
+    }
+  ],
+  "whiteTee": {
+    "color": "white",
+    "forward": false,
+    "ball": [
+      -190,
+      16.320924233398436,
+      -246.378
+    ],
+    "expected": [
+      -190,
+      16.22,
+      -246.378
+    ],
+    "hud": "White"
+  },
+  "rules": {
+    "plugged": {
+      "flag": true,
+      "lie": {
+        "type": "Bunker",
+        "name": "شن · توپ مدفون",
+        "penalty": 0.4,
+        "badge": "lie-sand"
+      },
+      "event": {
+        "type": "plugged-lie",
+        "normalSpeed": 7.777298187734786
+      }
+    },
+    "dryBefore": {
+      "kind": "dry",
+      "options": [
+        "play",
+        "stroke-distance",
+        "DZ_01_CENTRAL_LAKE_H01"
+      ],
+      "strokes": 2
+    },
+    "dryAfter": {
+      "strokes": 2,
+      "pending": null
+    },
+    "obOptions": [
+      "stroke-distance"
+    ],
+    "ob": {
+      "strokes": 2,
+      "tee": true,
+      "inPlay": true
+    },
+    "crossings": {
+      "first": [
+        -167.90398008565714,
+        12,
+        -87.77146002562147
+      ],
+      "last": [
+        -168.0597048536264,
+        12,
+        -87.60777489045161
+      ],
+      "different": true
+    },
+    "options": [
+      {
+        "id": "stroke-distance",
+        "position": [
+          -174.554,
+          6.621755833311271,
+          18.437
+        ],
+        "dry": true,
+        "inPlay": true,
+        "noNearer": true
+      },
+      {
+        "id": "lateral",
+        "position": [
+          -168.0597048536264,
+          5.720756937949091,
+          -89.75777489045161
+        ],
+        "dry": true,
+        "inPlay": true,
+        "noNearer": true
+      },
+      {
+        "id": "DZ_01_CENTRAL_LAKE_H01",
+        "position": [
+          -178,
+          6.0886249999999995,
+          -48
+        ],
+        "dry": true,
+        "inPlay": true,
+        "noNearer": true
+      }
+    ]
+  },
+  "errors": []
+}

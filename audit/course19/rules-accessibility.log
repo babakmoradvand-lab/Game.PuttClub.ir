@@ -1,0 +1,90 @@
+{
+  "passed": true,
+  "axeStates": 8,
+  "viewports": 9,
+  "rules": {
+    "plugged": {
+      "flag": true,
+      "lie": {
+        "type": "Bunker",
+        "name": "شن · توپ مدفون",
+        "penalty": 0.4,
+        "badge": "lie-sand"
+      },
+      "event": {
+        "type": "plugged-lie",
+        "normalSpeed": 7.777298187734786
+      }
+    },
+    "dryBefore": {
+      "kind": "dry",
+      "options": [
+        "play",
+        "stroke-distance",
+        "DZ_01_CENTRAL_LAKE_H01"
+      ],
+      "strokes": 2
+    },
+    "dryAfter": {
+      "strokes": 2,
+      "pending": null
+    },
+    "obOptions": [
+      "stroke-distance"
+    ],
+    "ob": {
+      "strokes": 2,
+      "tee": true,
+      "inPlay": true
+    },
+    "crossings": {
+      "first": [
+        -167.90398008565714,
+        12,
+        -87.77146002562147
+      ],
+      "last": [
+        -168.0597048536264,
+        12,
+        -87.60777489045161
+      ],
+      "different": true
+    },
+    "options": [
+      {
+        "id": "stroke-distance",
+        "position": [
+          -174.554,
+          6.621755833311271,
+          18.437
+        ],
+        "dry": true,
+        "inPlay": true,
+        "noNearer": true
+      },
+      {
+        "id": "lateral",
+        "position": [
+          -168.0597048536264,
+          5.720756937949091,
+          -89.75777489045161
+        ],
+        "dry": true,
+        "inPlay": true,
+        "noNearer": true
+      },
+      {
+        "id": "DZ_01_CENTRAL_LAKE_H01",
+        "position": [
+          -178,
+          6.0886249999999995,
+          -48
+        ],
+        "dry": true,
+        "inPlay": true,
+        "noNearer": true
+      }
+    ]
+  },
+  "errors": []
+}

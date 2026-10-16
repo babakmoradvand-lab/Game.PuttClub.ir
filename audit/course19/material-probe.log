@@ -1,0 +1,192 @@
+[
+  {
+    "x": 800,
+    "y": 260,
+    "hits": [
+      {
+        "name": "Rough_Tier2_Primary_GG04",
+        "mat": "GG_PRIMARY_ROUGH_Living",
+        "color": [
+          0.54,
+          0.67,
+          0.43
+        ],
+        "point": [
+          -75.33526323943565,
+          16.043257591012512,
+          -220.74542953456097
+        ],
+        "rough": 0.92
+      },
+      {
+        "name": "Rough_Tier2_Primary_GG04",
+        "mat": "GG_PRIMARY_ROUGH_Living",
+        "color": [
+          0.54,
+          0.67,
+          0.43
+        ],
+        "point": [
+          -73.49632963748282,
+          16.019037801591733,
+          -220.35352103858017
+        ],
+        "rough": 0.92
+      },
+      {
+        "name": "Rough_Tier3_Heavy_GG05",
+        "mat": "GG_HEAVY_ROUGH_Living",
+        "color": [
+          0.37,
+          0.5,
+          0.28
+        ],
+        "point": [
+          441.07337315222856,
+          9.241865515085998,
+          -110.6898343870053
+        ],
+        "rough": 0.92
+      }
+    ]
+  },
+  {
+    "x": 200,
+    "y": 260,
+    "hits": [
+      {
+        "name": "Pond_10_NNW_Pond_Basin_And_Beach",
+        "mat": "Mat_PH_Lake_Beach_And_Bed",
+        "color": [
+          1,
+          1,
+          1
+        ],
+        "point": [
+          -134.94412682150275,
+          16.870521433775384,
+          -276.6751212341767
+        ],
+        "rough": 1
+      },
+      {
+        "name": "Pond_10_NNW_Pond_Basin_And_Beach",
+        "mat": "Mat_PH_Lake_Beach_And_Bed",
+        "color": [
+          1,
+          1,
+          1
+        ],
+        "point": [
+          -98.9004531245821,
+          16.419662181632674,
+          -293.44046718204453
+        ],
+        "rough": 1
+      }
+    ]
+  },
+  {
+    "x": 900,
+    "y": 270,
+    "hits": [
+      {
+        "name": "Conceptual_Terrain_100ha",
+        "mat": "Mat_Master_Terrain_100ha",
+        "color": [
+          1,
+          1,
+          1
+        ],
+        "point": [
+          203.52632571010102,
+          7.554919094618061,
+          -112.98882293239018
+        ],
+        "rough": 0.9300000071525574
+      }
+    ]
+  },
+  {
+    "x": 500,
+    "y": 290,
+    "hits": [
+      {
+        "name": "Fairway_07_Turf_GG02",
+        "mat": "GG_FAIRWAY_Living",
+        "color": [
+          0.72,
+          0.85,
+          0.66
+        ],
+        "point": [
+          -162.760699505672,
+          15.97276490052525,
+          -251.87689245543564
+        ],
+        "clearcoat": 0.007000000216066837,
+        "rough": 0.92
+      }
+    ]
+  },
+  {
+    "x": 100,
+    "y": 330,
+    "hits": [
+      {
+        "name": "Pond_11_NW_Pond_Basin_And_Beach",
+        "mat": "Mat_PH_Lake_Beach_And_Bed",
+        "color": [
+          1,
+          1,
+          1
+        ],
+        "point": [
+          -187.18809594136064,
+          16.63389502301409,
+          -253.6108750582786
+        ],
+        "rough": 1
+      },
+      {
+        "name": "Pond_11_NW_Pond_Basin_And_Beach",
+        "mat": "Mat_PH_Lake_Beach_And_Bed",
+        "color": [
+          1,
+          1,
+          1
+        ],
+        "point": [
+          -185.6032760037429,
+          16.491263515887074,
+          -254.51863267830518
+        ],
+        "rough": 1
+      },
+      {
+        "name": "Pond_11_NW_Pond_Basin_And_Beach",
+        "mat": "Mat_PH_Lake_Beach_And_Bed",
+        "color": [
+          1,
+          1,
+          1
+        ],
+        "point": [
+          -185.01499025354804,
+          16.43831864740077,
+          -254.8555926444293
+        ],
+        "rough": 1
+      }
+    ]
+  }
+]
+page.screenshot: Timeout 30000ms exceeded.
+Call log:
+  - taking page screenshot
+  - waiting for fonts to load...
+  - fonts loaded
+
+    at /home/user/.cache/course19/probe.cjs:1:1339 {
+  name: 'TimeoutError'
+}

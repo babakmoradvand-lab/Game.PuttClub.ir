@@ -1,7 +1,7 @@
 {
   "name": "پات کلاب - شبیه‌ساز ۳ بعدی گلف",
   "short_name": "Putt Club",
-  "description": "شبیه‌ساز سه‌بعدی گلف میدان تاریخی نفت مسجدسلیمان و باشگاه انقلاب تهران",
+  "description": "شبیه‌ساز سه‌بعدی گلف؛ مسجدسلیمان، نمای تهران و زمین باشگاه پات کلاب",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#23342b",

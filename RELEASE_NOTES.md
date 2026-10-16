@@ -1,3 +1,7 @@
+# Course19 — 2026-10-16
+
+Selectable **زمین باشگاه پات کلاب**, tested playable integration and offline upgrade. Full scope, actual test results and source-quality limitations: [COURSE19_RELEASE_FA.md](COURSE19_RELEASE_FA.md).
+
 # Detail18 — model refinement, stale yardage label, scale after later shots
 
 2026-10-16. Based on **look17 / 44f60c6**, retaining its look-to-aim controls, 2px short guide, physical flight preview and regulation ball. Older local files were not used to overwrite those newer changes.

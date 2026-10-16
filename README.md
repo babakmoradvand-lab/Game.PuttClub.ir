@@ -6,6 +6,10 @@ A golf simulation with a unified premium interface, bilingual player setup, 13 c
 
 See [RELEASE_NOTES.md](RELEASE_NOTES.md) for implemented changes, preservation checks, tested journeys and known engine/asset limits. The current golfer is a genuinely skinned GLB with 51 joints and five clips; Tehran currently uses a surface-presentation switch over the MIS layout. This release does not claim identity-exact/AAA character fidelity or independently reconstructed Tehran geography.
 
+## Selectable PuttClub course — course19
+
+A third, independently playable course **زمین باشگاه پات کلاب** is now included: 18 holes, 54 Blue/White/Red tees, triangle terrain, tree collision, sand and golf-style penalty-area relief. See [Persian release notes and measured tests](COURSE19_RELEASE_FA.md) and [`audit/course19`](audit/course19). The source package contains one playable bunker, not thirty. The existing player/rig, legacy airborne equations, original tracer and offline worker are preserved.
+
 ## Run
 
 ```sh
@@ -47,3 +51,35 @@ See [CHARACTER.md](CHARACTER.md) for the real 3D asset, five skeletal clips, gri
 ## Detail18 — model, units and after-shot view
 
 Latest: `detail18-20261016` (2026-10-16), preserving look17 aim controls. Fixed unit scales and regulation ball, individually planted feet, natural hip reach on turf, no giant idle golfer during camera return, stale floating yardage hidden after rest. Actual cap/collar/cloth geometry refinement; face still approximate. 48 required offline resources, about 15 MiB. See RELEASE_NOTES and CHARACTER for evidence and hardware limits.
+
+## Course19 verification / source regeneration
+
+Run browser tests **sequentially**, especially on 2 GB machines. Requires Node and
+`npm install --no-save playwright@1.51.1 axe-core@4.10.2`, then install Chromium
+with `npx playwright install --with-deps chromium`. Serve this root on port 8080.
+
+```sh
+node scripts/course19-tests.cjs
+node scripts/course19-rules-a11y.cjs
+node scripts/course19-aim-regression.cjs
+COURSE=puttclub node scripts/course19-aim-regression.cjs
+node scripts/course19-look-aim.cjs
+node scripts/course19-flight-regression.cjs
+node scripts/course19-upgrade.cjs
+node scripts/start-flow-test.cjs
+node scripts/tracer-restore-test.cjs
+```
+
+The upgrade test reads the genuine previous commit `b1338d5` (git history needed).
+Tests use disposable browser profiles; controlled physics fixtures are explicitly
+labelled and are not claimed to be normal user shots or real player statistics.
+
+Optional source rebuild requires the **original supplied package**, not another
+copy of the already patched GLB. Install Python `numpy`, `shapely>=2` and
+`mapbox-earcut`. Run `python scripts/build-course19-assets.py /path/to/original/puttclub_luxury_resort_100ha`.
+This clips overlaps, fixes winding and normalized colors, exports portable PBR/UVs,
+indexes geometry and matches lower-layer edges to higher surfaces. It validates all
+54 tee interiors. Never feed patched output back into that builder. Finally run
+`python scripts/runtime-manifest.py course19-20261016` and repeat the tests.
+The original ZIP/Blender course is not redistributed. See integrated asset credits
+for the distinction between supplied license claims and independently verified facts.

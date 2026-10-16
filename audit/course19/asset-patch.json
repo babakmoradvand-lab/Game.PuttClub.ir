@@ -1,0 +1,1259 @@
+{
+  "sourceZipSha256": "3594f0288472a6a84d3748a721a84b1fff691a85a480fed54a4a937fb11bc279",
+  "patches": [
+    {
+      "kind": "visual",
+      "name": "Tee_01_Turf_GG02",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "visual",
+      "name": "Fairway_01_Turf_GG02",
+      "before": 1632,
+      "after": 1675
+    },
+    {
+      "kind": "visual",
+      "name": "FirstCut_01_Turf_GG03",
+      "before": 708,
+      "after": 624
+    },
+    {
+      "kind": "visual",
+      "name": "Tee_02_Turf_GG02",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "visual",
+      "name": "Fairway_02_Turf_GG02",
+      "before": 3040,
+      "after": 3078
+    },
+    {
+      "kind": "visual",
+      "name": "FirstCut_02_Turf_GG03",
+      "before": 1236,
+      "after": 1192
+    },
+    {
+      "kind": "visual",
+      "name": "Tee_03_Turf_GG02",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "visual",
+      "name": "Fairway_03_Turf_GG02",
+      "before": 1120,
+      "after": 1134
+    },
+    {
+      "kind": "visual",
+      "name": "FirstCut_03_Turf_GG03",
+      "before": 516,
+      "after": 456
+    },
+    {
+      "kind": "visual",
+      "name": "Tee_04_Turf_GG02",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "visual",
+      "name": "Fairway_04_Turf_GG02",
+      "before": 2304,
+      "after": 2336
+    },
+    {
+      "kind": "visual",
+      "name": "FirstCut_04_Turf_GG03",
+      "before": 960,
+      "after": 903
+    },
+    {
+      "kind": "visual",
+      "name": "Tee_05_Turf_GG02",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "visual",
+      "name": "Fairway_05_Turf_GG02",
+      "before": 1440,
+      "after": 1473
+    },
+    {
+      "kind": "visual",
+      "name": "FirstCut_05_Turf_GG03",
+      "before": 636,
+      "after": 576
+    },
+    {
+      "kind": "visual",
+      "name": "Tee_06_Turf_GG02",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "visual",
+      "name": "Fairway_06_Turf_GG02",
+      "before": 2016,
+      "after": 2051
+    },
+    {
+      "kind": "visual",
+      "name": "FirstCut_06_Turf_GG03",
+      "before": 852,
+      "after": 805
+    },
+    {
+      "kind": "visual",
+      "name": "Tee_07_Turf_GG02",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "visual",
+      "name": "Fairway_07_Turf_GG02",
+      "before": 1120,
+      "after": 1137
+    },
+    {
+      "kind": "visual",
+      "name": "FirstCut_07_Turf_GG03",
+      "before": 516,
+      "after": 455
+    },
+    {
+      "kind": "visual",
+      "name": "Tee_08_Turf_GG02",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "visual",
+      "name": "Fairway_08_Turf_GG02",
+      "before": 1792,
+      "after": 1829
+    },
+    {
+      "kind": "visual",
+      "name": "FirstCut_08_Turf_GG03",
+      "before": 768,
+      "after": 720
+    },
+    {
+      "kind": "visual",
+      "name": "Tee_09_Turf_GG02",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "visual",
+      "name": "Fairway_09_Turf_GG02",
+      "before": 2560,
+      "after": 2594
+    },
+    {
+      "kind": "visual",
+      "name": "FirstCut_09_Turf_GG03",
+      "before": 1056,
+      "after": 1019
+    },
+    {
+      "kind": "visual",
+      "name": "Tee_10_Turf_GG02",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "visual",
+      "name": "Fairway_10_Turf_GG02",
+      "before": 1472,
+      "after": 1505
+    },
+    {
+      "kind": "visual",
+      "name": "FirstCut_10_Turf_GG03",
+      "before": 648,
+      "after": 592
+    },
+    {
+      "kind": "visual",
+      "name": "Tee_11_Turf_GG02",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "visual",
+      "name": "Fairway_11_Turf_GG02",
+      "before": 1120,
+      "after": 1137
+    },
+    {
+      "kind": "visual",
+      "name": "FirstCut_11_Turf_GG03",
+      "before": 516,
+      "after": 459
+    },
+    {
+      "kind": "visual",
+      "name": "Tee_12_Turf_GG02",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "visual",
+      "name": "Fairway_12_Turf_GG02",
+      "before": 1120,
+      "after": 1151
+    },
+    {
+      "kind": "visual",
+      "name": "FirstCut_12_Turf_GG03",
+      "before": 516,
+      "after": 468
+    },
+    {
+      "kind": "visual",
+      "name": "Tee_13_Turf_GG02",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "visual",
+      "name": "Fairway_13_Turf_GG02",
+      "before": 1984,
+      "after": 2025
+    },
+    {
+      "kind": "visual",
+      "name": "FirstCut_13_Turf_GG03",
+      "before": 840,
+      "after": 798
+    },
+    {
+      "kind": "visual",
+      "name": "Tee_14_Turf_GG02",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "visual",
+      "name": "Fairway_14_Turf_GG02",
+      "before": 1696,
+      "after": 1733
+    },
+    {
+      "kind": "visual",
+      "name": "FirstCut_14_Turf_GG03",
+      "before": 732,
+      "after": 676
+    },
+    {
+      "kind": "visual",
+      "name": "Tee_15_Turf_GG02",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "visual",
+      "name": "Fairway_15_Turf_GG02",
+      "before": 1120,
+      "after": 1131
+    },
+    {
+      "kind": "visual",
+      "name": "FirstCut_15_Turf_GG03",
+      "before": 516,
+      "after": 449
+    },
+    {
+      "kind": "visual",
+      "name": "Tee_16_Turf_GG02",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "visual",
+      "name": "Fairway_16_Turf_GG02",
+      "before": 1760,
+      "after": 1796
+    },
+    {
+      "kind": "visual",
+      "name": "FirstCut_16_Turf_GG03",
+      "before": 756,
+      "after": 704
+    },
+    {
+      "kind": "visual",
+      "name": "Tee_17_Turf_GG02",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "visual",
+      "name": "Fairway_17_Turf_GG02",
+      "before": 2304,
+      "after": 2338
+    },
+    {
+      "kind": "visual",
+      "name": "FirstCut_17_Turf_GG03",
+      "before": 960,
+      "after": 913
+    },
+    {
+      "kind": "visual",
+      "name": "Tee_18_Turf_GG02",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "visual",
+      "name": "Fairway_18_Turf_GG02",
+      "before": 2688,
+      "after": 2729
+    },
+    {
+      "kind": "visual",
+      "name": "FirstCut_18_Turf_GG03",
+      "before": 1104,
+      "after": 1060
+    },
+    {
+      "kind": "visual",
+      "name": "H01_GR_BK08_SCALLOPED_L_TERRAIN",
+      "before": 5954,
+      "after": 5954
+    },
+    {
+      "kind": "visual",
+      "name": "H01_GR_BK08_SCALLOPED_L_SOIL",
+      "before": 420,
+      "after": 420
+    },
+    {
+      "kind": "visual",
+      "name": "H01_GR_BK08_SCALLOPED_L_ROOTS",
+      "before": 2272,
+      "after": 2272
+    },
+    {
+      "kind": "visual",
+      "name": "Rough_Tier2_Primary_GG04",
+      "before": 17982,
+      "after": 21868
+    },
+    {
+      "kind": "visual",
+      "name": "Rough_Tier3_Heavy_GG05",
+      "before": 14336,
+      "after": 14561
+    },
+    {
+      "kind": "visual",
+      "name": "Rough_Tier4_Native_GG06",
+      "before": 33176,
+      "after": 33370
+    },
+    {
+      "kind": "visual",
+      "name": "Central_Lake_Basin_And_Beach",
+      "before": 23680,
+      "after": 23680
+    },
+    {
+      "kind": "visual",
+      "name": "Pond_01_West_Basin_Basin_And_Beach",
+      "before": 3898,
+      "after": 3898
+    },
+    {
+      "kind": "visual",
+      "name": "Pond_02_SE_Lagoon_Basin_And_Beach",
+      "before": 3744,
+      "after": 3744
+    },
+    {
+      "kind": "visual",
+      "name": "Pond_03_East_Pond_Basin_And_Beach",
+      "before": 3246,
+      "after": 3246
+    },
+    {
+      "kind": "visual",
+      "name": "Pond_04_South_Pond_Basin_And_Beach",
+      "before": 3052,
+      "after": 3052
+    },
+    {
+      "kind": "visual",
+      "name": "Pond_05_SW_Cove_Basin_And_Beach",
+      "before": 3448,
+      "after": 3448
+    },
+    {
+      "kind": "visual",
+      "name": "Pond_06_West_Channel_Basin_And_Beach",
+      "before": 3674,
+      "after": 3139
+    },
+    {
+      "kind": "visual",
+      "name": "Pond_07_SSE_Pond_Basin_And_Beach",
+      "before": 3568,
+      "after": 3568
+    },
+    {
+      "kind": "visual",
+      "name": "Pond_08_North_Pond_Basin_And_Beach",
+      "before": 3294,
+      "after": 3294
+    },
+    {
+      "kind": "visual",
+      "name": "Pond_09_NE_Lagoon_Basin_And_Beach",
+      "before": 3176,
+      "after": 2941
+    },
+    {
+      "kind": "visual",
+      "name": "Pond_10_NNW_Pond_Basin_And_Beach",
+      "before": 3016,
+      "after": 3016
+    },
+    {
+      "kind": "visual",
+      "name": "Pond_11_NW_Pond_Basin_And_Beach",
+      "before": 3324,
+      "after": 2808
+    },
+    {
+      "kind": "visual",
+      "name": "Conceptual_Terrain_100ha",
+      "before": 128398,
+      "after": 42238
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_TEE_01",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FAIRWAY_01",
+      "before": 1632,
+      "after": 1675
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FRINGE_01",
+      "before": 708,
+      "after": 624
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_TEE_02",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FAIRWAY_02",
+      "before": 3040,
+      "after": 3078
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FRINGE_02",
+      "before": 1236,
+      "after": 1192
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_TEE_03",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FAIRWAY_03",
+      "before": 1120,
+      "after": 1134
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FRINGE_03",
+      "before": 516,
+      "after": 456
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_TEE_04",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FAIRWAY_04",
+      "before": 2304,
+      "after": 2336
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FRINGE_04",
+      "before": 960,
+      "after": 903
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_TEE_05",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FAIRWAY_05",
+      "before": 1440,
+      "after": 1473
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FRINGE_05",
+      "before": 636,
+      "after": 576
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_TEE_06",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FAIRWAY_06",
+      "before": 2016,
+      "after": 2051
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FRINGE_06",
+      "before": 852,
+      "after": 805
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_TEE_07",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FAIRWAY_07",
+      "before": 1120,
+      "after": 1137
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FRINGE_07",
+      "before": 516,
+      "after": 455
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_TEE_08",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FAIRWAY_08",
+      "before": 1792,
+      "after": 1829
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FRINGE_08",
+      "before": 768,
+      "after": 720
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_TEE_09",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FAIRWAY_09",
+      "before": 2560,
+      "after": 2594
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FRINGE_09",
+      "before": 1056,
+      "after": 1019
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_TEE_10",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FAIRWAY_10",
+      "before": 1472,
+      "after": 1505
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FRINGE_10",
+      "before": 648,
+      "after": 592
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_TEE_11",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FAIRWAY_11",
+      "before": 1120,
+      "after": 1137
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FRINGE_11",
+      "before": 516,
+      "after": 459
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_TEE_12",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FAIRWAY_12",
+      "before": 1120,
+      "after": 1151
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FRINGE_12",
+      "before": 516,
+      "after": 468
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_TEE_13",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FAIRWAY_13",
+      "before": 1984,
+      "after": 2025
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FRINGE_13",
+      "before": 840,
+      "after": 798
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_TEE_14",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FAIRWAY_14",
+      "before": 1696,
+      "after": 1733
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FRINGE_14",
+      "before": 732,
+      "after": 676
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_TEE_15",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FAIRWAY_15",
+      "before": 1120,
+      "after": 1131
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FRINGE_15",
+      "before": 516,
+      "after": 449
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_TEE_16",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FAIRWAY_16",
+      "before": 1760,
+      "after": 1796
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FRINGE_16",
+      "before": 756,
+      "after": 704
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_TEE_17",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FAIRWAY_17",
+      "before": 2304,
+      "after": 2338
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FRINGE_17",
+      "before": 960,
+      "after": 913
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_TEE_18",
+      "before": 30,
+      "after": 30
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FAIRWAY_18",
+      "before": 2688,
+      "after": 2729
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_FRINGE_18",
+      "before": 1104,
+      "after": 1060
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_BUNKER_H01_SAND",
+      "before": 5954,
+      "after": 5954
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_BUNKER_H01_LIP",
+      "before": 420,
+      "after": 420
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_ROUGH_PRIMARY",
+      "before": 17982,
+      "after": 21868
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_ROUGH_HEAVY",
+      "before": 14336,
+      "after": 14561
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_ROUGH_NATIVE",
+      "before": 33176,
+      "after": 33370
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_LAKE_BASIN_CENTRAL",
+      "before": 23680,
+      "after": 23680
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_LAKE_BASIN_POND_01_WEST_BASIN",
+      "before": 3898,
+      "after": 3898
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_LAKE_BASIN_POND_02_SE_LAGOON",
+      "before": 3744,
+      "after": 3744
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_LAKE_BASIN_POND_03_EAST_POND",
+      "before": 3246,
+      "after": 3246
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_LAKE_BASIN_POND_04_SOUTH_POND",
+      "before": 3052,
+      "after": 3052
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_LAKE_BASIN_POND_05_SW_COVE",
+      "before": 3448,
+      "after": 3448
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_LAKE_BASIN_POND_06_WEST_CHANNEL",
+      "before": 3674,
+      "after": 3139
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_LAKE_BASIN_POND_07_SSE_POND",
+      "before": 3568,
+      "after": 3568
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_LAKE_BASIN_POND_08_NORTH_POND",
+      "before": 3294,
+      "after": 3294
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_LAKE_BASIN_POND_09_NE_LAGOON",
+      "before": 3176,
+      "after": 2941
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_LAKE_BASIN_POND_10_NNW_POND",
+      "before": 3016,
+      "after": 3016
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_LAKE_BASIN_POND_11_NW_POND",
+      "before": 3324,
+      "after": 2808
+    },
+    {
+      "kind": "collision",
+      "name": "COLL_TERRAIN_BASE",
+      "before": 128398,
+      "after": 42238
+    }
+  ],
+  "dropZoneChanges": [
+    {
+      "id": "DZ_01_CENTRAL_LAKE_H01",
+      "old": [
+        -178.0,
+        6.25,
+        -48.0
+      ],
+      "new": [
+        -178.0,
+        6.06729,
+        -48.0
+      ],
+      "clearanceM": 8.062646484374994
+    },
+    {
+      "id": "DZ_02_POND_01_WEST",
+      "old": [
+        -212.0,
+        6.65,
+        45.0
+      ],
+      "new": [
+        -212.0,
+        6.33363,
+        45.0
+      ],
+      "clearanceM": 9.801030269228589
+    },
+    {
+      "id": "DZ_03_POND_02_SE",
+      "old": [
+        162.0,
+        9.95,
+        182.0
+      ],
+      "new": [
+        158.06077,
+        8.9897,
+        181.30541
+      ],
+      "clearanceM": 6.000508118171693
+    },
+    {
+      "id": "DZ_04_POND_06_CHANNEL",
+      "old": [
+        -198.0,
+        8.25,
+        168.0
+      ],
+      "new": [
+        -198.0,
+        7.74709,
+        168.0
+      ],
+      "clearanceM": 21.5449951850706
+    }
+  ],
+  "teeChecks": [
+    {
+      "id": "H01_TEE_BLUE",
+      "metadataY": 6.524,
+      "highestSolidY": 6.520420831927635,
+      "mesh": "COLL_TEE_01"
+    },
+    {
+      "id": "H01_TEE_WHITE",
+      "metadataY": 6.524,
+      "highestSolidY": 6.523631572723389,
+      "mesh": "COLL_TEE_01"
+    },
+    {
+      "id": "H01_TEE_RED",
+      "metadataY": 6.524,
+      "highestSolidY": 6.520419095072746,
+      "mesh": "COLL_TEE_01"
+    },
+    {
+      "id": "H02_TEE_BLUE",
+      "metadataY": 15.469,
+      "highestSolidY": 15.465569720830844,
+      "mesh": "COLL_TEE_02"
+    },
+    {
+      "id": "H02_TEE_WHITE",
+      "metadataY": 15.469,
+      "highestSolidY": 15.468788146972656,
+      "mesh": "COLL_TEE_02"
+    },
+    {
+      "id": "H02_TEE_RED",
+      "metadataY": 15.469,
+      "highestSolidY": 15.465574321460561,
+      "mesh": "COLL_TEE_02"
+    },
+    {
+      "id": "H03_TEE_BLUE",
+      "metadataY": 22.867,
+      "highestSolidY": 22.863635307437917,
+      "mesh": "COLL_TEE_03"
+    },
+    {
+      "id": "H03_TEE_WHITE",
+      "metadataY": 22.867,
+      "highestSolidY": 22.866853713989258,
+      "mesh": "COLL_TEE_03"
+    },
+    {
+      "id": "H03_TEE_RED",
+      "metadataY": 22.867,
+      "highestSolidY": 22.863643275325554,
+      "mesh": "COLL_TEE_03"
+    },
+    {
+      "id": "H04_TEE_BLUE",
+      "metadataY": 22.238,
+      "highestSolidY": 22.23516235534387,
+      "mesh": "COLL_TEE_04"
+    },
+    {
+      "id": "H04_TEE_WHITE",
+      "metadataY": 22.238,
+      "highestSolidY": 22.238380432128906,
+      "mesh": "COLL_TEE_04"
+    },
+    {
+      "id": "H04_TEE_RED",
+      "metadataY": 22.238,
+      "highestSolidY": 22.23516979091751,
+      "mesh": "COLL_TEE_04"
+    },
+    {
+      "id": "H05_TEE_BLUE",
+      "metadataY": 14.848,
+      "highestSolidY": 14.844699197290414,
+      "mesh": "COLL_TEE_05"
+    },
+    {
+      "id": "H05_TEE_WHITE",
+      "metadataY": 14.848,
+      "highestSolidY": 14.847914695739746,
+      "mesh": "COLL_TEE_05"
+    },
+    {
+      "id": "H05_TEE_RED",
+      "metadataY": 14.848,
+      "highestSolidY": 14.844701936730115,
+      "mesh": "COLL_TEE_05"
+    },
+    {
+      "id": "H06_TEE_BLUE",
+      "metadataY": 19.84,
+      "highestSolidY": 19.837254247183687,
+      "mesh": "COLL_TEE_06"
+    },
+    {
+      "id": "H06_TEE_WHITE",
+      "metadataY": 19.84,
+      "highestSolidY": 19.840465545654297,
+      "mesh": "COLL_TEE_06"
+    },
+    {
+      "id": "H06_TEE_RED",
+      "metadataY": 19.84,
+      "highestSolidY": 19.837247991154683,
+      "mesh": "COLL_TEE_06"
+    },
+    {
+      "id": "H07_TEE_BLUE",
+      "metadataY": 16.22,
+      "highestSolidY": 16.21637823157505,
+      "mesh": "COLL_TEE_07"
+    },
+    {
+      "id": "H07_TEE_WHITE",
+      "metadataY": 16.22,
+      "highestSolidY": 16.219589233398438,
+      "mesh": "COLL_TEE_07"
+    },
+    {
+      "id": "H07_TEE_RED",
+      "metadataY": 16.22,
+      "highestSolidY": 16.21637833899481,
+      "mesh": "COLL_TEE_07"
+    },
+    {
+      "id": "H08_TEE_BLUE",
+      "metadataY": 26.808,
+      "highestSolidY": 26.805159290235423,
+      "mesh": "COLL_TEE_08"
+    },
+    {
+      "id": "H08_TEE_WHITE",
+      "metadataY": 26.808,
+      "highestSolidY": 26.80837059020996,
+      "mesh": "COLL_TEE_08"
+    },
+    {
+      "id": "H08_TEE_RED",
+      "metadataY": 26.808,
+      "highestSolidY": 26.8051582147304,
+      "mesh": "COLL_TEE_08"
+    },
+    {
+      "id": "H09_TEE_BLUE",
+      "metadataY": 25.605,
+      "highestSolidY": 25.601520363034577,
+      "mesh": "COLL_TEE_09"
+    },
+    {
+      "id": "H09_TEE_WHITE",
+      "metadataY": 25.605,
+      "highestSolidY": 25.604734420776367,
+      "mesh": "COLL_TEE_09"
+    },
+    {
+      "id": "H09_TEE_RED",
+      "metadataY": 25.605,
+      "highestSolidY": 25.601520775508547,
+      "mesh": "COLL_TEE_09"
+    },
+    {
+      "id": "H10_TEE_BLUE",
+      "metadataY": 15.471,
+      "highestSolidY": 15.468248268897463,
+      "mesh": "COLL_TEE_10"
+    },
+    {
+      "id": "H10_TEE_WHITE",
+      "metadataY": 15.471,
+      "highestSolidY": 15.47146224975586,
+      "mesh": "COLL_TEE_10"
+    },
+    {
+      "id": "H10_TEE_RED",
+      "metadataY": 15.471,
+      "highestSolidY": 15.4682482984013,
+      "mesh": "COLL_TEE_10"
+    },
+    {
+      "id": "H11_TEE_BLUE",
+      "metadataY": 19.879,
+      "highestSolidY": 19.875568983686257,
+      "mesh": "COLL_TEE_11"
+    },
+    {
+      "id": "H11_TEE_WHITE",
+      "metadataY": 19.879,
+      "highestSolidY": 19.878787994384766,
+      "mesh": "COLL_TEE_11"
+    },
+    {
+      "id": "H11_TEE_RED",
+      "metadataY": 19.879,
+      "highestSolidY": 19.875571649467933,
+      "mesh": "COLL_TEE_11"
+    },
+    {
+      "id": "H12_TEE_BLUE",
+      "metadataY": 20.193,
+      "highestSolidY": 20.18997758197675,
+      "mesh": "COLL_TEE_12"
+    },
+    {
+      "id": "H12_TEE_WHITE",
+      "metadataY": 20.193,
+      "highestSolidY": 20.193187713623047,
+      "mesh": "COLL_TEE_12"
+    },
+    {
+      "id": "H12_TEE_RED",
+      "metadataY": 20.193,
+      "highestSolidY": 20.189974690619923,
+      "mesh": "COLL_TEE_12"
+    },
+    {
+      "id": "H13_TEE_BLUE",
+      "metadataY": 16.042,
+      "highestSolidY": 16.03833359156208,
+      "mesh": "COLL_TEE_13"
+    },
+    {
+      "id": "H13_TEE_WHITE",
+      "metadataY": 16.042,
+      "highestSolidY": 16.041549682617188,
+      "mesh": "COLL_TEE_13"
+    },
+    {
+      "id": "H13_TEE_RED",
+      "metadataY": 16.042,
+      "highestSolidY": 16.038333652736313,
+      "mesh": "COLL_TEE_13"
+    },
+    {
+      "id": "H14_TEE_BLUE",
+      "metadataY": 8.448,
+      "highestSolidY": 8.44521017796894,
+      "mesh": "COLL_TEE_14"
+    },
+    {
+      "id": "H14_TEE_WHITE",
+      "metadataY": 8.448,
+      "highestSolidY": 8.448426246643066,
+      "mesh": "COLL_TEE_14"
+    },
+    {
+      "id": "H14_TEE_RED",
+      "metadataY": 8.448,
+      "highestSolidY": 8.445215779498062,
+      "mesh": "COLL_TEE_14"
+    },
+    {
+      "id": "H15_TEE_BLUE",
+      "metadataY": 7.094,
+      "highestSolidY": 7.090595785793234,
+      "mesh": "COLL_TEE_15"
+    },
+    {
+      "id": "H15_TEE_WHITE",
+      "metadataY": 7.094,
+      "highestSolidY": 7.093810558319092,
+      "mesh": "COLL_TEE_15"
+    },
+    {
+      "id": "H15_TEE_RED",
+      "metadataY": 7.094,
+      "highestSolidY": 7.090593720605409,
+      "mesh": "COLL_TEE_15"
+    },
+    {
+      "id": "H16_TEE_BLUE",
+      "metadataY": 11.875,
+      "highestSolidY": 11.871795371990135,
+      "mesh": "COLL_TEE_16"
+    },
+    {
+      "id": "H16_TEE_WHITE",
+      "metadataY": 11.875,
+      "highestSolidY": 11.875014305114746,
+      "mesh": "COLL_TEE_16"
+    },
+    {
+      "id": "H16_TEE_RED",
+      "metadataY": 11.875,
+      "highestSolidY": 11.871802434825419,
+      "mesh": "COLL_TEE_16"
+    },
+    {
+      "id": "H17_TEE_BLUE",
+      "metadataY": 15.33,
+      "highestSolidY": 15.326588389433267,
+      "mesh": "COLL_TEE_17"
+    },
+    {
+      "id": "H17_TEE_WHITE",
+      "metadataY": 15.33,
+      "highestSolidY": 15.329805374145508,
+      "mesh": "COLL_TEE_17"
+    },
+    {
+      "id": "H17_TEE_RED",
+      "metadataY": 15.33,
+      "highestSolidY": 15.32659028227887,
+      "mesh": "COLL_TEE_17"
+    },
+    {
+      "id": "H18_TEE_BLUE",
+      "metadataY": 11.467,
+      "highestSolidY": 11.463993543566353,
+      "mesh": "COLL_TEE_18"
+    },
+    {
+      "id": "H18_TEE_WHITE",
+      "metadataY": 11.467,
+      "highestSolidY": 11.46721076965332,
+      "mesh": "COLL_TEE_18"
+    },
+    {
+      "id": "H18_TEE_RED",
+      "metadataY": 11.467,
+      "highestSolidY": 11.463992132977921,
+      "mesh": "COLL_TEE_18"
+    }
+  ]
+}

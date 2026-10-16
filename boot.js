@@ -16,7 +16,7 @@
   }
   function hide() {
     overlay.hidden=true;window.PuttBootPaused=false;
-    underlying.forEach(id=>document.getElementById(id).inert=id==='game-ui' && document.getElementById('celebration-overlay').style.display!=='none');
+    underlying.forEach(id=>document.getElementById(id).inert=id==='game-ui' && (document.getElementById('celebration-overlay').style.display!=='none'||!document.getElementById('course-relief')?.hidden&&!!document.getElementById('course-relief')));
   }
   function rpc(type, data={}, progress) {
     return new Promise((resolve,reject)=>{
@@ -91,11 +91,12 @@
         script.onload=resolve;script.onerror=()=>reject(Error('Runtime script failed: '+script.src));
         document.body.appendChild(script);
       });
+      if(source.dataset.runtimeSrc.includes('course-runtime.js'))await window.PuttCourseReady;
     }
     if(!window.PuttUI)throw Error('Game interface did not initialize');
   }
   function checkpoint() {
-    try {const value=window.PuttUI?.exportSession();if(value)lastCheckpoint=value;}catch(error) {console.info(error.message);}
+    try {const value=window.PuttUI?.exportSession();if(value){lastCheckpoint=value;if(value.started)localStorage.setItem('puttclub-round-v1',JSON.stringify(value));}}catch(error) {console.info(error.message);}
   }
   async function check() {
     if(checking)return;checking=true;
@@ -116,9 +117,9 @@
       }
       if(!running) {
         await loadScripts();running=true;
-        const saved=sessionStorage.getItem('puttclub-update-session');
+        const saved=sessionStorage.getItem('puttclub-update-session')||localStorage.getItem('puttclub-round-v1');
         if(saved) {
-          try {window.PuttUI.importSession(JSON.parse(saved));sessionStorage.removeItem('puttclub-update-session');}
+          try {await window.PuttUI.importSession(JSON.parse(saved));sessionStorage.removeItem('puttclub-update-session');}
           catch(error) {console.warn('Round checkpoint unavailable:',error.message);}
         }
         // Best effort only. Safari is still permitted to evict local storage.
@@ -133,6 +134,7 @@
       console.warn('Game boot:',error.message);
     } finally {checking=false;}
   }
+  setInterval(()=>{if(running&&!window.PuttBootPaused)checkpoint();},1500);
   retry.addEventListener('click',check);
   document.addEventListener('click',event=>{
     if(event.target.closest('#btn-launch-shot,#btn-putt-action'))checkpoint();

@@ -1,0 +1,30 @@
+{
+  samples: 1568,
+  maxContactError: 0.000001267092466155222,
+  maxWristError: 0.0000010871775795844712,
+  worst: {
+    strokes: 0,
+    club: 1,
+    heading: 180,
+    mode: 'full',
+    phase: 'followthrough',
+    p: 1,
+    errors: [ 0.0000010871775795844712, 5.089895844039604e-7 ]
+  },
+  joints: 51
+}
+PASS: rig proportions, finite poses, contact and no scale accumulation {
+  samples: 1568,
+  maxContactError: 0.000001267092466155222,
+  maxWristError: 0.0000010871775795844712,
+  worst: {
+    strokes: 0,
+    club: 1,
+    heading: 180,
+    mode: 'full',
+    phase: 'followthrough',
+    p: 1,
+    errors: [ 0.0000010871775795844712, 5.089895844039604e-7 ]
+  },
+  joints: 51
+}

@@ -1,0 +1,1094 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "width": 390,
+      "shot": 1,
+      "pose": {
+        "strokes": 0,
+        "joints": 51,
+        "ball": [
+          -174.554,
+          6.621755833311271,
+          18.437
+        ],
+        "clearance": 0.10133499999999973,
+        "soles": {
+          "L": 0.002829762789968271,
+          "R": 0.00716220912500809
+        },
+        "min": [
+          100.74382612075622,
+          332.0599257084111
+        ],
+        "max": [
+          182.52593825415607,
+          555.6157422897301
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "tagVisible": false,
+        "render": {
+          "frame": 3,
+          "calls": 69,
+          "triangles": 473485,
+          "points": 0,
+          "lines": 0
+        },
+        "overflow": false
+      }
+    },
+    {
+      "width": 390,
+      "uiShot": 1,
+      "flight": {
+        "frames": 1085,
+        "strokes": 1,
+        "distance": 89.3714384197123,
+        "trace": 535,
+        "transition": false
+      }
+    },
+    {
+      "width": 390,
+      "shot": 2,
+      "pose": {
+        "strokes": 1,
+        "joints": 51,
+        "ball": [
+          -252.16749714871224,
+          9.712176007254543,
+          -25.873259145656835
+        ],
+        "clearance": 0.021335000000000548,
+        "soles": {
+          "L": 0.0049206854077219475,
+          "R": 0.004943634950183906
+        },
+        "min": [
+          101.46025490318452,
+          332.8817829650422
+        ],
+        "max": [
+          193.48837915194062,
+          545.9775010177881
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "tagVisible": false,
+        "render": {
+          "frame": 4,
+          "calls": 62,
+          "triangles": 430549,
+          "points": 0,
+          "lines": 0
+        },
+        "overflow": false
+      }
+    },
+    {
+      "width": 390,
+      "uiShot": 2,
+      "flight": {
+        "frames": 994,
+        "strokes": 2,
+        "distance": 69.50961745172039,
+        "trace": 494,
+        "transition": false
+      }
+    },
+    {
+      "width": 390,
+      "shot": 3,
+      "pose": {
+        "strokes": 2,
+        "joints": 51,
+        "ball": [
+          -312.88712082432687,
+          12.477565083340394,
+          -59.70688471218829
+        ],
+        "clearance": 0.021335000000000548,
+        "soles": {
+          "L": 0.004954750785946871,
+          "R": 0.004955875048164415
+        },
+        "min": [
+          101.65346386123268,
+          337.04093188610346
+        ],
+        "max": [
+          195.94105065386066,
+          546.3626310806034
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "tagVisible": false,
+        "render": {
+          "frame": 5,
+          "calls": 57,
+          "triangles": 423737,
+          "points": 0,
+          "lines": 0
+        },
+        "overflow": false
+      }
+    },
+    {
+      "engineTees": [
+        {
+          "h": 1,
+          "color": "blue",
+          "forward": false,
+          "dx": 0,
+          "dy": -0.0035791666887288187,
+          "area": null
+        },
+        {
+          "h": 1,
+          "color": "white",
+          "forward": false,
+          "dx": 0,
+          "dy": -0.00036842727661134944,
+          "area": null
+        },
+        {
+          "h": 1,
+          "color": "red",
+          "forward": true,
+          "dx": 0,
+          "dy": -0.0035809050236599305,
+          "area": null
+        },
+        {
+          "h": 2,
+          "color": "blue",
+          "forward": false,
+          "dx": 0,
+          "dy": -0.0034302781218471523,
+          "area": null
+        },
+        {
+          "h": 2,
+          "color": "white",
+          "forward": false,
+          "dx": 0,
+          "dy": -0.00021185302734316735,
+          "area": null
+        },
+        {
+          "h": 2,
+          "color": "red",
+          "forward": true,
+          "dx": 0,
+          "dy": -0.0034256784944108887,
+          "area": null
+        },
+        {
+          "h": 3,
+          "color": "blue",
+          "forward": false,
+          "dx": 0,
+          "dy": -0.0033646918270839876,
+          "area": null
+        },
+        {
+          "h": 3,
+          "color": "white",
+          "forward": false,
+          "dx": 0,
+          "dy": -0.00014628601074306857,
+          "area": null
+        },
+        {
+          "h": 3,
+          "color": "red",
+          "forward": true,
+          "dx": 0,
+          "dy": -0.003356724762550556,
+          "area": null
+        },
+        {
+          "h": 4,
+          "color": "blue",
+          "forward": false,
+          "dx": 0,
+          "dy": -0.0028376431858028184,
+          "area": null
+        },
+        {
+          "h": 4,
+          "color": "white",
+          "forward": false,
+          "dx": 0,
+          "dy": 0.00038043212890670475,
+          "area": null
+        },
+        {
+          "h": 4,
+          "color": "red",
+          "forward": true,
+          "dx": 0,
+          "dy": -0.0028302089715701584,
+          "area": null
+        },
+        {
+          "h": 5,
+          "color": "blue",
+          "forward": false,
+          "dx": 0,
+          "dy": -0.0033008026660326095,
+          "area": null
+        },
+        {
+          "h": 5,
+          "color": "white",
+          "forward": false,
+          "dx": 0,
+          "dy": -0.00008530426025465943,
+          "area": null
+        },
+        {
+          "h": 5,
+          "color": "red",
+          "forward": true,
+          "dx": 0,
+          "dy": -0.0032980632751105077,
+          "area": null
+        },
+        {
+          "h": 6,
+          "color": "blue",
+          "forward": false,
+          "dx": 0,
+          "dy": -0.002745752116446454,
+          "area": null
+        },
+        {
+          "h": 6,
+          "color": "white",
+          "forward": false,
+          "dx": 0,
+          "dy": 0.0004655456542970171,
+          "area": null
+        },
+        {
+          "h": 6,
+          "color": "red",
+          "forward": true,
+          "dx": 0,
+          "dy": -0.002752008743296841,
+          "area": null
+        },
+        {
+          "h": 7,
+          "color": "blue",
+          "forward": false,
+          "dx": 0,
+          "dy": -0.0036217676927527975,
+          "area": null
+        },
+        {
+          "h": 7,
+          "color": "white",
+          "forward": false,
+          "dx": 0,
+          "dy": -0.00041076660156136313,
+          "area": null
+        },
+        {
+          "h": 7,
+          "color": "red",
+          "forward": true,
+          "dx": 0,
+          "dy": -0.0036216610929429294,
+          "area": null
+        },
+        {
+          "h": 8,
+          "color": "blue",
+          "forward": false,
+          "dx": 0,
+          "dy": -0.0028407109941710473,
+          "area": null
+        },
+        {
+          "h": 8,
+          "color": "white",
+          "forward": false,
+          "dx": 0,
+          "dy": 0.00037059020996110803,
+          "area": null
+        },
+        {
+          "h": 8,
+          "color": "red",
+          "forward": true,
+          "dx": 0,
+          "dy": -0.002841785340429226,
+          "area": null
+        },
+        {
+          "h": 9,
+          "color": "blue",
+          "forward": false,
+          "dx": 0,
+          "dy": -0.0034796361981115354,
+          "area": null
+        },
+        {
+          "h": 9,
+          "color": "white",
+          "forward": false,
+          "dx": 0,
+          "dy": -0.0002655792236332388,
+          "area": null
+        },
+        {
+          "h": 9,
+          "color": "red",
+          "forward": true,
+          "dx": 0,
+          "dy": -0.003479224653361257,
+          "area": null
+        },
+        {
+          "h": 10,
+          "color": "blue",
+          "forward": false,
+          "dx": 0,
+          "dy": -0.0027517308266933327,
+          "area": null
+        },
+        {
+          "h": 10,
+          "color": "white",
+          "forward": false,
+          "dx": 0,
+          "dy": 0.00046224975585928973,
+          "area": null
+        },
+        {
+          "h": 10,
+          "color": "red",
+          "forward": true,
+          "dx": 0,
+          "dy": -0.0027517016317979426,
+          "area": null
+        },
+        {
+          "h": 11,
+          "color": "blue",
+          "forward": false,
+          "dx": 0,
+          "dy": -0.003431015496644818,
+          "area": null
+        },
+        {
+          "h": 11,
+          "color": "white",
+          "forward": false,
+          "dx": 0,
+          "dy": -0.00021200561523571082,
+          "area": null
+        },
+        {
+          "h": 11,
+          "color": "red",
+          "forward": true,
+          "dx": 0,
+          "dy": -0.0034283504477556903,
+          "area": null
+        },
+        {
+          "h": 12,
+          "color": "blue",
+          "forward": false,
+          "dx": 0,
+          "dy": -0.0030224166196219926,
+          "area": null
+        },
+        {
+          "h": 12,
+          "color": "white",
+          "forward": false,
+          "dx": 0,
+          "dy": 0.00018771362304548234,
+          "area": null
+        },
+        {
+          "h": 12,
+          "color": "red",
+          "forward": true,
+          "dx": 0,
+          "dy": -0.003025309457235892,
+          "area": null
+        },
+        {
+          "h": 13,
+          "color": "blue",
+          "forward": false,
+          "dx": 0,
+          "dy": -0.0036664084402389108,
+          "area": null
+        },
+        {
+          "h": 13,
+          "color": "white",
+          "forward": false,
+          "dx": 0,
+          "dy": -0.0004503173828140916,
+          "area": null
+        },
+        {
+          "h": 13,
+          "color": "red",
+          "forward": true,
+          "dx": 0,
+          "dy": -0.003666347113458812,
+          "area": null
+        },
+        {
+          "h": 14,
+          "color": "blue",
+          "forward": false,
+          "dx": 0,
+          "dy": -0.002789821429093564,
+          "area": null
+        },
+        {
+          "h": 14,
+          "color": "white",
+          "forward": false,
+          "dx": 0,
+          "dy": 0.00042624664306600835,
+          "area": null
+        },
+        {
+          "h": 14,
+          "color": "red",
+          "forward": true,
+          "dx": 0,
+          "dy": -0.0027842205740942205,
+          "area": null
+        },
+        {
+          "h": 15,
+          "color": "blue",
+          "forward": false,
+          "dx": 0,
+          "dy": -0.0034042141977819185,
+          "area": null
+        },
+        {
+          "h": 15,
+          "color": "white",
+          "forward": false,
+          "dx": 0,
+          "dy": -0.00018944168090850866,
+          "area": null
+        },
+        {
+          "h": 15,
+          "color": "red",
+          "forward": true,
+          "dx": 0,
+          "dy": -0.003406279246457089,
+          "area": null
+        },
+        {
+          "h": 16,
+          "color": "blue",
+          "forward": false,
+          "dx": 0,
+          "dy": -0.0032046274345525205,
+          "area": null
+        },
+        {
+          "h": 16,
+          "color": "white",
+          "forward": false,
+          "dx": 0,
+          "dy": 0.00001430511474609375,
+          "area": null
+        },
+        {
+          "h": 16,
+          "color": "red",
+          "forward": true,
+          "dx": 0,
+          "dy": -0.003197565267551994,
+          "area": null
+        },
+        {
+          "h": 17,
+          "color": "blue",
+          "forward": false,
+          "dx": 0,
+          "dy": -0.0034116114828997013,
+          "area": null
+        },
+        {
+          "h": 17,
+          "color": "white",
+          "forward": false,
+          "dx": 0,
+          "dy": -0.00019462585449225855,
+          "area": null
+        },
+        {
+          "h": 17,
+          "color": "red",
+          "forward": true,
+          "dx": 0,
+          "dy": -0.003409717611150498,
+          "area": null
+        },
+        {
+          "h": 18,
+          "color": "blue",
+          "forward": false,
+          "dx": 0,
+          "dy": -0.003006456537601565,
+          "area": null
+        },
+        {
+          "h": 18,
+          "color": "white",
+          "forward": false,
+          "dx": 0,
+          "dy": 0.0002107696533197867,
+          "area": null
+        },
+        {
+          "h": 18,
+          "color": "red",
+          "forward": true,
+          "dx": 0,
+          "dy": -0.003007867009586107,
+          "area": null
+        }
+      ]
+    },
+    {
+      "fixture": "swept tree and canopy",
+      "solid": {
+        "kind": "trunk",
+        "t": 0.4693103125000004,
+        "id": "TR_07872"
+      },
+      "speedAfter": 35.19999999999999,
+      "canopyEvents": 3,
+      "canopyVelocity": [
+        -1.1879999999999997,
+        -0.182,
+        0
+      ]
+    },
+    {
+      "fixture": "equal-speed roll",
+      "bunker": {
+        "distance": 0.8350738012864706,
+        "frames": 145,
+        "lie": "Bunker"
+      },
+      "fairway": {
+        "distance": 3.315365247123752,
+        "frames": 341,
+        "lie": "Fairway"
+      }
+    },
+    {
+      "actualWaterShot": {
+        "final": [
+          -81.82671213210283,
+          5.466870447967929,
+          -37.74246900068123
+        ],
+        "origin": [
+          -174.554,
+          6.621755833311271,
+          18.437
+        ],
+        "aim": [
+          0.8552611472768147,
+          0,
+          -0.5181972307517158
+        ],
+        "lie": {
+          "type": "Rough",
+          "name": "راف",
+          "penalty": 0.86,
+          "badge": "lie-rough"
+        },
+        "events": [
+          {
+            "type": "water",
+            "hole": 1,
+            "hazard": "PA_00_CENTRAL_LAKE",
+            "cross": [
+              -157.54654999974386,
+              10.204677615627292,
+              8.132396053105373
+            ]
+          }
+        ],
+        "pending": {
+          "kind": "water",
+          "hazardId": "PA_00_CENTRAL_LAKE",
+          "cross": [
+            -157.54654999974386,
+            10.204677615627292,
+            8.132396053105373
+          ],
+          "shotStart": [
+            -174.554,
+            6.621755833311271,
+            18.437
+          ],
+          "fromTee": true,
+          "ball": [
+            -81.82671213210283,
+            5.466870447967929,
+            -37.74246900068123
+          ]
+        },
+        "options": [
+          {
+            "id": "stroke-distance",
+            "position": [
+              -174.554,
+              6.621755833311271,
+              18.437
+            ]
+          },
+          {
+            "id": "lateral",
+            "position": [
+              -156.47154999974387,
+              5.695614453198451,
+              9.994350671241916
+            ]
+          },
+          {
+            "id": "back-line",
+            "position": [
+              -84.99063276419047,
+              6.4409581137744,
+              41.83163750016951
+            ]
+          },
+          {
+            "id": "DZ_01_CENTRAL_LAKE_H01",
+            "position": [
+              -178,
+              6.0886249999999995,
+              -48
+            ]
+          }
+        ],
+        "strokes": 1,
+        "frames": 303
+      }
+    },
+    {
+      "coldOfflinePendingRestored": {
+        "pending": {
+          "kind": "water",
+          "hazardId": "PA_00_CENTRAL_LAKE",
+          "cross": [
+            -157.54654999974386,
+            10.204677615627292,
+            8.132396053105373
+          ],
+          "shotStart": [
+            -174.554,
+            6.621755833311271,
+            18.437
+          ],
+          "fromTee": true,
+          "ball": [
+            -81.82671213210283,
+            5.466870447967929,
+            -37.74246900068123
+          ]
+        },
+        "course": "puttclub",
+        "strokes": 1,
+        "count": 63
+      },
+      "legalLateralRelief": {
+        "strokes": 2,
+        "ball": [
+          -156.47154999974387,
+          5.695614453198451,
+          9.994350671241916
+        ],
+        "area": null,
+        "clearance": 0.02133499999999966,
+        "pending": null,
+        "events": [
+          {
+            "type": "relief",
+            "option": "lateral",
+            "penalty": 1,
+            "strokes": 2,
+            "position": [
+              -156.47154999974387,
+              5.695614453198451,
+              9.994350671241916
+            ],
+            "cross": [
+              -157.54654999974386,
+              10.204677615627292,
+              8.132396053105373
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fixture": "regulation cup",
+      "score": 1,
+      "captured": true,
+      "ball": [
+        -152.354,
+        21.242,
+        -313.198
+      ],
+      "frames": 69
+    },
+    {
+      "legacySwitches": [
+        {
+          "course": "mis",
+          "active": false,
+          "terrain": true,
+          "ball": [
+            -93.5019257470783,
+            57.60684946736332,
+            -86.85040697807779
+          ],
+          "par": 4
+        },
+        {
+          "course": "tehran",
+          "active": false,
+          "terrain": true,
+          "ball": [
+            -93.5019257470783,
+            57.60684946736332,
+            -86.85040697807779
+          ],
+          "par": 4
+        },
+        {
+          "course": "puttclub",
+          "active": true,
+          "terrain": false,
+          "ball": [
+            -174.554,
+            6.621755833311271,
+            18.437
+          ],
+          "par": 4
+        }
+      ]
+    },
+    {
+      "width": 723,
+      "shot": 1,
+      "pose": {
+        "strokes": 0,
+        "joints": 51,
+        "ball": [
+          -174.554,
+          6.621755833311271,
+          18.437
+        ],
+        "clearance": 0.10133499999999973,
+        "soles": {
+          "L": 0.002829762789968271,
+          "R": 0.00716220912500809
+        },
+        "min": [
+          186.01573127533075,
+          508.9665805822086
+        ],
+        "max": [
+          338.2989570944788,
+          926.7750289858817
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "tagVisible": false,
+        "render": {
+          "frame": 3,
+          "calls": 69,
+          "triangles": 496427,
+          "points": 0,
+          "lines": 0
+        },
+        "overflow": false
+      }
+    },
+    {
+      "width": 723,
+      "uiShot": 1,
+      "flight": {
+        "frames": 1085,
+        "strokes": 1,
+        "distance": 89.3958260732017,
+        "trace": 535,
+        "transition": false
+      }
+    },
+    {
+      "width": 723,
+      "shot": 2,
+      "pose": {
+        "strokes": 1,
+        "joints": 51,
+        "ball": [
+          -252.1718503476724,
+          9.712922954168432,
+          -25.914809734400475
+        ],
+        "clearance": 0.021335000000000548,
+        "soles": {
+          "L": 0.004908198679666853,
+          "R": 0.00494363491887384
+        },
+        "min": [
+          187.0459367233717,
+          510.5180452305132
+        ],
+        "max": [
+          358.68433113218435,
+          908.6108140150811
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "tagVisible": false,
+        "render": {
+          "frame": 4,
+          "calls": 61,
+          "triangles": 451059,
+          "points": 0,
+          "lines": 0
+        },
+        "overflow": false
+      }
+    },
+    {
+      "width": 723,
+      "uiShot": 2,
+      "flight": {
+        "frames": 995,
+        "strokes": 2,
+        "distance": 69.53344047651969,
+        "trace": 494,
+        "transition": false
+      }
+    },
+    {
+      "width": 723,
+      "shot": 3,
+      "pose": {
+        "strokes": 2,
+        "joints": 51,
+        "ball": [
+          -312.9060497351873,
+          12.479281715769188,
+          -59.771217831824075
+        ],
+        "clearance": 0.021335000000000548,
+        "soles": {
+          "L": 0.004954750419479126,
+          "R": 0.004955875593417147
+        },
+        "min": [
+          187.40302846179875,
+          518.281664187087
+        ],
+        "max": [
+          363.2677812250413,
+          909.3160890193344
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "tagVisible": false,
+        "render": {
+          "frame": 5,
+          "calls": 58,
+          "triangles": 446743,
+          "points": 0,
+          "lines": 0
+        },
+        "overflow": false
+      }
+    },
+    {
+      "width": 1366,
+      "shot": 1,
+      "pose": {
+        "strokes": 0,
+        "joints": 51,
+        "ball": [
+          -174.554,
+          6.621755833311271,
+          18.437
+        ],
+        "clearance": 0.10133499999999973,
+        "soles": {
+          "L": 0.002829762789968271,
+          "R": 0.00716220912500809
+        },
+        "min": [
+          532.5687014589008,
+          201.16234116240705
+        ],
+        "max": [
+          663.2117633560501,
+          560.6108537522063
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "tagVisible": false,
+        "render": {
+          "frame": 3,
+          "calls": 79,
+          "triangles": 745655,
+          "points": 0,
+          "lines": 0
+        },
+        "overflow": false
+      }
+    },
+    {
+      "width": 1366,
+      "uiShot": 1,
+      "flight": {
+        "frames": 1085,
+        "strokes": 1,
+        "distance": 89.38656403587702,
+        "trace": 535,
+        "transition": false
+      }
+    },
+    {
+      "width": 1366,
+      "shot": 2,
+      "pose": {
+        "strokes": 1,
+        "joints": 51,
+        "ball": [
+          -252.17727482896322,
+          9.712733776003148,
+          -25.886639685467934
+        ],
+        "clearance": 0.021335000000000548,
+        "soles": {
+          "L": 0.004916526006130795,
+          "R": 0.0049436349440679095
+        },
+        "min": [
+          533.2298268455231,
+          202.49318025840236
+        ],
+        "max": [
+          680.6008061813233,
+          544.6540233387017
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "tagVisible": false,
+        "render": {
+          "frame": 4,
+          "calls": 67,
+          "triangles": 698149,
+          "points": 0,
+          "lines": 0
+        },
+        "overflow": false
+      }
+    },
+    {
+      "width": 1366,
+      "uiShot": 2,
+      "flight": {
+        "frames": 994,
+        "strokes": 2,
+        "distance": 69.52484602644219,
+        "trace": 494,
+        "transition": false
+      }
+    },
+    {
+      "width": 1366,
+      "shot": 3,
+      "pose": {
+        "strokes": 2,
+        "joints": 51,
+        "ball": [
+          -312.9090041159595,
+          12.478651343367726,
+          -59.729826190457324
+        ],
+        "clearance": 0.021335000000000548,
+        "soles": {
+          "L": 0.004954750739250002,
+          "R": 0.004955875124444731
+        },
+        "min": [
+          533.5247948268161,
+          209.14632662050383
+        ],
+        "max": [
+          684.4947095882034,
+          545.2885430387436
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ],
+        "tagVisible": false,
+        "render": {
+          "frame": 5,
+          "calls": 65,
+          "triangles": 697657,
+          "points": 0,
+          "lines": 0
+        },
+        "overflow": false
+      }
+    }
+  ],
+  "errors": [],
+  "warnings": []
+}

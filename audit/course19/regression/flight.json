@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "cases": 360,
+  "maxAllowedDifference": 1e-12,
+  "baseline": "aim15 physical airborne integration"
+}

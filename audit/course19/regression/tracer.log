@@ -1,0 +1,48 @@
+{
+  "results": [
+    {
+      "w": 390,
+      "h": 844,
+      "display": "flex",
+      "background": "rgba(0, 0, 0, 0)",
+      "border": "0px",
+      "direction": "column",
+      "transform": "matrix(1, 0, 0, 1, 26, -21.0469)",
+      "labelSize": "11px",
+      "valueSize": "30px",
+      "color": "rgb(255, 255, 255)",
+      "tagX": 195.028,
+      "tagY": 282.506,
+      "expectedX": 195.02752498527008,
+      "expectedY": 282.5055020247179,
+      "yards": 131,
+      "expectedYards": 131,
+      "points": 240,
+      "drawCount": 5736,
+      "glowMaterialRestored": true
+    },
+    {
+      "w": 1366,
+      "h": 768,
+      "display": "flex",
+      "background": "rgba(0, 0, 0, 0)",
+      "border": "0px",
+      "direction": "column",
+      "transform": "matrix(1, 0, 0, 1, 26, -21.0469)",
+      "labelSize": "11px",
+      "valueSize": "30px",
+      "color": "rgb(255, 255, 255)",
+      "tagX": 682.987,
+      "tagY": 257.632,
+      "expectedX": 682.9874207039317,
+      "expectedY": 257.63245039983104,
+      "yards": 131,
+      "expectedYards": 131,
+      "points": 240,
+      "drawCount": 5736,
+      "glowMaterialRestored": true
+    }
+  ],
+  "errors": [],
+  "shaderErrors": []
+}

@@ -1,0 +1,83 @@
+{
+  "previous": "detail18-20261016",
+  "current": "course19-20261016",
+  "downloaded": 21,
+  "reused": 42,
+  "network": [
+    "sw.js",
+    "release.json",
+    "course-gameplay.js",
+    "boot.js",
+    "course-runtime.js",
+    "courses/puttclub/course.json",
+    "courses/puttclub/course_collision.glb",
+    "courses/puttclub/course_visual.glb",
+    "courses/puttclub/credits.md",
+    "courses/puttclub/drop_zones.json",
+    "courses/puttclub/preview.jpg",
+    "courses/puttclub/surfaces.json",
+    "courses/puttclub/tree_library/tree_type_01.glb",
+    "courses/puttclub/tree_library/tree_type_02.glb",
+    "courses/puttclub/tree_library/tree_type_03.glb",
+    "courses/puttclub/tree_library/tree_type_04.glb",
+    "courses/puttclub/tree_library/tree_type_05.glb",
+    "courses/puttclub/trees.json",
+    "game.js",
+    "index.html",
+    "manifest.json",
+    "ui.css",
+    "ui.js",
+    "sw.js",
+    "release.json"
+  ],
+  "migrated": {
+    "version": "course19-20261016",
+    "character": {
+      "version": "detail18",
+      "skinMeshes": 16,
+      "joints": 51,
+      "clips": [
+        "FullSwing",
+        "ThreeQuarter",
+        "HalfSwing",
+        "Chip",
+        "Putt"
+      ],
+      "style": "half",
+      "frame": 0,
+      "head": "IronHead",
+      "contact": [
+        356.2359613932854,
+        49.67526656280183,
+        72.6183761481849
+      ],
+      "target": [
+        356.23596094648383,
+        49.675267566158404,
+        72.6183758694863
+      ],
+      "wristErrors": [
+        4.1967309334086474e-7,
+        5.96985372281983e-7
+      ],
+      "feet": [
+        [
+          356.59325355986476,
+          49.746402496559426,
+          73.10467737359104
+        ],
+        [
+          356.8072636146294,
+          49.756850782816315,
+          72.76157880467721
+        ]
+      ]
+    },
+    "strokes": 2,
+    "hole": 3
+  },
+  "offlineCharacterLoaded": true,
+  "offlineNewCourseLoaded": true,
+  "offlineAssetsSha256Verified": 63,
+  "errors": []
+}

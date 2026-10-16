@@ -22,7 +22,7 @@
   let step = "handicap",
     panel = null,
     returnFocus = null,
-    started = false;
+    started = false, starting = false;
   let toastTimer,
     lastBusy,
     offlineReady = false;
@@ -95,11 +95,14 @@
     });
     if (step === "holes") renderHoles();
     $("round-summary").textContent =
-      `${skills[skill]} / ${course === "mis" ? "Masjed Soleyman" : "Tehran presentation"} / Session play`;
+      `${skills[skill]} / ${course === "puttclub" ? "زمین باشگاه پات کلاب" : course === "mis" ? "Masjed Soleyman" : "Tehran presentation"} / Session play`;
     $("setup-shell").scrollTop = 0;
     focusFirst($(screenIds[next]));
   }
-  function startRound(mode, hole = 1) {
+  async function startRound(mode, hole = 1) {
+    if(starting)return;starting=true;
+    try {if(window.activeCourseId!==course){toast(course==='puttclub'?'در حال آماده‌سازی زمین باشگاه پات کلاب…':'Preparing course…');await switchActiveCourse(course);}}catch(error){toast('بارگذاری زمین انجام نشد؛ دوباره تلاش کنید.');console.error(error);starting=false;return;}
+    starting=false;
     // Explicit new-round action only. Visiting settings/title never clears scores.
     window.currentHandicap = skill;
     gameMode = mode;
@@ -109,7 +112,7 @@
     holeScores.fill(null);
     currentSwingMode = "full";
     buildClubButtons();
-    if (window.activeCourseId !== course) switchActiveCourse(course);
+    // Course switch completed before resetting the new round.
     window.activeCourseId = course;
     setupHole(hole);
     started = true;
@@ -139,11 +142,12 @@
       );
   }
   function renderHoles() {
-    // Active gameplay geometry is currently MIS for both course presentations.
+    // Practice cards use the selected independent course, even before the first round.
+    const selectedHoles=course==='puttclub'?window.PuttClubCourse.holeCards:window.MIS_COURSE_18;
     const container = $("custom-hole-grid-container");
     container.replaceChildren();
     for (let n = 1; n <= 18; n++) {
-      const info = courseHoles[n]?.tees?.[0] || {};
+      const info = selectedHoles[n]?.tees?.[0] || {};
       const b = document.createElement("button");
       b.type = "button";
       b.className = "hole-pick-card";
@@ -212,11 +216,11 @@
     const mode = currentSwingMode,
       spec = calculateShotSpecs(currentClubIndex, mode);
     $("hud-course-name").textContent =
-      window.activeCourseId === "tehran"
+      window.activeCourseId === "puttclub" ? "زمین باشگاه پات کلاب" : window.activeCourseId === "tehran"
         ? "TEHRAN / SURFACE PRESENTATION"
         : "MASJED SOLEYMAN";
     $("score-course").textContent =
-      (window.activeCourseId === "tehran"
+      (window.activeCourseId === "puttclub" ? "زمین باشگاه پات کلاب" : window.activeCourseId === "tehran"
         ? "TEHRAN PRESENTATION / MIS LAYOUT"
         : "MASJED SOLEYMAN") + " / SESSION";
     $("selected-club-sub").textContent = isPutter
@@ -251,16 +255,22 @@
     $("stroke-estimates").innerHTML =
       `<span>CARRY<b>${spec.carryYards}<small> yd</small></b></span><span>ROLL<b>${spec.rollYards}<small> yd</small></b></span><span>TOTAL<b>${spec.totalYards}<small> yd</small></b></span>`;
     const lie = detectLie(ballPos);
-    $("hud-lie").textContent =
-      lie.type === "Green"
+    $("hud-lie").textContent = isPuttClub()
+      ? ({Green:"Green",Fringe:"Fringe",Tee:"Tee box",Fairway:"Fairway",Bunker:courseBallPlugged?"Plugged sand":"Bunker / sand",Water:"Penalty area",Rough:"Rough","Heavy Rough":"Heavy rough"}[lie.type] || lie.type)
+      : lie.type === "Green"
         ? "Brown / putting surface"
         : lie.type === "Tee"
           ? "Tee box"
           : lie.type === "Fairway"
             ? "Fairway"
             : "Rough";
-    $("hud-tee-type").textContent = isWomenTee ? "Forward" : "Std";
-    $("btn-tee-men").setAttribute("aria-pressed", String(!isWomenTee));
+    const middle=isPuttClub()&&!isWomenTee&&courseTeeColor==="white";
+    $("hud-tee-type").textContent = isPuttClub()?(isWomenTee?"Red":middle?"White":"Blue"):(isWomenTee?"Forward":"Std");
+    $("btn-tee-white").hidden=!isPuttClub();
+    $("btn-tee-white").setAttribute("aria-pressed",String(middle));
+    $("btn-tee-men").textContent=isPuttClub()?"Back tee · Blue":"Standard tee";
+    $("btn-tee-women").textContent=isPuttClub()?"Forward tee · Red":"Forward tee (W)";
+    $("btn-tee-men").setAttribute("aria-pressed", String(!isWomenTee&&!middle));
     $("btn-tee-women").setAttribute("aria-pressed", String(isWomenTee));
     [...$("hole-grid-picker").children].forEach((e, i) =>
       e.setAttribute(
@@ -272,7 +282,7 @@
     syncAimControlsLayout();
   }
   function updateShotState(force = false) {
-    const busy = isBallFlying || golferSwingPhase !== "idle";
+    const busy = isBallFlying || golferSwingPhase !== "idle" || starting || !!courseRelief;
     if (force || lastBusy !== busy) {
       lastBusy = busy;
       for (const id of [
@@ -283,6 +293,7 @@
         "btn-toggle-tee",
         "btn-tee-men",
         "btn-tee-women",
+        "btn-tee-white",
       ])
         $(id).disabled = busy;
       $("swing-trigger-card").disabled =
@@ -290,7 +301,7 @@
       $("btn-launch-shot").setAttribute("aria-busy", String(busy));
       $("btn-launch-shot").innerHTML =
         (busy ? "Shot in progress" : "Strike ball") + icon("arrow");
-      $("shot-status").textContent = busy
+      $("shot-status").textContent = courseRelief ? "گزینهٔ رهاسازی توپ را انتخاب کنید." : busy
         ? isBallFlying
           ? "Ball in play · controls return when the shot settles."
           : "Swing in progress · waiting for impact."
@@ -407,9 +418,13 @@
     toast(isWomenTee ? "Forward tee selected" : "Standard tee selected");
   });
   listen("btn-tee-men", () => {
+    courseTeeColor="blue";
     isWomenTee = false;
     setupHole(currentHoleNumber);
     closePanel();
+  });
+  listen("btn-tee-white", () => {
+    if(!isPuttClub())return;courseTeeColor="white";isWomenTee=false;setupHole(currentHoleNumber);closePanel();
   });
   listen("btn-tee-women", () => {
     isWomenTee = true;
@@ -421,7 +436,7 @@
     showTitle();
   });
   new MutationObserver(() => {
-    if (getComputedStyle($("celebration-overlay")).display === "none" && !panel)
+    if (getComputedStyle($("celebration-overlay")).display === "none" && !panel && !courseRelief)
       $("game-ui").inert = false;
   }).observe($("celebration-overlay"), {
     attributes: true,
@@ -529,18 +544,18 @@
   }
   function exportSession() {
     if(isBallFlying||golferSwingPhase!=="idle"||isCameraTransitioning)return null;
-    return {schema:1,started,view:document.body.dataset.view,step,skill,course,mode:gameMode,hole:currentHoleNumber,single:selectedSingleHole,strokes:strokesCurrentHole,tee:isWomenTee,scores:[...holeScores],club:currentClubIndex,swing:currentSwingMode,ball:ballPos.toArray(),aim:aimDirection.toArray(),camera:camera.position.toArray(),target:orbitControls.target.toArray(),putt:$("putter-backswing-slider").value,celebrating:$("celebration-overlay").style.display!=="none",telemetry:["tele-carry","tele-roll","tele-total"].map(id=>$(id).textContent)};
+    return {schema:1,started,view:document.body.dataset.view,step,skill,course,mode:gameMode,hole:currentHoleNumber,single:selectedSingleHole,strokes:strokesCurrentHole,tee:isWomenTee,courseTee:courseTeeColor,scores:[...holeScores],courseState:isPuttClub()?exportPuttClubState():null,club:currentClubIndex,swing:currentSwingMode,ball:ballPos.toArray(),aim:aimDirection.toArray(),camera:camera.position.toArray(),target:orbitControls.target.toArray(),putt:$("putter-backswing-slider").value,celebrating:$("celebration-overlay").style.display!=="none",telemetry:["tele-carry","tele-roll","tele-total"].map(id=>$(id).textContent)};
   }
-  function importSession(data) {
+  async function importSession(data) {
     if(data?.schema!==1||!data.started)return;
     selectSkill(data.skill);selectCourse(data.course);window.currentHandicap=skill;
-    if(window.activeCourseId!==course)switchActiveCourse(course);
+    if(window.activeCourseId!==course)await switchActiveCourse(course);
     gameMode=data.mode;selectedSingleHole=data.single;window.gameMode=gameMode;window.selectedSingleHole=selectedSingleHole;
-    isWomenTee=data.tee;setupHole(data.hole);strokesCurrentHole=data.strokes;
+    courseTeeColor=["blue","white","red"].includes(data.courseTee)?data.courseTee:"blue";isWomenTee=data.tee;setupHole(data.hole);strokesCurrentHole=data.strokes;
     data.scores.forEach((score,n)=>holeScores[n]=score);
     currentClubIndex=data.club;currentSwingMode=data.swing;
     ballPos.fromArray(data.ball);
-    if(strokesCurrentHole>0)ballPos.y=getTerrainHeight(ballPos.x,ballPos.z)+BALL_RADIUS;
+    if(strokesCurrentHole>0&&!data.courseState?.pending)ballPos.y=getTerrainHeight(ballPos.x,ballPos.z)+BALL_RADIUS;
     ballMesh.position.copy(ballPos);ballVel.set(0,0,0);
     resetAimToPin();
     if(Array.isArray(data.aim)&&data.aim.length===3&&data.aim.every(Number.isFinite)) {
@@ -555,6 +570,7 @@
     started=true;updateSelectedClubUI();updateHoleUI();positionGolferAtBall();sync();
     if(data.view==='game')showGame();else if(data.view==='setup')showStep(data.step);else showTitle();
     if(data.celebrating)handleHoleCompleted();
+    if(isPuttClub())restorePuttClubState(data.courseState);
     toast("Updated build loaded · round restored. An unfinished shot restarts from its pre-strike position.");
   }
   listen("btn-map-detail",()=>{
@@ -568,8 +584,9 @@
     document.body.dataset.estimates=String(expanded);
     $("btn-toggle-estimates").setAttribute("aria-expanded",String(expanded));
   });
+  function saveSession(){try{const s=exportSession();if(s?.started)localStorage.setItem('puttclub-round-v1',JSON.stringify(s));}catch(error){console.info('Session storage unavailable');}}
   window.PuttUI = {
-    exportSession, importSession, refreshOffline,
+    exportSession, importSession, refreshOffline, saveSession,
     sync,
     updateShotState,
     renderHoles,

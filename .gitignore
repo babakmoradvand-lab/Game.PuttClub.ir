@@ -11,3 +11,9 @@ Thumbs.db
 ghp_*.txt
 github_pat*
 .git-credentials
+
+# Local validation/build tools and private source
+.cache/
+node_modules/
+__pycache__/
+*.pyc

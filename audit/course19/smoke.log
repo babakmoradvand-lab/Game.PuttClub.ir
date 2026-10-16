@@ -1,0 +1,31 @@
+READY {
+  assets: 63,
+  triangles: 273975,
+  surfaces: 76,
+  release: 'course19-20261016'
+}
+COURSE {
+  name: 'زمین باشگاه پات کلاب',
+  ball: [ -174.554, 6.621755833311271, 18.437 ],
+  height: 6.520420833311271,
+  lie: { type: 'Tee', name: 'جایگاه تی', penalty: 1, badge: 'lie-fairway' },
+  render: { frame: 2, calls: 79, triangles: 745797, points: 0, lines: 0 },
+  chunks: {
+    trunkHits: 0,
+    branchHits: 0,
+    canopyHits: 0,
+    visibleTreeChunks: 1159,
+    farTreeCount: 6976
+  },
+  feet: [
+    [ -175.03962396281395, 6.594897459854658, 18.8871195910653 ],
+    [ -174.6873088670428, 6.594897504995268, 19.08559074143422 ]
+  ]
+}
+H07 {
+  ball: [ -194.487, 16.317713232307245, -246.716 ],
+  ground: 16.216378232307246,
+  scale: [ 1, 1, 1 ],
+  area: null
+}
+errors []

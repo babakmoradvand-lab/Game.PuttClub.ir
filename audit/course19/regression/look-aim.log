@@ -1,0 +1,21 @@
+PASS: separate rotation controls removed from desktop
+PASS: course19 loaded
+PASS: real mouse drag changes direction
+PASS: view, athlete and aim are aligned
+PASS: thin WebGL guide is a 2px triangle ribbon
+PASS: no aim inertia after releasing pointer
+PASS: guide finite and within cap, club 0
+PASS: non-putt shows a rising flight arc up to 30 yards, club 0
+PASS: guide finite and within cap, club 6
+PASS: non-putt shows a rising flight arc up to 30 yards, club 6
+PASS: guide finite and within cap, club 11
+PASS: non-putt shows a rising flight arc up to 30 yards, club 11
+PASS: guide finite and within cap, club 12
+PASS: putt stays on ground and ends at two yards
+PASS: preview samples use exactly the physical flight integrator
+PASS: drag cannot change direction during swing
+PASS: actual launch follows the dragged direction
+PASS: real one-finger mobile drag rotates both look and aim
+PASS: separate rotation controls removed from mobile
+PASS: mobile putter mode is ground-only
+PASS: no page or shader errors
