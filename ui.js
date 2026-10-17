@@ -109,6 +109,8 @@
     selectedSingleHole = hole;
     window.gameMode = mode;
     window.selectedSingleHole = hole;
+    window.GreenReader?.close(false);
+    window.WindSystem?.newRound();
     holeScores.fill(null);
     currentSwingMode = "full";
     buildClubButtons();
@@ -300,6 +302,7 @@
         "btn-putt-action",
         "putter-backswing-slider",
         "btn-read-green",
+        "btn-read-course",
         "swing-power-slider",
         "btn-toggle-tee",
         "btn-tee-men",
@@ -567,13 +570,14 @@
   }
   function exportSession() {
     if(isBallFlying||golferSwingPhase!=="idle"||isCameraTransitioning)return null;
-    return {schema:1,started,view:document.body.dataset.view,step,skill,course,mode:gameMode,hole:currentHoleNumber,single:selectedSingleHole,strokes:strokesCurrentHole,tee:isWomenTee,courseTee:courseTeeColor,scores:[...holeScores],courseState:isPuttClub()?exportPuttClubState():null,club:currentClubIndex,swing:currentSwingMode,power:swingPowerPercent,ball:ballPos.toArray(),aim:aimDirection.toArray(),camera:camera.position.toArray(),zoom:camera.zoom,target:orbitControls.target.toArray(),putt:$("putter-backswing-slider").value,celebrating:$("celebration-overlay").style.display!=="none",telemetry:["tele-carry","tele-roll","tele-total"].map(id=>$(id).textContent)};
+    return {schema:1,started,view:document.body.dataset.view,step,skill,course,mode:gameMode,hole:currentHoleNumber,single:selectedSingleHole,strokes:strokesCurrentHole,tee:isWomenTee,courseTee:courseTeeColor,scores:[...holeScores],courseState:isPuttClub()?exportPuttClubState():null,wind:window.WindSystem?.exportState(),club:currentClubIndex,swing:currentSwingMode,power:swingPowerPercent,ball:ballPos.toArray(),aim:aimDirection.toArray(),camera:camera.position.toArray(),zoom:camera.zoom,target:orbitControls.target.toArray(),putt:$("putter-backswing-slider").value,celebrating:$("celebration-overlay").style.display!=="none",telemetry:["tele-carry","tele-roll","tele-total"].map(id=>$(id).textContent)};
   }
   async function importSession(data) {
     if(data?.schema!==1||!data.started)return;
     selectSkill(data.skill);selectCourse(data.course);window.currentHandicap=skill;
     if(window.activeCourseId!==course)await switchActiveCourse(course);
     gameMode=data.mode;selectedSingleHole=data.single;window.gameMode=gameMode;window.selectedSingleHole=selectedSingleHole;
+    window.WindSystem?.restore(data.wind,data.hole);
     courseTeeColor=["blue","white","red"].includes(data.courseTee)?data.courseTee:"blue";isWomenTee=data.tee;setupHole(data.hole);strokesCurrentHole=data.strokes;
     data.scores.forEach((score,n)=>holeScores[n]=score);
     currentClubIndex=data.club;currentSwingMode=data.swing;swingPowerPercent=Number.isFinite(data.power)?Math.max(1,Math.min(100,Math.round(data.power))):null;

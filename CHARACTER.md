@@ -1,3 +1,12 @@
+# readwind28 — independent green inspection and saved round wind (2026-10-17)
+
+This release preserves the exact hands26 rig and original human GLB from desktop27.
+It adds an independent READ camera and a saved, offline randomized wind system;
+there is no replacement character, new animation pack or advanced shot-type engine.
+See READWIND28_RELEASE_FA.md for controls, tests and explicit prediction limits.
+
+---
+
 # desktop27 — combined desktop controls and hands26 release (2026-10-17)
 
 Includes the tested hands26 wrist correction below without changing its rig code

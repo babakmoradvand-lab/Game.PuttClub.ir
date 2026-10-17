@@ -137,8 +137,8 @@
     };
 
     // Environmental Wind System
-    let windAngle = Math.random() * Math.PI * 2;
-    let windSpeedMph = 3.5 + Math.random() * 4.0; // 3.5 to 7.5 mph gentle breeze
+    let windAngle = 0;
+    let windSpeedMph = 0; // Seeded, saved round weather is owned by WindSystem.
     function updateWindDisplay() {
       const arrow = document.getElementById('wind-dir-arrow');
       const val = document.getElementById('wind-speed-val');
@@ -222,7 +222,8 @@
       renderer.setSize(w, h);
       if (window.PuttUI) {
         syncAimControlsLayout();
-        if (canAdjustAim()) {setAddressCamera(true);updateAimTracer();}
+        if (canAdjustAim()&&!window.GreenReader?.enabled) {setAddressCamera(true);updateAimTracer();}
+        window.GreenReader?.resize();
       }
     }
     window.addEventListener('resize', handleResize);
@@ -1763,6 +1764,7 @@ group.name = name;
 
     function triggerGolferSwing(specs, onImpactCallback) {
       window.GreenReader?.close();
+      window.WindSystem?.captureShot();
       // Determine active swing profile based on specs or selected mode
       const club = GOLF_BAG[currentClubIndex] || {};
       if (club.isPutter || specs.isPutt) {
@@ -2053,6 +2055,7 @@ group.name = name;
       minimapCtx.strokeStyle = '#d4bd88';
       minimapCtx.lineWidth = 1.5;
       minimapCtx.stroke();
+      window.WindSystem?.paint(minimapCtx,w,h);
       Object.assign(radarMapDiagnostics,{draws:radarMapDiagnostics.draws+1,moving:isBallFlying,points:track?.points.length||0,ball:[ballPos.x,ballPos.z],marker:[bM.mx,bM.my]});
     }
 
@@ -2120,6 +2123,7 @@ group.name = name;
 
         window.switchActiveCourse = switchActiveCourse;
     async function switchActiveCourse(courseId) {
+      window.GreenReader?.close(false);
       await activatePuttClubCourse(courseId==='puttclub');
       window.activeCourseId = courseId;
       console.log('Switching course to:', courseId);
@@ -2234,7 +2238,7 @@ group.name = name;
     const swingTriggerCard = document.getElementById('swing-trigger-card');
     const btnCloseSwing = document.getElementById('btn-close-swing-picker');
     document.getElementById('btn-launch-shot').addEventListener('click', () => {
-      if (isBallFlying || golferSwingPhase !== 'idle') return;
+      if (isBallFlying || golferSwingPhase !== 'idle' || window.GreenReader?.enabled) return;
       const specs = calculateShotSpecs(currentClubIndex, currentSwingMode, swingPowerPercent);
       const shotDirection = aimDirection.clone();
       triggerGolferSwing(specs, () => executeGolfShot(specs, shotDirection));
@@ -2252,7 +2256,7 @@ group.name = name;
     });
 
     document.getElementById('btn-putt-action').addEventListener('click', () => {
-      if (isBallFlying || golferSwingPhase !== 'idle') return;
+      if (isBallFlying || golferSwingPhase !== 'idle' || window.GreenReader?.enabled) return;
       const backswingFraction = parseInt(putterSlider.value) / 100;
       const specs = { carryMultiplier: 0, rollMultiplier: backswingFraction, isPutt: true };
       const shotDirection = aimDirection.clone();
@@ -2274,7 +2278,7 @@ group.name = name;
     }
 
     function setAimAngle(degrees, immediateCamera = false) {
-      if (!canAdjustAim() || !Number.isFinite(degrees)) return false;
+      if (!canAdjustAim() || window.GreenReader?.enabled || !Number.isFinite(degrees)) return false;
       const yaw = aimBaseYaw + THREE.MathUtils.degToRad(degrees);
       aimDirection.set(Math.sin(yaw), 0, Math.cos(yaw));
       positionGolferAtBall();
@@ -2477,7 +2481,7 @@ group.name = name;
     aimCanvas.setAttribute('aria-label','Golf course. Drag to aim; scroll to zoom; Option-drag or right-drag to look. R resets the view.');
     aimCanvas.setAttribute('aria-describedby','desktop-input-help');
     function gameplayInputActive() {
-      return document.body.dataset.view==='game' && !document.getElementById('game-ui').inert &&
+      return document.body.dataset.view==='game' && !window.GreenReader?.enabled && !document.getElementById('game-ui').inert &&
         document.getElementById('runtime-boot')?.hidden!==false &&
         !document.querySelector('.game-panel:not([hidden])') &&
         getComputedStyle(document.getElementById('celebration-overlay')).display==='none';
@@ -2718,12 +2722,17 @@ group.name = name;
     const kLift = 0.00078;
 
     // The short preview and the physical ball share this exact air-step model.
-    function stepBallFlight(position, velocity, dt, applyLift) {
-      const speed = velocity.length();
+    function stepBallFlight(position, velocity, dt, applyLift, windOverride = null) {
+      // One shared integrator for execution, short guide and paired wind advice.
+      // Air-relative drag/lift makes head/cross/tail wind measurable. At zero wind
+      // this retains the old arithmetic, including its small linear damping.
+      const wind = windOverride || window.WindSystem?.physicsWind() || {x:0,z:0};
+      const air = new THREE.Vector3(velocity.x-wind.x,velocity.y,velocity.z-wind.z);
+      const speed = air.length();
       if (speed > 0.01) {
-        const ux = velocity.x / speed;
-        const uy = velocity.y / speed;
-        const uz = velocity.z / speed;
+        const ux = air.x / speed;
+        const uy = air.y / speed;
+        const uz = air.z / speed;
 
         const dragAccel = kDrag * speed * speed;
         velocity.x -= dragAccel * ux * dt;
@@ -2731,20 +2740,21 @@ group.name = name;
         velocity.z -= dragAccel * uz * dt;
 
         // Environmental wind drag
-        const windVx = Math.cos(windAngle) * (windSpeedMph * 0.447);
-        const windVz = Math.sin(windAngle) * (windSpeedMph * 0.447);
+        const windVx = wind.x;
+        const windVz = wind.z;
         velocity.x += (windVx - velocity.x) * (kDrag * 0.5) * dt;
         velocity.z += (windVz - velocity.z) * (kDrag * 0.5) * dt;
 
         if (applyLift) {
-          const horizSpeed = Math.hypot(velocity.x, velocity.z);
+          const airX=velocity.x-wind.x,airZ=velocity.z-wind.z;
+          const horizSpeed = Math.hypot(airX, airZ);
           if (horizSpeed > 1e-4) {
             const uHoriz = horizSpeed / speed;
             const liftAccel = kLift * speed * speed;
             velocity.y += liftAccel * uHoriz * dt;
             const horizFactor = (liftAccel * (velocity.y / speed)) * dt;
-            velocity.x -= horizFactor * (velocity.x / horizSpeed);
-            velocity.z -= horizFactor * (velocity.z / horizSpeed);
+            velocity.x -= horizFactor * (airX / horizSpeed);
+            velocity.z -= horizFactor * (airZ / horizSpeed);
           }
         }
       }
@@ -3033,6 +3043,8 @@ group.name = name;
 
     window.setupHole = setupHole;
     function setupHole(hNum) {
+      window.GreenReader?.close(false);
+      window.WindSystem?.enterHole(hNum);
       gameplayView.yaw=0;gameplayView.pitch=0;
       if(isPuttClub())resetPuttClubHole();
       updateHoleVisualIsolation(hNum);
@@ -3166,13 +3178,14 @@ group.name = name;
         beaconHalo.scale.set(pulse, pulse, 1.0);
       }
 
-      // Physics & Dynamic Broadcast Camera
+      // Physics & Dynamic Broadcast Camera / independent Green inspection mode
+      window.WindSystem?.tick(dt);
       if (isBallFlying) {
         stepPhysics(dt);
         flightElapsedTime += dt;
 
         updateBroadcastCamera(dt);
-      } else {
+      } else if (!window.GreenReader?.enabled) {
         updateAddressCamera(dt);
       }
 
@@ -3181,7 +3194,7 @@ group.name = name;
         updateToptracerYardageTag(ballPos);
       }
 
-      updateGolferAnimation(dt);
+      if(!window.GreenReader?.enabled)updateGolferAnimation(dt);
       updateImpactParticles(dt);
 
       // Micro-screen shake effect
@@ -3191,14 +3204,15 @@ group.name = name;
         camera.position.y += (Math.random() - 0.5) * 0.08;
       }
 
-      enforceGameplayCameraSafety();
+      const activeCamera=window.GreenReader?.enabled?window.GreenReader.camera:camera;
+      if(!window.GreenReader?.enabled)enforceGameplayCameraSafety();
       updateRadarTracking(dt);
-      if(isPuttClub())window.PuttClubCourse.update(camera,dt);
+      if(isPuttClub())window.PuttClubCourse.update(activeCamera,dt);
 
       // Title/setup completely cover the canvas; do not spend GPU time behind them.
       if (document.body.dataset.view === 'game') {
-        if(isPuttClub())window.PuttClubCourse.native.reflect(scene,camera,renderer,dt);
-        renderer.render(scene, camera);
+        if(isPuttClub())window.PuttClubCourse.native.reflect(scene,activeCamera,renderer,dt);
+        renderer.render(scene, activeCamera);
       }
       if (window.PuttUI) window.PuttUI.updateShotState();
     }

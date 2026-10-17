@@ -38,7 +38,7 @@
     const scope=new URL('./',location.href).href;
     let reg=await navigator.serviceWorker.getRegistration(scope);
     if(!reg||reg.scope!==scope||navigator.onLine) {
-      try {reg=await navigator.serviceWorker.register('./sw.js?v=desktop27-20261017',{scope:'./',updateViaCache:'none'});}
+      try {reg=await navigator.serviceWorker.register('./sw.js?v=readwind28-20261017',{scope:'./',updateViaCache:'none'});}
       catch(error){if(!reg||reg.scope!==scope)throw error;console.info('Worker check unavailable:',error.message);}
     }
     const pending=reg.installing||reg.waiting;
