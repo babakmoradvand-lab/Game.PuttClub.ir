@@ -1,5 +1,5 @@
 /* PuttClub atomic offline runtime. Only this game's scope is managed. */
-const WORKER_RELEASE = 'rollback34-20261017';
+const WORKER_RELEASE = 'tehran35-20261017';
 const SCOPE = self.registration.scope;
 const CACHE_PREFIX = 'puttclub-runtime:' + new URL(SCOPE).pathname + ':';
 const META_CACHE = 'puttclub-meta:' + new URL(SCOPE).pathname;
@@ -45,17 +45,17 @@ async function installRuntime(manifest, send) {
       if(await cache.match(absolute('./index.html'),{ignoreSearch:true})) {old=cache;break;}
     }
   }
-  let done = 0, bytes = 0, reused = 0, downloaded = 0;
+  let done = 0, bytes = 0, reused = 0, downloaded = 0, reusedBytes = 0, downloadedBytes = 0;
   const totalBytes = manifest.assets.reduce((n,a) => n+a.bytes,0);
   const work = [...manifest.assets];
-  const progress = () => send({type:'PROGRESS',done,total:manifest.assets.length,bytes,totalBytes,reused,downloaded});
+  const progress = () => send({type:'PROGRESS',done,total:manifest.assets.length,bytes,totalBytes,reused,downloaded,reusedBytes,downloadedBytes});
   progress();
   try {
     const workers = Array.from({length:3},async () => {
       while(work.length) {
         const asset = work.shift(), key = absolute(asset.url);
         let response = old ? await old.match(key,{ignoreSearch:true}) : null;
-        if (response && (await digest(response)) === asset.sha256) reused++;
+        if (response && (await digest(response)) === asset.sha256) {reused++;reusedBytes+=asset.bytes;}
         else {
           const url = new URL(key);url.searchParams.set('__release',manifest.version);
           const abort=new AbortController(),timer=setTimeout(()=>abort.abort(),90000);
@@ -63,7 +63,7 @@ async function installRuntime(manifest, send) {
             response = await fetch(url.href,{cache:'no-store',signal:abort.signal});
             if (!response.ok || (await digest(response)) !== asset.sha256) throw Error('Asset failed validation: '+asset.url);
           } finally {clearTimeout(timer);}
-          downloaded++;
+          downloaded++;downloadedBytes+=asset.bytes;
         }
         await target.put(key,response.clone());
         done++;bytes+=asset.bytes;progress();
@@ -76,7 +76,7 @@ async function installRuntime(manifest, send) {
     if (done!==manifest.assets.length) throw Error('Incomplete download');
     const index = await target.match(absolute('./index.html'));
     await target.put(absolute('./'),index.clone());
-    const next = {complete:true,cache:name,manifest,previous:current?.cache || null,installedAt:Date.now(),reused,downloaded};
+    const next = {complete:true,cache:name,manifest,previous:current?.cache || null,installedAt:Date.now(),reused,downloaded,reusedBytes,downloadedBytes};
     // Commit only after ALL assets passed integrity checks. Keep the old build
     // until the new interface successfully starts and confirms HEALTHY.
     await saveState(next);

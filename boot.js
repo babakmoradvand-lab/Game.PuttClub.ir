@@ -38,16 +38,26 @@
     const scope=new URL('./',location.href).href;
     let reg=await navigator.serviceWorker.getRegistration(scope);
     if(!reg||reg.scope!==scope||navigator.onLine) {
-      try {reg=await navigator.serviceWorker.register('./sw.js?v=rollback34-20261017',{scope:'./',updateViaCache:'none'});}
+      // Keep the installed worker URL stable; changed script bytes trigger updates.
+      // Changing its query again during the mandatory HTML reload starts a second activation.
+      const workerSource=reg?.scope===scope&&reg.active?reg.active.scriptURL:new URL('./sw.js',location.href).href;
+      try {reg=await navigator.serviceWorker.register(workerSource,{scope:'./',updateViaCache:'none'});}
       catch(error){if(!reg||reg.scope!==scope)throw error;console.info('Worker check unavailable:',error.message);}
     }
-    const pending=reg.installing||reg.waiting;
-    if(pending&&pending.state!=='activated'&&pending.state!=='redundant') {
-      await Promise.race([new Promise(resolve=>pending.addEventListener('statechange',()=>{
-        if(['activated','redundant'].includes(pending.state))resolve();
-      })),new Promise((_,reject)=>setTimeout(()=>reject(Error('Worker activation timed out')),20000))]);
-    }
     const controlled=()=>navigator.serviceWorker.controller && (!reg.active||navigator.serviceWorker.controller.scriptURL===reg.active.scriptURL);
+    const pending=reg.installing||reg.waiting;
+    // The existing atomic-cache worker can install this compatible manifest.
+    // A waiting replacement must not block an already controlled, playable client.
+    if(!controlled()&&pending&&pending.state!=='activated'&&pending.state!=='redundant') {
+      await new Promise((resolve,reject)=>{
+        const finish=()=>{
+          if(!['activated','redundant'].includes(pending.state))return;
+          clearTimeout(timer);pending.removeEventListener('statechange',finish);resolve();
+        };
+        const timer=setTimeout(()=>{pending.removeEventListener('statechange',finish);reject(Error('Worker activation timed out'));},20000);
+        pending.addEventListener('statechange',finish);finish();
+      });
+    }
     if(!controlled())await new Promise((resolve,reject)=>{
       const done=()=>{if(controlled()){clearTimeout(timer);navigator.serviceWorker.removeEventListener('controllerchange',done);resolve();}};
       const timer=setTimeout(()=>{navigator.serviceWorker.removeEventListener('controllerchange',done);reject(Error('Worker control timed out'));},20000);
@@ -66,8 +76,11 @@
   }
   function progress(value) {
     bar.max=value.totalBytes;bar.value=value.bytes;
-    label.textContent='ذخیره و بررسی فایل‌های بازی…';
-    detail.textContent=`${value.done} / ${value.total} فایل · ${(value.bytes/1048576).toFixed(1)} / ${(value.totalBytes/1048576).toFixed(1)} MB`;
+    const hasTransferSizes=Number.isFinite(value.downloadedBytes)&&Number.isFinite(value.reusedBytes);
+    label.textContent=value.downloaded>0?'دریافت فایل‌های تغییرکرده و بررسی نسخه…':'بررسی و آماده‌سازی فایل‌های ذخیره‌شده…';
+    detail.textContent=hasTransferSizes
+      ?`${value.done} / ${value.total} فایل · دریافت از اینترنت: ${(value.downloadedBytes/1048576).toFixed(2)} MiB · استفاده از حافظهٔ دستگاه: ${(value.reusedBytes/1048576).toFixed(2)} MiB`
+      :`${value.done} / ${value.total} فایل · بررسی و آماده‌سازی: ${(value.bytes/1048576).toFixed(1)} / ${(value.totalBytes/1048576).toFixed(1)} MiB (این عدد حجم دانلود نیست)`;
   }
   async function runtime() {
     let cached=null;

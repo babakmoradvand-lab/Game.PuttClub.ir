@@ -2123,6 +2123,8 @@ group.name = name;
     const clubTriggerCard = document.getElementById('club-trigger-card');
     const btnCloseClub = document.getElementById('btn-close-club-picker');
 
+    // One shared Tehran texture for this renderer; switching courses only swaps maps.
+    let tehranSatelliteTexture = null;
         window.switchActiveCourse = switchActiveCourse;
     async function switchActiveCourse(courseId) {
       window.GreenReader?.close(false);
@@ -2135,12 +2137,23 @@ group.name = name;
       }else if (courseId === 'tehran') {
         // Load Tehran Texture
         if (window.TEHRAN_TEXTURE_B64 && satMaterial) {
-          const tLoader = new THREE.TextureLoader();
-          const tTex = tLoader.load(window.TEHRAN_TEXTURE_B64);
-          tTex.generateMipmaps = true;
-          tTex.encoding = THREE.sRGBEncoding;
-          tTex.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
-          satMaterial.map = tTex;
+          if (!tehranSatelliteTexture) {
+            const tLoader = new THREE.TextureLoader();
+            const tTex = tLoader.load(window.TEHRAN_TEXTURE_B64, undefined, undefined, () => {
+              // A failed decode may be retried on the next selection; never retain its GPU resource.
+              if (tehranSatelliteTexture === tTex) tehranSatelliteTexture = null;
+              if (satMaterial.map === tTex) {
+                satMaterial.map = satTexture;
+                satMaterial.needsUpdate = true;
+              }
+              tTex.dispose();
+            });
+            tTex.generateMipmaps = true;
+            tTex.encoding = THREE.sRGBEncoding;
+            tTex.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy());
+            tehranSatelliteTexture = tTex;
+          }
+          satMaterial.map = tehranSatelliteTexture;
           satMaterial.needsUpdate = true;
         }
         // Hide historical sand browns on modern grass Enghelab course!
