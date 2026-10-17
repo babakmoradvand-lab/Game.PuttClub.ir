@@ -1,3 +1,14 @@
+# elbow29 — elbow hinge and progressive forearm skin twist (2026-10-17)
+
+Corrects the active skinned rig, not just wrist contact. Anatomical hinge frames
+and two runtime forearm twist helpers remove the free elbow roll; a shared grip
+reach constraint limits excessive folding without changing address or impact.
+Original GLB and all GolfMotion profiles remain unchanged. READ, round wind,
+physics, saves and desktop input source are preserved from readwind28.
+See ELBOW29_RELEASE_FA.md for measurements and visual/biomechanical limits.
+
+---
+
 # readwind28 — independent green inspection and saved round wind (2026-10-17)
 
 This release preserves the exact hands26 rig and original human GLB from desktop27.
