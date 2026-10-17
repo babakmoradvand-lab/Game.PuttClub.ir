@@ -1449,7 +1449,7 @@ group.name = name;
           proGolferModel = gltf.scene;
           try { proGolferAnimator = new GolfAthlete(gltf); }
           catch (error) { console.warn('Golfer rig rejected:',error.message);proGolferModel=null;golferHips.visible=true;return; }
-          console.info('Skinned golfer loaded: 51 joints, 5 stroke clips.');
+          console.info('Skinned golfer loaded: calibrated rigid clubs and authored swing25 motions.');
           
           proGolferModel.traverse((child) => {
             if (child.isMesh) {
@@ -1494,9 +1494,9 @@ group.name = name;
     const SWING_PROFILES = {
       'full': {
         name: 'Full Swing',
-        backSpeed: 2.3,
-        downSpeed: 7.8,
-        followSpeed: 3.2,
+        backSpeed: 1.25,
+        downSpeed: 4,
+        followSpeed: 1.33333333,
         backTorsoY: -0.92,
         backTorsoX: 0.12,
         backArmsZ: -1.55,
@@ -1514,9 +1514,9 @@ group.name = name;
       },
       'three-quarter': {
         name: '3/4 Swing',
-        backSpeed: 2.6,
-        downSpeed: 8.2,
-        followSpeed: 3.6,
+        backSpeed: 1.42857143,
+        downSpeed: 4.16666667,
+        followSpeed: 1.49253731,
         backTorsoY: -0.70,
         backTorsoX: 0.09,
         backArmsZ: -1.22,
@@ -1534,9 +1534,9 @@ group.name = name;
       },
       'half': {
         name: 'Half Swing',
-        backSpeed: 3.0,
-        downSpeed: 8.5,
-        followSpeed: 4.0,
+        backSpeed: 1.72413793,
+        downSpeed: 4.54545455,
+        followSpeed: 1.81818182,
         backTorsoY: -0.48,
         backTorsoX: 0.06,
         backArmsZ: -0.82,
@@ -1554,9 +1554,9 @@ group.name = name;
       },
       'chip': {
         name: 'Chip Shot',
-        backSpeed: 3.6,
-        downSpeed: 8.8,
-        followSpeed: 4.8,
+        backSpeed: 2.17391304,
+        downSpeed: 4.54545455,
+        followSpeed: 2.38095238,
         backTorsoY: -0.22,
         backTorsoX: 0.03,
         backArmsZ: -0.42,
@@ -1574,9 +1574,9 @@ group.name = name;
       },
       'punch': {
         name: 'Punch Shot',
-        backSpeed: 2.8,
-        downSpeed: 8.6,
-        followSpeed: 4.2,
+        backSpeed: 1.53846154,
+        downSpeed: 4.34782609,
+        followSpeed: 1.92307692,
         backTorsoY: -0.62,
         backTorsoX: 0.08,
         backArmsZ: -1.05,
@@ -1594,9 +1594,9 @@ group.name = name;
       },
       'putt': {
         name: 'Putting Stroke',
-        backSpeed: 2.2,
-        downSpeed: 4.8,
-        followSpeed: 3.2,
+        backSpeed: 1.66666667,
+        downSpeed: 2.94117647,
+        followSpeed: 1.66666667,
         backTorsoY: -0.04,
         backTorsoX: 0.01,
         backArmsZ: -0.24,
@@ -1690,23 +1690,22 @@ group.name = name;
       // Right-handed athlete: anatomical left (+X) is the lead side.
       const sideVec = new THREE.Vector3(dirToPin.z, 0, -dirToPin.x).normalize();
       
-      // Club-specific stance distance: Driver = 0.65m, Irons = 0.58m, Putter = 0.46m
+      // Fit this real club's length/lie; the ball remains in its physical position.
       const club = GOLF_BAG[currentClubIndex] || {};
-      let standOffset = 0.58;
-      if (club.isPutter) standOffset = 0.46;
-      else if (currentClubIndex === 0) standOffset = 0.65;
-      else if (currentSwingMode === 'chip') standOffset = 0.50;
+      const stance = proGolferAnimator ? GolfAthlete.address(club,club.isPutter?'putt':currentSwingMode) : null;
+      const standOffset = stance ? stance.distance : club.isPutter ? .46 : currentClubIndex === 0 ? .65 : currentSwingMode === 'chip' ? .50 : .58;
+      const leadOffset = stance ? stance.lead : 0;
 
       // Tee platforms are FLAT: use their centre/top, not sloped terrain
       // sampled under the shoes. This prevents floating or buried feet.
       const groundAtStance = strokesCurrentHole === 0
         ? getTerrainHeight(ballPos.x,ballPos.z) + (isPuttClub()?0:0.15)
-        : getTerrainHeight(ballPos.x + sideVec.x * standOffset,ballPos.z + sideVec.z * standOffset);
+        : getTerrainHeight(ballPos.x + sideVec.x * standOffset - dirToPin.x * leadOffset,ballPos.z + sideVec.z * standOffset - dirToPin.z * leadOffset);
       
       golferGroup.position.set(
-        ballPos.x + sideVec.x * standOffset,
+        ballPos.x + sideVec.x * standOffset - dirToPin.x * leadOffset,
         groundAtStance,
-        ballPos.z + sideVec.z * standOffset
+        ballPos.z + sideVec.z * standOffset - dirToPin.z * leadOffset
       );
 
       const angle = Math.atan2(dirToPin.x, dirToPin.z);

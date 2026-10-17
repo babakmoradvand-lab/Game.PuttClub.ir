@@ -1,3 +1,47 @@
+# Current runtime: swing25 (2026-10-17)
+
+The human GLB is unchanged from the verified published asset (SHA-256
+`5a4af205f0ccab7d462a739fb48bf1e559a3f515ef600212cb992c260bd7fb01`).
+The original five embedded clips and the historical notes below remain provenance,
+not a claim that the current game uses those clips or professional motion capture.
+
+`golfer-rig.js` now contains two layers:
+
+- `GolfMotion`: original, skeleton-independent key-pose trajectories for full,
+  three-quarter, half, chip, putt and the pre-existing punch option.
+- `GolfAthlete(gltf, binding)`: the actual skinned-human adapter, joint mapping,
+  calibrated rigid clubs, two-hand grip and bounded terrain/foot constraints.
+
+Club lengths are independently configured in metres. Shaft geometry changes length;
+club head, grip and human bone scales do not change to achieve reach. Club design lie
+and avatar-fitted address shaft angle are deliberately separate parameters. New
+striking surfaces are real flat polygon geometry with loft, grooves and family-specific
+head shape, not the previous ellipsoids. Club sources use the existing project; no
+paid motion pack or third-party replacement human was acquired.
+
+The trail foot rolls around a toe contact; putting remains planted. Joint transforms
+are reset from the bind pose for deterministic, non-accumulating samples. Body
+adaptation for a lower ball is bounded by terrain height rather than an iterative
+wrist-to-hip reach solver. Actual face intersection and the unchanged once-only
+shot callback are verified at impact.
+
+A future human can supply `binding.bones` (canonical name → source node name),
+`binding.hands.L/R` (`rotation` XYZ radians, `palm` in hand coordinates, `along` in
+metres), and `binding.clubSource`. Metres, Y-up and front +Z / lead +X are the current
+contract. A different reference pose, bone axes or body proportions needs calibration
+and motion retargeting; the name-mapping test is NOT universal compatibility evidence.
+No future multi-sport model has been received or tested yet.
+
+Evidence: `audit/swing25/{rig-results,game-results,protected,upgrade-results}.json`.
+Tests are geometric and functional, not a coach's biomechanical certification.
+Appearance likeness and physical iPhone/Safari performance are not certified.
+
+The standalone seven-iron GLB is an additional baked study export, not the runtime
+body replacement; its study textures are limited to 1024. The game retains original
+textures and the original offline caching/storage architecture.
+
+## Historical body / asset notes (superseded for runtime motion)
+
 # Detail18 current character and scale contract
 
 The actual shipped GLB is refined from the published look17/rig14 asset, not rebuilt with the older rig11 recipe. Native metres, upright +Y, front +Z, left/lead +X. Object scale stays (1,1,1) on every shot. Body ~1.80m, whole bind geometry ~1.8215m including cap/shoes; ball diameter 0.04267m.
