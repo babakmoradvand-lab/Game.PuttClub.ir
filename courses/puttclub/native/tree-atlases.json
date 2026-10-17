@@ -1,0 +1,41 @@
+{
+  "method": "Original authored tree geometry, shader graphs, world, sun, AgX look/exposure; Cycles CPU8 instead of Eevee. Multi-view distant LOD only; no generic cones.",
+  "atlases": [
+    {
+      "prototype": 0,
+      "url": "native/tree-atlas-0.png",
+      "orthoScale": 20.128379821777344,
+      "center": [
+        0.16866064071655273,
+        7.018044471740723,
+        0.4357658624649048
+      ],
+      "yawViews": 16,
+      "pitchViews": [
+        0,
+        30,
+        60
+      ],
+      "tilePixels": 256,
+      "grid": 8
+    },
+    {
+      "prototype": 1,
+      "url": "native/tree-atlas-1.png",
+      "orthoScale": 22.517515182495117,
+      "center": [
+        0.7589869499206543,
+        6.241002559661865,
+        -0.3294401168823242
+      ],
+      "yawViews": 16,
+      "pitchViews": [
+        0,
+        30,
+        60
+      ],
+      "tilePixels": 256,
+      "grid": 8
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "passed": true,
+  "emulatedBrowser": "Chromium SwiftShader; NOT physical iPhone",
+  "records": [
+    {
+      "fixture": "bunker",
+      "camera": [
+        -366.570821,
+        17.746288862176826,
+        -58.56082100000002
+      ],
+      "near": 0,
+      "far": 14,
+      "reflection": {
+        "width": 384,
+        "height": 192,
+        "maxUpdatesHz": 12.5,
+        "planeY": 5.450000047683716
+      },
+      "render": {
+        "frame": 25,
+        "calls": 71,
+        "triangles": 1333687,
+        "points": 0,
+        "lines": 0
+      },
+      "memory": {
+        "geometries": 81,
+        "textures": 82
+      },
+      "programs": 88
+    }
+  ],
+  "errors": [],
+  "logs": []
+}

@@ -1,0 +1,111 @@
+{
+  "GG_FAIRWAY_Living": {
+    "key": "fairway",
+    "gain": 2.0,
+    "baseColor": [
+      0.05464758351445198,
+      0.14325600862503052,
+      0.016882527619600296
+    ],
+    "sourceObject": "Fairway_01_Turf_GG02",
+    "method": "Original grass family and GN settings on a 1 m\u00b2 flat patch; Cycles24; periodic 24 px border blend; normals normalized",
+    "meanAlbedo": [
+      0.05478962883353233,
+      0.1430322378873825,
+      0.016905134543776512
+    ],
+    "geometryCoverage": 1.0,
+    "compositeMasterTerrain": false,
+    "note": "Original GN includes the ground mesh"
+  },
+  "GG_FIRST_CUT_Living": {
+    "key": "firstcut",
+    "gain": 2.0,
+    "baseColor": [
+      0.04277249425649643,
+      0.11549948900938034,
+      0.017386246472597122
+    ],
+    "sourceObject": "FirstCut_01_Turf_GG03",
+    "method": "Original grass family and GN settings on a 1 m\u00b2 flat patch; Cycles24; periodic 24 px border blend; normals normalized",
+    "meanAlbedo": [
+      0.043121337890625,
+      0.11553955078125,
+      0.0173797607421875
+    ],
+    "geometryCoverage": 1.0,
+    "compositeMasterTerrain": false,
+    "note": "Original GN includes the ground mesh"
+  },
+  "GG_PRIMARY_ROUGH_Living": {
+    "key": "rough",
+    "gain": 2.0,
+    "baseColor": [
+      0.03592459857463837,
+      0.09480102360248566,
+      0.015966488048434258
+    ],
+    "sourceObject": "Rough_Tier2_Primary_GG04",
+    "method": "Original grass family and GN settings on a 1 m\u00b2 flat patch; Cycles24; periodic 24 px border blend; normals normalized",
+    "meanAlbedo": [
+      0.001522064208984375,
+      0.0033779144287109375,
+      0.0005202293395996094
+    ],
+    "geometryCoverage": 0.046588897705078125,
+    "compositeMasterTerrain": true,
+    "note": "Sparse-instance-only GN output is composited over original master-terrain colors/textures, not a black plane"
+  },
+  "GG_HEAVY_ROUGH_Living": {
+    "key": "heavy",
+    "gain": 3.0,
+    "baseColor": [
+      0.034003473818302155,
+      0.08200837671756744,
+      0.01500153262168169
+    ],
+    "sourceObject": "Rough_Tier3_Heavy_GG05",
+    "method": "Original grass family and GN settings on a 1 m\u00b2 flat patch; Cycles24; periodic 24 px border blend; normals normalized",
+    "meanAlbedo": [
+      0.002117156982421875,
+      0.00434112548828125,
+      0.0007119178771972656
+    ],
+    "geometryCoverage": 0.060825347900390625,
+    "compositeMasterTerrain": true,
+    "note": "Sparse-instance-only GN output is composited over original master-terrain colors/textures, not a black plane"
+  },
+  "GG_NATIVE_Living": {
+    "key": "native",
+    "gain": 3.0,
+    "baseColor": [
+      0.05205942317843437,
+      0.08609827607870102,
+      0.026029711589217186
+    ],
+    "sourceObject": "Rough_Tier4_Native_GG06",
+    "method": "Original grass family and GN settings on a 1 m\u00b2 flat patch; Cycles24; periodic 24 px border blend; normals normalized",
+    "meanAlbedo": [
+      0.002796173095703125,
+      0.004180908203125,
+      0.00164031982421875
+    ],
+    "geometryCoverage": 0.06779098510742188,
+    "compositeMasterTerrain": true,
+    "note": "Sparse-instance-only GN output is composited over original master-terrain colors/textures, not a black plane"
+  },
+  "GG_GREEN_Living": {
+    "key": "green",
+    "gain": 2.0,
+    "baseColor": [
+      0.06315515512212662,
+      0.15588310390896395,
+      0.017718384403601514
+    ],
+    "sourceObject": "Green_01_Turf_GG01",
+    "method": "Actual original 1 m\u00b2 crop at 12000 instances/m\u00b2; Cycles32; corrected tangent normals; periodic borders",
+    "geometryCoverage": 1.0,
+    "compositeMasterTerrain": false,
+    "note": "Original GN includes the ground mesh"
+  }
+}

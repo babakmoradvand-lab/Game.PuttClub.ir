@@ -83,3 +83,7 @@ indexes geometry and matches lower-layer edges to higher surfaces. It validates 
 `python scripts/runtime-manifest.py course19-20261016` and repeat the tests.
 The original ZIP/Blender course is not redistributed. See integrated asset credits
 for the distinction between supplied license claims and independently verified facts.
+
+## Source-derived visual rebuild — quality22
+
+The PuttClub course now uses recovered same-asset original textures, source shader fields, six authored grass-family bakes, original near-tree geometry / multi-view source atlases at distance, source nature scatters, HDR/AgX grading and bounded planar water reflections. No generic cone-tree replacements are used for this course. See [scope, offline size and limitations](QUALITY22_RELEASE_FA.md) and `audit/quality22`. The physics collision mesh and rigged player are byte-identical to course19. Target: iPhone 15 or newer; browser emulation is not a measured physical-iPhone performance result.

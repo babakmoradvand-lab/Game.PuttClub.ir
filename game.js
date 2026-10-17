@@ -261,7 +261,8 @@
 
     const skyGeo = new THREE.SphereGeometry(18000, 32, 16);
     const skyMat = new THREE.MeshBasicMaterial({ color: 0x7bb0dc, side: THREE.BackSide });
-    scene.add(new THREE.Mesh(skyGeo, skyMat));
+    const legacySkyDome = new THREE.Mesh(skyGeo, skyMat);
+    scene.add(legacySkyDome);
 
     // Coordinates & Elevation
     const nwLat = terrainData.nw_lat; const nwLon = terrainData.nw_lon;
@@ -3017,7 +3018,10 @@ group.name = name;
       }
 
       // Title/setup completely cover the canvas; do not spend GPU time behind them.
-      if (document.body.dataset.view === 'game') renderer.render(scene, camera);
+      if (document.body.dataset.view === 'game') {
+        if(isPuttClub())window.PuttClubCourse.native.reflect(scene,camera,renderer,dt);
+        renderer.render(scene, camera);
+      }
       if (window.PuttUI) window.PuttUI.updateShotState();
     }
     animate();

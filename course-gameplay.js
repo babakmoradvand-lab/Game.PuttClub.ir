@@ -4,14 +4,17 @@ const courseEvents=[];
 let courseTeeColor="blue";
 async function activatePuttClubCourse(enabled){
  const pc=window.PuttClubCourse;
- if(enabled)await pc.loadVisual();
+ if(enabled){await pc.loadVisual();pc.native.attachRenderer(renderer);}
  const groups=[terrainMesh,buildingGroup,treeGroup,fairwayGroup,pinGroup,brownsGroup,roadsGroup];
  if(enabled&&!pc.active){
   courseLegacyState={holes:courseHoles,pins:Object.fromEntries(Object.entries(holePins3D).map(([k,p])=>[k,p.clone()])),tees:Object.fromEntries(Object.entries(teeBoxes3D).map(([k,p])=>[k,p.clone()])),visibility:groups.map(g=>g.visible)};
+  courseLegacyState.light={hemi:hemiLight.intensity,intensity:sunLight.intensity,color:sunLight.color.clone(),position:sunLight.position.clone(),target:sunLight.target.position.clone(),fog:scene.fog,sky:legacySkyDome.visible,shadow:{left:sunLight.shadow.camera.left,right:sunLight.shadow.camera.right,top:sunLight.shadow.camera.top,bottom:sunLight.shadow.camera.bottom,near:sunLight.shadow.camera.near,far:sunLight.shadow.camera.far}};
+  hemiLight.intensity=0;sunLight.intensity=pc.native.spec.sun.energy/Math.PI;sunLight.color.fromArray(pc.native.spec.sun.color);Object.assign(sunLight.shadow.camera,{left:-48,right:48,top:48,bottom:-48,near:1,far:500});sunLight.shadow.camera.updateProjectionMatrix();scene.fog=null;legacySkyDome.visible=false;pc.lightContext={sun:sunLight};
   courseHoles=pc.holeCards;Object.keys(holePins3D).forEach(k=>delete holePins3D[k]);Object.keys(teeBoxes3D).forEach(k=>delete teeBoxes3D[k]);
   for(const h of pc.data.holes){holePins3D[h.number]=new THREE.Vector3().fromArray(h.pins.find(p=>p.isDefault).position);teeBoxes3D[h.number]=new THREE.Vector3().fromArray(h.tees[0].position);}
   groups.forEach(g=>g.visible=false);scene.add(pc.root);pc.root.visible=true;pc.active=true;
  }else if(!enabled&&pc.active){
+  const light=courseLegacyState.light;hemiLight.intensity=light.hemi;sunLight.intensity=light.intensity;sunLight.color.copy(light.color);sunLight.position.copy(light.position);sunLight.target.position.copy(light.target);sunLight.target.updateMatrixWorld();Object.assign(sunLight.shadow.camera,light.shadow);sunLight.shadow.camera.updateProjectionMatrix();scene.fog=light.fog;legacySkyDome.visible=light.sky;pc.lightContext=null;
   pc.active=false;pc.root.visible=false;courseHoles=courseLegacyState.holes;Object.keys(holePins3D).forEach(k=>delete holePins3D[k]);Object.keys(teeBoxes3D).forEach(k=>delete teeBoxes3D[k]);Object.assign(holePins3D,courseLegacyState.pins);Object.assign(teeBoxes3D,courseLegacyState.tees);groups.forEach((g,i)=>g.visible=courseLegacyState.visibility[i]);
  }
  courseRelief=null;document.getElementById('course-relief')?.setAttribute('hidden','');

@@ -1,0 +1,11 @@
+PASS failed initial asset: no engine, no partially committed cache {}
+PASS all offline assets independently verified by SHA-256 {"assets":145,"bytes":118268264,"version":"quality22-20261017"}
+PASS unchanged online launch: zero game asset network downloads {"network":[{"name":"sw.js","release":null},{"name":"release.json","release":null}]}
+PASS failed update integrity: previous complete game preserved {"boot":"update-unavailable","version":"quality22-20261017","cache":"quality22-20261017","keys":["puttclub-meta:/","puttclub-runtime:/:quality22-20261017"]}
+PASS cold offline home-screen URL: course selection + genuine shot {"hole":3,"course":"tehran","strokes":1,"flying":true,"finite":true,"tracer":120}
+PASS foreground update: hash reuse, consistent reload, round restored {"downloaded":2,"reused":143,"strokes":2,"hole":3}
+PASS compact glass HUD: map and estimates expand/collapse {"map":0,"glass":"blur(12px) saturate(1.25)"}
+PASS no page/script errors {}
+PASS previous deployed worker migration at Pages subpath; unrelated cache preserved {"reused":44,"downloaded":101,"scope":"http://localhost:8081/Game.PuttClub.ir/sw.js"}
+PASS HUD obstruction reduced without removing primary controls {"prior":{"boxes":[{"id":"top-left-hud-column","width":190,"height":210.578125,"area":40009.84375},{"id":"minimap-container","width":106,"height":132.5,"area":14045},{"id":"bottom-game-dock","width":366,"height":128,"area":46848}],"area":100902.84375},"current":{"boxes":[{"id":"top-left-hud-column","width":174,"height":170.09375,"area":29596.3125},{"id":"minimap-container","width":106,"height":63.5,"area":6731},{"id":"bottom-game-dock","width":366,"height":99,"area":36234},{"id":"btn-map-detail","width":44,"height":44,"area":1936}],"area":74497.3125},"reductionPercent":26}
+PASS migrated Pages subpath reopens entirely offline {}

@@ -1,0 +1,114 @@
+[
+  {
+    "image": "grass_color.jpg",
+    "url": "native/29c3e846183380dd54dd-mobile.png",
+    "mobileSHA256": "957fcc6687bf5d4ca3c1d0dc220f1889a49deb7dc46e14055f64eb0ec88af951",
+    "mobileDimensions": [
+      1024,
+      1024
+    ],
+    "originalDimensions": [
+      2048,
+      2048
+    ],
+    "originalSHA256": "29c3e846183380dd54dd53768400517ca8d2551e33c1a64245790f79a4b559a9"
+  },
+  {
+    "image": "sand_color.jpg",
+    "url": "native/08520296f7fc61d14633-mobile.png",
+    "mobileSHA256": "41da15313b07f0bcba95bc7c7c659204adc5808248985a7e6d98c557038b0df2",
+    "mobileDimensions": [
+      1024,
+      1024
+    ],
+    "originalDimensions": [
+      2048,
+      2048
+    ],
+    "originalSHA256": "08520296f7fc61d146332cebecb1d3a4385526557a391b17d99d7a3ba120739b"
+  },
+  {
+    "image": "TX_BlackAlderCanopy_01_ALB-TX_BlackAlderCanopy_01_OPC",
+    "url": "native/81f05d55f80bc490b464-mobile.png",
+    "mobileSHA256": "0a3fa06cd8c89af1ac9af867160844702cf20239cc50f859053aedee96122515",
+    "mobileDimensions": [
+      1024,
+      1024
+    ],
+    "originalDimensions": [
+      2048,
+      2048
+    ],
+    "originalSHA256": "81f05d55f80bc490b4641f062ec2aa7a622509f52f930666f5037fa23c22307f"
+  },
+  {
+    "image": "TX_BlackAlderCanopy_01_NRS",
+    "url": "native/6a3b1b8b947863ec7710-mobile.png",
+    "mobileSHA256": "040093e212ab259c5ad4077ba5ea4257c7be16e809f90df9764aa5bded93ee05",
+    "mobileDimensions": [
+      1024,
+      1024
+    ],
+    "originalDimensions": [
+      2048,
+      2048
+    ],
+    "originalSHA256": "6a3b1b8b947863ec7710d8b5e59a799fc90584f670b0c358208ac634804f021b"
+  },
+  {
+    "image": "TX_BlackAlderCanopy_01_NRS.001",
+    "url": "native/867765f2f699f2064f87-mobile.png",
+    "mobileSHA256": "9a23e7934955c2875063838fc4d16b245c8821639705a50a7624c065d1f3ff86",
+    "mobileDimensions": [
+      1024,
+      1024
+    ],
+    "originalDimensions": [
+      2048,
+      2048
+    ],
+    "originalSHA256": "867765f2f699f2064f8727acb209f4a66c21181d8f43ba55576281b3299c3b59"
+  },
+  {
+    "image": "TX_BlackAlderTrunk_01_ALB",
+    "url": "native/260c382a627a19fffc9c-mobile.png",
+    "mobileSHA256": "4976278589016be991d9460904a28caf04eeb735e19278962581fc8054fe3f92",
+    "mobileDimensions": [
+      1024,
+      1024
+    ],
+    "originalDimensions": [
+      2048,
+      2048
+    ],
+    "originalSHA256": "260c382a627a19fffc9ca6e84f5e5f01d7ad7664be12f8c691b0079fcfe5092a"
+  },
+  {
+    "image": "TX_BlackAlderTrunk_01_NRM",
+    "url": "native/22108c5bb3eb8b502d1b-mobile.png",
+    "mobileSHA256": "9dd45e31fcceac880759719a8e0d5eb0a6aea50db61092aaae496b0fa090f224",
+    "mobileDimensions": [
+      1024,
+      1024
+    ],
+    "originalDimensions": [
+      2048,
+      2048
+    ],
+    "originalSHA256": "22108c5bb3eb8b502d1b6b2dfbe1f9d03e2d434ba55d8602b51fbe574709413c"
+  },
+  {
+    "image": "TX_BlackAlderTrunk_01_SRA",
+    "url": "native/bcf87eacecec896a79e7-mobile.png",
+    "mobileSHA256": "245ff0105f610dbfbabf2d6b5c6d2f34abe7299c0768be5806f39e0f773c0bac",
+    "mobileDimensions": [
+      1024,
+      1024
+    ],
+    "originalDimensions": [
+      2048,
+      2048
+    ],
+    "originalSHA256": "bcf87eacecec896a79e7b628c814cc01e21fe5990ea81e97dd0405903f62fbae"
+  }
+]

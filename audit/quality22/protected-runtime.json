@@ -1,0 +1,14 @@
+{
+  "geometryAndRig": {
+    "courses/puttclub/course_collision.glb": "dbb82a8286d647179d667add5bfbe09420b30645405883c76ce2fc4242ed72db",
+    "pro_golfer_character.glb": "5a4af205f0ccab7d462a739fb48bf1e559a3f515ef600212cb992c260bd7fb01"
+  },
+  "protectedFunctions": {
+    "stepPhysics": "7a395d46fb0ed20c7d90c55f1e69c5481c6ee1e5014796a43227b7ca61491b4b",
+    "positionGolferAtBall": "622ac039c52fb9a72596ea8f256a4b20a51d17f8e97536bfbfef1fe4ef095c74",
+    "stepBallFlight": "5bf32c2c88095227eef2913dec6146cff9e8ba9782f74036e0a7a90cb8cbd2f3",
+    "updateToptracerRibbon": "fb2ee697ce1c9cd6d803dfff1bb8dbfd319f16799a208bced2310b362320f0ce",
+    "setGameplayZoom": "2341817cc05524e033b2ea0d24688c7fd8b139d7c3a20eb391fd2f0132a41a58"
+  },
+  "physicsAndReliefTailByteIdentical": true
+}

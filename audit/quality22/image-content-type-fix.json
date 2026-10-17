@@ -1,0 +1,8 @@
+{
+  "renamedWithoutAlteringBytes": {
+    "native/1f31011635956d1bc495.jpg": "native/1f31011635956d1bc495.webp",
+    "native/be333b8cc40fdaaa224d.jpg": "native/be333b8cc40fdaaa224d.webp",
+    "native/5959c185aa1322faf2d5.jpg": "native/5959c185aa1322faf2d5.webp"
+  },
+  "reason": "Three r128 forces RGBFormat for JPG URLs, dropping opacity from original RGBA WebP conifer image. Correct MIME and explicit RGBA restore original alpha."
+}

@@ -1,0 +1,110 @@
+{
+  "release": "quality22-20261017",
+  "runtimeAssets": 145,
+  "runtimeBytes": 118268331,
+  "target": "iPhone15 or newer; not a physical-device certification",
+  "physicalIPhoneTested": false,
+  "pixelIdenticalToBlender": false,
+  "browserEnvironment": "Chromium / SwiftShader / touch emulation",
+  "results": {
+    "sourceFixtures": {
+      "passed": true,
+      "views": 6,
+      "nearSourceTrees": 24,
+      "pageErrors": 0,
+      "consoleWarnings": 0
+    },
+    "finalSandAA": {
+      "passed": true,
+      "emulatedBrowser": "Chromium SwiftShader; NOT physical iPhone",
+      "records": [
+        {
+          "fixture": "bunker",
+          "camera": [
+            -366.570821,
+            17.746288862176826,
+            -58.56082100000002
+          ],
+          "near": 0,
+          "far": 14,
+          "reflection": {
+            "width": 384,
+            "height": 192,
+            "maxUpdatesHz": 12.5,
+            "planeY": 5.450000047683716
+          },
+          "render": {
+            "frame": 25,
+            "calls": 71,
+            "triangles": 1333687,
+            "points": 0,
+            "lines": 0
+          },
+          "memory": {
+            "geometries": 81,
+            "textures": 82
+          },
+          "programs": 88
+        }
+      ],
+      "errors": [],
+      "logs": []
+    },
+    "puttTrail": {
+      "passed": true,
+      "realUIShots": 4,
+      "courses": [
+        "mis",
+        "puttclub"
+      ],
+      "nonPuttBuffersByteExact": true
+    },
+    "zoom": {
+      "passed": true,
+      "genuineCDPTwoTouchChecks": 34,
+      "layoutViewports": 11,
+      "savedOfflineZoom": 1.8,
+      "axeViolations": 0,
+      "note": "CDP sometimes leaves navigator.onLine=true while networking is disabled. Cache-fallback update-unavailable is therefore accepted alongside offline; failed network URLs are restricted to update checks."
+    },
+    "courseRules": {
+      "passed": true,
+      "realUIShots": 7,
+      "viewports": 3,
+      "tees": 54,
+      "treeAndCanopyCollision": true,
+      "sand": true,
+      "waterRelief": true,
+      "cup": true,
+      "offlinePendingRelief": true,
+      "legacyCourseSwitch": true,
+      "pageErrors": 0,
+      "consoleWarnings": 0
+    },
+    "PWA": {
+      "passed": true,
+      "integrityAssets": 145,
+      "initialInstallRollback": true,
+      "noWarmAssetDownloads": true,
+      "corruptUpdateRollback": true,
+      "offlineShot": true,
+      "foregroundDeltaDownloads": 2,
+      "foregroundReused": 143,
+      "roundRestored": true,
+      "pagesSubpathMigration": true,
+      "pagesOffline": true
+    },
+    "webkit": {
+      "passed": false,
+      "status": "inconclusive: software WebKit reached BOOT READY, then course launch did not complete within a bounded several-minute run; process stopped",
+      "physicalSafariTested": false,
+      "engine": "Playwright Linux WebKit27.2/WPE software GL; not iOS Safari",
+      "log": "webkit.log"
+    }
+  },
+  "notes": [
+    "Final sand filtering keeps the source normal texture and drops only unresolved procedural rake-normal frequencies; no generic replacement texture.",
+    "The original-scene reference is base LOD with grass GN/subdivision disabled and Cycles8 rather than Eevee.",
+    "Current playable course19 geometry corrections are retained; this is not an exact raw-mesh restoration."
+  ]
+}

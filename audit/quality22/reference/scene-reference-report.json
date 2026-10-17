@@ -1,0 +1,310 @@
+{
+  "scope": "Original full scene with dense grass GN and subdivision disabled (base LOD), Cycles CPU8 instead of original Eevee; NOT full-detail/pixel-identical reference",
+  "camera": "Cam_Hole01_Showcase_10s",
+  "view": "AgX",
+  "look": "AgX - Medium High Contrast",
+  "exposure": -0.550000011920929,
+  "disabled": [
+    {
+      "object": "Conceptual_Terrain_100ha",
+      "modifier": "Cinema_Render_Subsurf",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Green_01_Turf_GG01",
+      "modifier": "GG_Scatter_GREEN",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Green_02_Turf_GG01",
+      "modifier": "GG_Scatter_GREEN",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Green_03_Turf_GG01",
+      "modifier": "GG_Scatter_GREEN",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Green_04_Turf_GG01",
+      "modifier": "GG_Scatter_GREEN",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Green_05_Turf_GG01",
+      "modifier": "GG_Scatter_GREEN",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Green_06_Turf_GG01",
+      "modifier": "GG_Scatter_GREEN",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Green_07_Turf_GG01",
+      "modifier": "GG_Scatter_GREEN",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Green_08_Turf_GG01",
+      "modifier": "GG_Scatter_GREEN",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Green_09_Turf_GG01",
+      "modifier": "GG_Scatter_GREEN",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Green_10_Turf_GG01",
+      "modifier": "GG_Scatter_GREEN",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Green_11_Turf_GG01",
+      "modifier": "GG_Scatter_GREEN",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Green_12_Turf_GG01",
+      "modifier": "GG_Scatter_GREEN",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Green_13_Turf_GG01",
+      "modifier": "GG_Scatter_GREEN",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Green_14_Turf_GG01",
+      "modifier": "GG_Scatter_GREEN",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Green_15_Turf_GG01",
+      "modifier": "GG_Scatter_GREEN",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Green_16_Turf_GG01",
+      "modifier": "GG_Scatter_GREEN",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Green_17_Turf_GG01",
+      "modifier": "GG_Scatter_GREEN",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Green_18_Turf_GG01",
+      "modifier": "GG_Scatter_GREEN",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Fairway_01_Turf_GG02",
+      "modifier": "GG_Scatter_FAIRWAY",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Fairway_02_Turf_GG02",
+      "modifier": "GG_Scatter_FAIRWAY",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Fairway_03_Turf_GG02",
+      "modifier": "GG_Scatter_FAIRWAY",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Fairway_04_Turf_GG02",
+      "modifier": "GG_Scatter_FAIRWAY",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Fairway_05_Turf_GG02",
+      "modifier": "GG_Scatter_FAIRWAY",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Fairway_06_Turf_GG02",
+      "modifier": "GG_Scatter_FAIRWAY",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Fairway_07_Turf_GG02",
+      "modifier": "GG_Scatter_FAIRWAY",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Fairway_08_Turf_GG02",
+      "modifier": "GG_Scatter_FAIRWAY",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Fairway_09_Turf_GG02",
+      "modifier": "GG_Scatter_FAIRWAY",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Fairway_10_Turf_GG02",
+      "modifier": "GG_Scatter_FAIRWAY",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Fairway_11_Turf_GG02",
+      "modifier": "GG_Scatter_FAIRWAY",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Fairway_12_Turf_GG02",
+      "modifier": "GG_Scatter_FAIRWAY",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Fairway_13_Turf_GG02",
+      "modifier": "GG_Scatter_FAIRWAY",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Fairway_14_Turf_GG02",
+      "modifier": "GG_Scatter_FAIRWAY",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Fairway_15_Turf_GG02",
+      "modifier": "GG_Scatter_FAIRWAY",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Fairway_16_Turf_GG02",
+      "modifier": "GG_Scatter_FAIRWAY",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Fairway_17_Turf_GG02",
+      "modifier": "GG_Scatter_FAIRWAY",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Fairway_18_Turf_GG02",
+      "modifier": "GG_Scatter_FAIRWAY",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "H01_Hero_Fairway_Approach",
+      "modifier": "GG_Scatter_HERO_FAIRWAY",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "FirstCut_01_Turf_GG03",
+      "modifier": "GG_Scatter_FIRST_CUT",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "FirstCut_02_Turf_GG03",
+      "modifier": "GG_Scatter_FIRST_CUT",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "FirstCut_03_Turf_GG03",
+      "modifier": "GG_Scatter_FIRST_CUT",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "FirstCut_04_Turf_GG03",
+      "modifier": "GG_Scatter_FIRST_CUT",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "FirstCut_05_Turf_GG03",
+      "modifier": "GG_Scatter_FIRST_CUT",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "FirstCut_06_Turf_GG03",
+      "modifier": "GG_Scatter_FIRST_CUT",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "FirstCut_07_Turf_GG03",
+      "modifier": "GG_Scatter_FIRST_CUT",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "FirstCut_08_Turf_GG03",
+      "modifier": "GG_Scatter_FIRST_CUT",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "FirstCut_09_Turf_GG03",
+      "modifier": "GG_Scatter_FIRST_CUT",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "FirstCut_10_Turf_GG03",
+      "modifier": "GG_Scatter_FIRST_CUT",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "FirstCut_11_Turf_GG03",
+      "modifier": "GG_Scatter_FIRST_CUT",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "FirstCut_12_Turf_GG03",
+      "modifier": "GG_Scatter_FIRST_CUT",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "FirstCut_13_Turf_GG03",
+      "modifier": "GG_Scatter_FIRST_CUT",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "FirstCut_14_Turf_GG03",
+      "modifier": "GG_Scatter_FIRST_CUT",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "FirstCut_15_Turf_GG03",
+      "modifier": "GG_Scatter_FIRST_CUT",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "FirstCut_16_Turf_GG03",
+      "modifier": "GG_Scatter_FIRST_CUT",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "FirstCut_17_Turf_GG03",
+      "modifier": "GG_Scatter_FIRST_CUT",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "FirstCut_18_Turf_GG03",
+      "modifier": "GG_Scatter_FIRST_CUT",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Rough_Tier3_Heavy_GG05",
+      "modifier": "GG_Scatter_HEAVY_ROUGH",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Rough_Tier4_Native_GG06",
+      "modifier": "GG_Scatter_NATIVE",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "Rough_Tier2_Primary_GG04",
+      "modifier": "GG_Scatter_PRIMARY_ROUGH",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    },
+    {
+      "object": "H01_Hero_Corridor_Rough_GG04",
+      "modifier": "GG_Scatter_HERO_ROUGH",
+      "reason": "base-LOD reference: no dense physical grass/subdivision"
+    }
+  ],
+  "peakMB": 1327.828125
+}

@@ -1,0 +1,3618 @@
+[
+  {
+    "file": "course_visual.glb",
+    "object": "Central_Lake_Basin_And_Beach",
+    "vertices": 12093,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      1.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Central_Lake_Optical_Water_Surface",
+    "vertices": 10079,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      1.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Conceptual_Terrain_100ha",
+    "vertices": 28955,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.15999391887237546,
+      0.2713327874099946,
+      0.10441678013184347
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Fairway_01_Turf_GG02",
+    "vertices": 956,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.05470487275604402,
+      0.14337695347347026,
+      0.01690162423818271
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Fairway_02_Turf_GG02",
+    "vertices": 1684,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.05448662278768796,
+      0.14291620358840748,
+      0.01682887427750281
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Fairway_03_Turf_GG02",
+    "vertices": 649,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.05462651941366927,
+      0.1432115408893097,
+      0.016875506533109014
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Fairway_04_Turf_GG02",
+    "vertices": 1288,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 1,
+    "colorMean": [
+      0.05474132808520743,
+      0.14345391490779918,
+      0.01691377601932869
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Fairway_05_Turf_GG02",
+    "vertices": 827,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.054704513173536876,
+      0.14337619490802825,
+      0.016901504362746456
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Fairway_06_Turf_GG02",
+    "vertices": 1137,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.05445439967736503,
+      0.142848177116902,
+      0.01681813323465687
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Fairway_07_Turf_GG02",
+    "vertices": 652,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.054365041646372105,
+      0.14265953254842592,
+      0.01678834728503506
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Fairway_08_Turf_GG02",
+    "vertices": 1018,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.054392774000606596,
+      0.14271807841283343,
+      0.01679759134716097
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Fairway_09_Turf_GG02",
+    "vertices": 1424,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.05466483282956554,
+      0.14329242478606688,
+      0.016888277609929638
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Fairway_10_Turf_GG02",
+    "vertices": 844,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 1,
+    "colorMean": [
+      0.05478432017016883,
+      0.14354467632319848,
+      0.0169281067299453
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Fairway_11_Turf_GG02",
+    "vertices": 651,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.05474944367825458,
+      0.14347104746838713,
+      0.016916481227839175
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Fairway_12_Turf_GG02",
+    "vertices": 660,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.05477028267954329,
+      0.14351504138487856,
+      0.016923427548968834
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Fairway_13_Turf_GG02",
+    "vertices": 1126,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.05470470271191235,
+      0.14337659438358183,
+      0.01690156757728526
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Fairway_14_Turf_GG02",
+    "vertices": 968,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.0545002268791569,
+      0.1429449235514145,
+      0.016833408955839287
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Fairway_15_Turf_GG02",
+    "vertices": 648,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.054527684235659894,
+      0.1430028888399084,
+      0.016842561414764354
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Fairway_16_Turf_GG02",
+    "vertices": 1000,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 1,
+    "colorMean": [
+      0.05451554968180213,
+      0.14297727175142094,
+      0.016838516582639754
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Fairway_17_Turf_GG02",
+    "vertices": 1289,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 1,
+    "colorMean": [
+      0.0546839840655447,
+      0.14333285503167217,
+      0.01689466134395827
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Fairway_18_Turf_GG02",
+    "vertices": 1500,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.05453762641108977,
+      0.1430238779680331,
+      0.016845875474765237
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "FirstCut_01_Turf_GG03",
+    "vertices": 434,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.0429237687159856,
+      0.11583229111545972,
+      0.017461884294794956
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "FirstCut_02_Turf_GG03",
+    "vertices": 806,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.0431536916819101,
+      0.11633812145038169,
+      0.0175768458125358
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "FirstCut_03_Turf_GG03",
+    "vertices": 315,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.04344027883980469,
+      0.11696861313683457,
+      0.01772013939643925
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "FirstCut_04_Turf_GG03",
+    "vertices": 614,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.04276282474451953,
+      0.11547821422406468,
+      0.01738141237299948
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "FirstCut_05_Turf_GG03",
+    "vertices": 395,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.042708804974366445,
+      0.11535937115880421,
+      0.01735440252580452
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "FirstCut_06_Turf_GG03",
+    "vertices": 549,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.042992929495025055,
+      0.1159844450988844,
+      0.01749646478606435
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "FirstCut_07_Turf_GG03",
+    "vertices": 314,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.04246075161502373,
+      0.11481365365750605,
+      0.017230375838159555
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "FirstCut_08_Turf_GG03",
+    "vertices": 492,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.0426393644273882,
+      0.11520660171203481,
+      0.01731968220117478
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "FirstCut_09_Turf_GG03",
+    "vertices": 711,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.04304406897492604,
+      0.11609695173049314,
+      0.017522034476545507
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "FirstCut_10_Turf_GG03",
+    "vertices": 406,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.043115600467552744,
+      0.11625432097080796,
+      0.017557800245656414
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "FirstCut_11_Turf_GG03",
+    "vertices": 338,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.0424504935677423,
+      0.11479108646588948,
+      0.01722524688713216
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "FirstCut_12_Turf_GG03",
+    "vertices": 324,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.04320355988690222,
+      0.11644783181012597,
+      0.017601779934252156
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "FirstCut_13_Turf_GG03",
+    "vertices": 544,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.04351623334115838,
+      0.11713571328509043,
+      0.017758116690446527
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "FirstCut_14_Turf_GG03",
+    "vertices": 462,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.04262081656371594,
+      0.11516579611212804,
+      0.017310408284968413
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "FirstCut_15_Turf_GG03",
+    "vertices": 311,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.04513518118566141,
+      0.12069739866357249,
+      0.018567590606862375
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "FirstCut_16_Turf_GG03",
+    "vertices": 482,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.043413639663411344,
+      0.11691000735329035,
+      0.017706819836731197
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "FirstCut_17_Turf_GG03",
+    "vertices": 621,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.0427258556884065,
+      0.11539688252480225,
+      0.017362927854922196
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "FirstCut_18_Turf_GG03",
+    "vertices": 719,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.04293697780048849,
+      0.11586135104712711,
+      0.017468488849986703
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_01",
+    "vertices": 144,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_01",
+    "vertices": 64,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_01",
+    "vertices": 112,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_01",
+    "vertices": 154,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 140,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_02",
+    "vertices": 144,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_02",
+    "vertices": 64,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_02",
+    "vertices": 112,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_02",
+    "vertices": 154,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 140,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_03",
+    "vertices": 144,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_03",
+    "vertices": 64,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_03",
+    "vertices": 112,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_03",
+    "vertices": 154,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 140,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_04",
+    "vertices": 144,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_04",
+    "vertices": 64,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_04",
+    "vertices": 112,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_04",
+    "vertices": 154,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 140,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_05",
+    "vertices": 144,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_05",
+    "vertices": 64,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_05",
+    "vertices": 112,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_05",
+    "vertices": 154,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 140,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_06",
+    "vertices": 144,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_06",
+    "vertices": 64,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_06",
+    "vertices": 112,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_06",
+    "vertices": 154,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 140,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_07",
+    "vertices": 144,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_07",
+    "vertices": 64,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_07",
+    "vertices": 112,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_07",
+    "vertices": 154,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 140,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_08",
+    "vertices": 144,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_08",
+    "vertices": 64,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_08",
+    "vertices": 112,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_08",
+    "vertices": 154,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 140,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_09",
+    "vertices": 144,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_09",
+    "vertices": 64,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_09",
+    "vertices": 112,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_09",
+    "vertices": 154,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 140,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_10",
+    "vertices": 144,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_10",
+    "vertices": 64,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_10",
+    "vertices": 112,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_10",
+    "vertices": 154,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 140,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_11",
+    "vertices": 144,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_11",
+    "vertices": 64,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_11",
+    "vertices": 112,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_11",
+    "vertices": 154,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 140,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_12",
+    "vertices": 144,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_12",
+    "vertices": 64,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_12",
+    "vertices": 112,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_12",
+    "vertices": 154,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 140,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_13",
+    "vertices": 144,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_13",
+    "vertices": 64,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_13",
+    "vertices": 112,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_13",
+    "vertices": 154,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 140,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_14",
+    "vertices": 144,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_14",
+    "vertices": 64,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_14",
+    "vertices": 112,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_14",
+    "vertices": 154,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 140,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_15",
+    "vertices": 144,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_15",
+    "vertices": 64,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_15",
+    "vertices": 112,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_15",
+    "vertices": 154,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 140,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_16",
+    "vertices": 144,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_16",
+    "vertices": 64,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_16",
+    "vertices": 112,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_16",
+    "vertices": 154,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 140,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_17",
+    "vertices": 144,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_17",
+    "vertices": 64,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_17",
+    "vertices": 112,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_17",
+    "vertices": 154,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 140,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_18",
+    "vertices": 144,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_18",
+    "vertices": 64,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_18",
+    "vertices": 112,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Flagstick_Hole_18",
+    "vertices": 154,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 140,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Forest_Perimeter_Terrain_360",
+    "vertices": 7560,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Forest_River_Channel_Bed",
+    "vertices": 1440,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Forest_River_Water_Flow",
+    "vertices": 1440,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_01_Turf_GG01",
+    "vertices": 1280,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.06862280282366555,
+      0.16742591705406085,
+      0.01954093429085333
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_01_Turf_GG01",
+    "vertices": 128,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.28979801293462515,
+      0.4297531279735267,
+      0.15491022868081927
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_01_Turf_GG01",
+    "vertices": 257,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.28980727128481587,
+      0.4297644427546267,
+      0.15491434317154643
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_02_Turf_GG01",
+    "vertices": 1280,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.06569380468863528,
+      0.1612424764665775,
+      0.018564601567049976
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_02_Turf_GG01",
+    "vertices": 128,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.2492953366599977,
+      0.3802498527802527,
+      0.13690903806127608
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_02_Turf_GG01",
+    "vertices": 257,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.24928779934862708,
+      0.38024064214313075,
+      0.13690568814017892
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_03_Turf_GG01",
+    "vertices": 1280,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.06574980916047934,
+      0.16136070834472777,
+      0.018583269721420947
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_03_Turf_GG01",
+    "vertices": 128,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.24953169678337872,
+      0.38053874066099524,
+      0.13701408705674112
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_03_Turf_GG01",
+    "vertices": 257,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.24952423810263089,
+      0.3805296243628639,
+      0.13701077194065436
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_04_Turf_GG01",
+    "vertices": 1280,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.06603667049203069,
+      0.16196630430640652,
+      0.01867889017739799
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_04_Turf_GG01",
+    "vertices": 128,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.25433525955304503,
+      0.3864097618497908,
+      0.13914900389499962
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_04_Turf_GG01",
+    "vertices": 257,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.254329764889372,
+      0.38640304634543243,
+      0.1391465616365351
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_05_Turf_GG01",
+    "vertices": 1280,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.068669692898402,
+      0.1675249073537998,
+      0.01955656428472139
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_05_Turf_GG01",
+    "vertices": 128,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.2896812157705426,
+      0.4296103734523058,
+      0.15485831629484892
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_05_Turf_GG01",
+    "vertices": 257,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.2896904263514953,
+      0.42962163095344363,
+      0.15486241088535072
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_06_Turf_GG01",
+    "vertices": 1280,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.06694523918849882,
+      0.163884394033812,
+      0.018981746429926716
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_06_Turf_GG01",
+    "vertices": 128,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.26681283628568053,
+      0.40166013268753886,
+      0.14469459257088602
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_06_Turf_GG01",
+    "vertices": 257,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.26681255157819517,
+      0.4016597832223321,
+      0.14469446647723824
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_07_Turf_GG01",
+    "vertices": 1280,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.06611201891792007,
+      0.16212537334067748,
+      0.01870400629704818
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_07_Turf_GG01",
+    "vertices": 128,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.255092101637274,
+      0.3873347919434309,
+      0.13948537991382182
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_07_Turf_GG01",
+    "vertices": 257,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.2550869560891088,
+      0.3873285029648807,
+      0.13948309247595791
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_08_Turf_GG01",
+    "vertices": 1280,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.06845784419274423,
+      0.16707767099142073,
+      0.01948594801215222
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_08_Turf_GG01",
+    "vertices": 128,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.2892174352891743,
+      0.4290435314178467,
+      0.1546521931886673
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_08_Turf_GG01",
+    "vertices": 257,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.2892264546355385,
+      0.42905455526210917,
+      0.15465620177497197
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_09_Turf_GG01",
+    "vertices": 1280,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.0673595958360238,
+      0.16475914672482758,
+      0.019119865261018276
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_09_Turf_GG01",
+    "vertices": 128,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.2715691775083542,
+      0.40747343841940165,
+      0.1468085239175707
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_09_Turf_GG01",
+    "vertices": 257,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.2715708655142135,
+      0.40747550199467847,
+      0.14680927377266642
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_10_Turf_GG01",
+    "vertices": 1280,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.06591866262606345,
+      0.16171717656543477,
+      0.018639554201217833
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_10_Turf_GG01",
+    "vertices": 128,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.2514434033073485,
+      0.3828752697445452,
+      0.1378637347370386
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_10_Turf_GG01",
+    "vertices": 257,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.25143672914356574,
+      0.382867113625493,
+      0.1378607689638546
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_11_Turf_GG01",
+    "vertices": 1280,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.06604292878473643,
+      0.16197951630456373,
+      0.018680976283212657
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_11_Turf_GG01",
+    "vertices": 128,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.25597712863236666,
+      0.38841649144887924,
+      0.1398787242360413
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_11_Turf_GG01",
+    "vertices": 257,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.2559723499220169,
+      0.3884106501067195,
+      0.1398766001374805
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_12_Turf_GG01",
+    "vertices": 1280,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.06601484999409876,
+      0.16192023892654106,
+      0.018671616652864032
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_12_Turf_GG01",
+    "vertices": 128,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.253479428589344,
+      0.3853637436404824,
+      0.13876863475888968
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_12_Turf_GG01",
+    "vertices": 257,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.2534736111934083,
+      0.38535663520315744,
+      0.13876604946902754
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_13_Turf_GG01",
+    "vertices": 1280,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.0652909249329241,
+      0.1603919526329264,
+      0.018430308366077952
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_13_Turf_GG01",
+    "vertices": 128,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.24542187433689833,
+      0.37551562301814556,
+      0.13518750038929284
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_13_Turf_GG01",
+    "vertices": 257,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.2454127039658884,
+      0.37550441416321095,
+      0.1351834241634213
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_14_Turf_GG01",
+    "vertices": 1280,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.0681661579903448,
+      0.1664618891198188,
+      0.019388719294511247
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_14_Turf_GG01",
+    "vertices": 128,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.2850036099553108,
+      0.4238932984881103,
+      0.1527793826535344
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_14_Turf_GG01",
+    "vertices": 257,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.2850108812291335,
+      0.4239021864382673,
+      0.15278261412906274
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_15_Turf_GG01",
+    "vertices": 1280,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.0685454945312813,
+      0.16726271067745985,
+      0.01951516485423781
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_15_Turf_GG01",
+    "vertices": 128,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.28761230455711484,
+      0.42708170507103205,
+      0.15393880219198763
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_15_Turf_GG01",
+    "vertices": 257,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.2876206464804564,
+      0.4270919015203469,
+      0.15394250973189388
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_16_Turf_GG01",
+    "vertices": 1280,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.06810620969336015,
+      0.1663353313226253,
+      0.01936873654340161
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_16_Turf_GG01",
+    "vertices": 128,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.28440420236438513,
+      0.42316069500520825,
+      0.15251298039220273
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_16_Turf_GG01",
+    "vertices": 257,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.2844112081750358,
+      0.42316925548857753,
+      0.15251609306159186
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_17_Turf_GG01",
+    "vertices": 1280,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.06846495348145254,
+      0.1670926796272397,
+      0.019488317842478863
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_17_Turf_GG01",
+    "vertices": 128,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.28939661011099815,
+      0.4292625258676708,
+      0.154731827089563
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_17_Turf_GG01",
+    "vertices": 257,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.28940571850375907,
+      0.4292736568339604,
+      0.154735875094911
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_18_Turf_GG01",
+    "vertices": 1280,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.06797658672148828,
+      0.16606168318539857,
+      0.01932552894577384
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_18_Turf_GG01",
+    "vertices": 128,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.28102924674749374,
+      0.41903574438765645,
+      0.1510129978414625
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Green_18_Turf_GG01",
+    "vertices": 257,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.2810348621370264,
+      0.41904260826945766,
+      0.15101549417824134
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "H01_GR_BK08_SCALLOPED_L_ROOTS",
+    "vertices": 1420,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 1,
+    "colorMean": [
+      0.3799999952316284,
+      0.28999999165534973,
+      0.18000000715255737
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "H01_GR_BK08_SCALLOPED_L_SOIL",
+    "vertices": 308,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.23000000417232513,
+      0.15000000596046448,
+      0.10000000149011612
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "H01_GR_BK08_SCALLOPED_L_TERRAIN",
+    "vertices": 3108,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.7880973565072167,
+      0.717306932523137,
+      0.5624570965076505
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Mountain_01_Forested_NW",
+    "vertices": 5071,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Mountain_02_Rocky_Alpine_NE",
+    "vertices": 19744,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Pond_01_West_Basin_Basin_And_Beach",
+    "vertices": 2052,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.9650700092315674
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Pond_01_West_Basin_Optical_Water_Surface",
+    "vertices": 1678,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      1.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Pond_02_SE_Lagoon_Basin_And_Beach",
+    "vertices": 1978,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.8788604736328125
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Pond_02_SE_Lagoon_Optical_Water_Surface",
+    "vertices": 1592,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.9866582155227661
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Pond_03_East_Pond_Basin_And_Beach",
+    "vertices": 1718,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.8941364288330078
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Pond_03_East_Pond_Optical_Water_Surface",
+    "vertices": 1353,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      1.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Pond_04_South_Pond_Basin_And_Beach",
+    "vertices": 1619,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.906639814376831
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Pond_04_South_Pond_Optical_Water_Surface",
+    "vertices": 1276,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      1.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Pond_05_SW_Cove_Basin_And_Beach",
+    "vertices": 1824,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.9667754769325256
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Pond_05_SW_Cove_Optical_Water_Surface",
+    "vertices": 1433,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      1.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Pond_06_West_Channel_Basin_And_Beach",
+    "vertices": 1697,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.7792134284973145
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Pond_06_West_Channel_Optical_Water_Surface",
+    "vertices": 1288,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.8885555267333984
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Pond_07_SSE_Pond_Basin_And_Beach",
+    "vertices": 1887,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.9649101495742798
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Pond_07_SSE_Pond_Optical_Water_Surface",
+    "vertices": 1483,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      1.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Pond_08_North_Pond_Basin_And_Beach",
+    "vertices": 1744,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.9638403058052063
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Pond_08_North_Pond_Optical_Water_Surface",
+    "vertices": 1362,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      1.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Pond_09_NE_Lagoon_Basin_And_Beach",
+    "vertices": 1598,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.7038326859474182
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Pond_09_NE_Lagoon_Optical_Water_Surface",
+    "vertices": 1179,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.8093690276145935
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Pond_10_NNW_Pond_Basin_And_Beach",
+    "vertices": 1603,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.9580931663513184
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Pond_10_NNW_Pond_Optical_Water_Surface",
+    "vertices": 1228,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      1.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Pond_11_NW_Pond_Basin_And_Beach",
+    "vertices": 1522,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.7872903943061829
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Pond_11_NW_Pond_Optical_Water_Surface",
+    "vertices": 1124,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.8929698467254639
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Rough_Tier2_Primary_GG04",
+    "vertices": 15733,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.03589921740644919,
+      0.09473404591050709,
+      0.015955207723683966
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Rough_Tier3_Heavy_GG05",
+    "vertices": 9785,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.034020583485724905,
+      0.08204964255894046,
+      0.015009080944281774
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Rough_Tier4_Native_GG06",
+    "vertices": 18652,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.05207645707854403,
+      0.08612644822418299,
+      0.026038228539272016
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Tee_01_Turf_GG02",
+    "vertices": 24,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.125,
+      0.35499998927116394,
+      0.07199999690055847
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Tee_02_Turf_GG02",
+    "vertices": 24,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.125,
+      0.35499998927116394,
+      0.07199999690055847
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Tee_03_Turf_GG02",
+    "vertices": 24,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.125,
+      0.35499998927116394,
+      0.07199999690055847
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Tee_04_Turf_GG02",
+    "vertices": 24,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.125,
+      0.35499998927116394,
+      0.07199999690055847
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Tee_05_Turf_GG02",
+    "vertices": 24,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.125,
+      0.35499998927116394,
+      0.07199999690055847
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Tee_06_Turf_GG02",
+    "vertices": 24,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.125,
+      0.35499998927116394,
+      0.07199999690055847
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Tee_07_Turf_GG02",
+    "vertices": 24,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.125,
+      0.35499998927116394,
+      0.07199999690055847
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Tee_08_Turf_GG02",
+    "vertices": 24,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.125,
+      0.35499998927116394,
+      0.07199999690055847
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Tee_09_Turf_GG02",
+    "vertices": 24,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.125,
+      0.35499998927116394,
+      0.07199999690055847
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Tee_10_Turf_GG02",
+    "vertices": 24,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.125,
+      0.35499998927116394,
+      0.07199999690055847
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Tee_11_Turf_GG02",
+    "vertices": 24,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.125,
+      0.35499998927116394,
+      0.07199999690055847
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Tee_12_Turf_GG02",
+    "vertices": 24,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.125,
+      0.35499998927116394,
+      0.07199999690055847
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Tee_13_Turf_GG02",
+    "vertices": 24,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.125,
+      0.35499998927116394,
+      0.07199999690055847
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Tee_14_Turf_GG02",
+    "vertices": 24,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.125,
+      0.35499998927116394,
+      0.07199999690055847
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Tee_15_Turf_GG02",
+    "vertices": 24,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.125,
+      0.35499998927116394,
+      0.07199999690055847
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Tee_16_Turf_GG02",
+    "vertices": 24,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.125,
+      0.35499998927116394,
+      0.07199999690055847
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Tee_17_Turf_GG02",
+    "vertices": 24,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.125,
+      0.35499998927116394,
+      0.07199999690055847
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "course_visual.glb",
+    "object": "Tee_18_Turf_GG02",
+    "vertices": 24,
+    "hasSource": true,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      0.125,
+      0.35499998927116394,
+      0.07199999690055847
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "tree_type_01.glb",
+    "object": "tree_type_01",
+    "vertices": 188,
+    "hasSource": false,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "tree_type_01.glb",
+    "object": "tree_type_01",
+    "vertices": 10102,
+    "hasSource": false,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "tree_type_02.glb",
+    "object": "tree_type_02",
+    "vertices": 8574,
+    "hasSource": false,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "tree_type_02.glb",
+    "object": "tree_type_02",
+    "vertices": 976,
+    "hasSource": false,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "tree_type_03.glb",
+    "object": "tree_type_03",
+    "vertices": 188,
+    "hasSource": false,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "tree_type_03.glb",
+    "object": "tree_type_03",
+    "vertices": 10102,
+    "hasSource": false,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "tree_type_04.glb",
+    "object": "tree_type_04",
+    "vertices": 188,
+    "hasSource": false,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "tree_type_04.glb",
+    "object": "tree_type_04",
+    "vertices": 10102,
+    "hasSource": false,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "tree_type_05.glb",
+    "object": "tree_type_05",
+    "vertices": 188,
+    "hasSource": false,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  },
+  {
+    "file": "tree_type_05.glb",
+    "object": "tree_type_05",
+    "vertices": 10102,
+    "hasSource": false,
+    "outsideSourceFallbackVertices": 0,
+    "colorMean": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "lakeDepthRange": [
+      0.0,
+      0.0
+    ]
+  }
+]

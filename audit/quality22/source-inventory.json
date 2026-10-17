@@ -1,0 +1,62 @@
+[
+  {
+    "name": "puttclub_luxury_resort_100ha/README_FA.md",
+    "bytes": 13709
+  },
+  {
+    "name": "puttclub_luxury_resort_100ha/course.blend",
+    "bytes": 46633568
+  },
+  {
+    "name": "puttclub_luxury_resort_100ha/course.json",
+    "bytes": 78004
+  },
+  {
+    "name": "puttclub_luxury_resort_100ha/course_collision.glb",
+    "bytes": 9728160
+  },
+  {
+    "name": "puttclub_luxury_resort_100ha/course_visual.glb",
+    "bytes": 27614380
+  },
+  {
+    "name": "puttclub_luxury_resort_100ha/credits.md",
+    "bytes": 2305
+  },
+  {
+    "name": "puttclub_luxury_resort_100ha/drop_zones.json",
+    "bytes": 4846
+  },
+  {
+    "name": "puttclub_luxury_resort_100ha/preview.jpg",
+    "bytes": 95936
+  },
+  {
+    "name": "puttclub_luxury_resort_100ha/surfaces.json",
+    "bytes": 149591
+  },
+  {
+    "name": "puttclub_luxury_resort_100ha/trees.json",
+    "bytes": 7786118
+  },
+  {
+    "name": "puttclub_luxury_resort_100ha/tree_library/tree_type_01.glb",
+    "bytes": 661704
+  },
+  {
+    "name": "puttclub_luxury_resort_100ha/tree_library/tree_type_02.glb",
+    "bytes": 2952460
+  },
+  {
+    "name": "puttclub_luxury_resort_100ha/tree_library/tree_type_03.glb",
+    "bytes": 661704
+  },
+  {
+    "name": "puttclub_luxury_resort_100ha/tree_library/tree_type_04.glb",
+    "bytes": 661708
+  },
+  {
+    "name": "puttclub_luxury_resort_100ha/tree_library/tree_type_05.glb",
+    "bytes": 661704
+  }
+]

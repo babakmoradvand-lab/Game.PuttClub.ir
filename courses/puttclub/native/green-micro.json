@@ -1,0 +1,28 @@
+{
+  "source": "Original Green_01 Geometry Nodes at 12000/m\u00b2, 1 m crop, Cycles32 reference",
+  "normalBasisCorrection": {
+    "T": [
+      0.9996807995251794,
+      0.0004139464003952942,
+      -0.025261189779496186
+    ],
+    "B": [
+      -1.7762299877460697e-13,
+      0.9998658046525842,
+      0.016384455924267634
+    ],
+    "N": [
+      0.02526457980275154,
+      -0.016379225999116898,
+      0.9995466470718384
+    ]
+  },
+  "periodicBorders": "24 px same-field shifted blend; normals renormalized",
+  "colorModulationGain": 2,
+  "sourceDiffuseMean": [
+    0.08041628669309853,
+    0.17040691001760347,
+    0.02134399414060671
+  ],
+  "tileSizeM": 1
+}

@@ -1,0 +1,7 @@
+{
+  "passed": false,
+  "status": "inconclusive: software WebKit reached BOOT READY, then course launch did not complete within a bounded several-minute run; process stopped",
+  "physicalSafariTested": false,
+  "engine": "Playwright Linux WebKit27.2/WPE software GL; not iOS Safari",
+  "log": "webkit.log"
+}

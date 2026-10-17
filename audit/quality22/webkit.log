@@ -1,0 +1,6 @@
+BOOT READY
+page.waitForFunction: Timeout 120000ms exceeded.
+    at /home/user/scripts/quality22-webkit.cjs:3:930 {
+  log: [],
+  name: 'TimeoutError'
+}
