@@ -1449,12 +1449,12 @@ group.name = name;
     // Load authentic 3D GLTF (.glb) model
     if (typeof THREE.GLTFLoader === 'function') {
       const gltfLoader = new THREE.GLTFLoader();
-      gltfLoader.load('pro_golfer_character.glb', (gltf) => {
+      Promise.all(['characters/golfer-mpfb.glb','pro_golfer_character.glb'].map(url=>new Promise((resolve,reject)=>gltfLoader.load(url,resolve,undefined,reject)))).then(([gltf,clubDonor]) => {
         if (gltf && gltf.scene) {
           proGolferModel = gltf.scene;
-          try { proGolferAnimator = new GolfAthlete(gltf); }
+          try { proGolferAnimator = new GolfAthlete(gltf,{clubSource:clubDonor.scene}); }
           catch (error) { console.warn('Golfer rig rejected:',error.message);proGolferModel=null;golferHips.visible=true;return; }
-          console.info('Skinned golfer loaded: calibrated rigid clubs and authored swing25 motions.');
+          console.info('Skinned golfer loaded: MPFB male + white cap; continuous coordinated swing41.');
           
           proGolferModel.traverse((child) => {
             if (child.isMesh) {
@@ -1477,8 +1477,8 @@ group.name = name;
           golferHips.visible = false;
           clubRig.visible = false; // The loaded athlete owns the only visible club.
         }
-      }, undefined, (err) => {
-        console.warn('Note on loading pro_golfer_character.glb:', err);
+      }).catch((err) => {
+        console.warn('Note on loading MPFB golfer:', err);
         // Fallback procedural rig visible if glb fails
         golferHips.visible = true;
       });

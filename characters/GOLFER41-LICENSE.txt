@@ -1,0 +1,30 @@
+ASSET LICENSE — CC0-1.0
+
+The character, rig, textures, procedural animation data, hair and garment data
+in this candidate are derived from MakeHuman/MPFB CC0 assets and the CC0
+output data published by Kasper Olesen / kblood / CharacterCreator.
+
+Pinned upstream revision: 852e48f316b90a0937234886630e4fb4cdfd1f78
+https://github.com/kblood/CharacterCreator/blob/852e48f316b90a0937234886630e4fb4cdfd1f78/LICENSE-NOTES.md
+See section "Generated files (owner decision 2026-10-03)".
+https://static.makehumancommunity.org/about/license.html
+https://creativecommons.org/publicdomain/zero/1.0/
+
+Preparation: male/athletic morph baked into meshes and bind skeleton; original
+morph-ready files are preserved separately in source-assets. Skin weights,
+53-joint hierarchy and the supplied procedural clips are preserved. Default
+clothing pieces are separate skinned meshes, not painted onto the body.
+
+This is a prepared evaluation derivative, not an official MakeHuman product or
+an upstream certification of sports motion or clothing collision accuracy.
+No warranty. Every additional third-party outfit/animation needs its own
+license check. "Free download" alone does not mean free redistribution.
+
+UPSTREAM CODE IS NOT INCLUDED
+The CharacterCreator application code is GPL-3.0-or-later. None of that runtime,
+clothing solver or Blender plugin code is imported into this viewer or game.
+Only its CC0 output data is used. The independent preparation scripts and viewer
+were written for this evaluation. The viewer embeds Three.js, GLTFLoader and
+OrbitControls (MIT); the full MIT notice is in THREE-LICENSE.txt.
+
+The asset license does not license third-party library code under CC0.

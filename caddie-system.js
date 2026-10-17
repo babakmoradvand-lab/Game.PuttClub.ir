@@ -114,7 +114,7 @@ function relaxArms(a){
 function exchangePose(a){
  const sm=a.bones['UpperArm.L'].getWorldPosition(V()),sc=bones.Bip01_R_UpperArm.getWorldPosition(V()),dir=actor.position.clone().sub(golferGroup.position).setY(0).normalize(),q=golferGroup.getWorldQuaternion(new T.Quaternion()).multiply(new T.Quaternion().setFromAxisAngle(V(1,0,0),Math.PI-.09)),axis=Y.clone().applyQuaternion(q);
  const handQ=GolfAthlete.handFrame('L');
- const om=V(0,.025,0).sub(V(.010,.090,.026).applyQuaternion(handQ)).applyQuaternion(q),oc=axis.clone().multiplyScalar(state.held!==null?.16:.14),cm=sm.clone().sub(om),cc=sc.clone().sub(oc),rm=a.restLengths.armL.reduce((x,y)=>x+y,0)-.012;
+ const om=V(0,.025,0).sub((a.isMPFB?V(.01957656,.09546318,-.00045376):V(.010,.090,.026)).applyQuaternion(handQ)).applyQuaternion(q),oc=axis.clone().multiplyScalar(state.held!==null?.16:.14),cm=sm.clone().sub(om),cc=sc.clone().sub(oc),rm=a.restLengths.armL.reduce((x,y)=>x+y,0)-.012;
  const rc=bones.Bip01_R_UpperArm.getWorldPosition(V()).distanceTo(bones.Bip01_R_Forearm.getWorldPosition(V()))+bones.Bip01_R_Forearm.getWorldPosition(V()).distanceTo(bones.Bip01_R_Hand.getWorldPosition(V()))-.012;
  const near=sm.clone().addScaledVector(dir,.30),mid=cm.clone().lerp(cc,rm/(rm+rc)),p=near.lerp(mid,smooth((1.42-distance())/.35));
  p.y-=.12;const minY=Math.max(golferGroup.position.y,actor.position.y)+(clubs[state.active??state.held]?.userData.shaftLength||.95)+.055;

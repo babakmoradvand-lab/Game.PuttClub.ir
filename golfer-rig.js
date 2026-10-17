@@ -26,7 +26,7 @@
   function hermite(keys,t,field) {
     let i=0;while(i<keys.length-2&&t>keys[i+1].t)i++;
     const a=keys[i],b=keys[i+1],prev=keys[Math.max(0,i-1)],next=keys[Math.min(keys.length-1,i+2)],dt=b.t-a.t,u=clamp((t-a.t)/dt,0,1),u2=u*u,u3=u2*u;
-    const va=a[field],vb=b[field],ma=i===0?0:(b[field]-prev[field])/(b.t-prev.t),mb=i+1===keys.length-1?0:(next[field]-a[field])/(next.t-a.t);
+    const tangent=(left,middle,right)=>{const h0=middle.t-left.t,h1=right.t-middle.t,s0=(middle[field]-left[field])/h0,s1=(right[field]-middle[field])/h1;if(s0*s1<=0)return 0;const w0=2*h1+h0,w1=h1+2*h0;return (w0+w1)/(w0/s0+w1/s1)};const va=a[field],vb=b[field],ma=i===0?0:tangent(prev,a,b),mb=i+1===keys.length-1?0:tangent(a,b,next);
     return (2*u3-3*u2+1)*va+(u3-2*u2+u)*dt*ma+(-2*u3+3*u2)*vb+(u3-u2)*dt*mb;
   }
   function orientation(direction,roll=0) {
@@ -47,16 +47,17 @@
       if(mode==='chip')return [k(0,a,di,.04,.04,.015),k(.4,[a[0]-.15,a[1]+.07,a[2]-.015],[-.38,-.82,.42],-.12,-.22,0),k(.5,ih,id,.16,.12,.035),k(.72,[a[0]+.16,a[1]+.075,a[2]-.015],[.38,-.83,.40],.24,.30,.045),k(1,[a[0]+.24,a[1]+.12,a[2]-.025],[.52,-.73,.43],.28,.40,.05)];
       if(mode==='half'||mode==='punch')return [k(0,a,di,0,0),k(.22,[-.24,a[1]+.10,a[2]-.03],[-.88,-.30,.36],-.18,-.40,-.012),k(.4,mode==='punch'?[-.37,1.13,.15]:[-.36,1.07,.17],mode==='punch'?[-.30,.94,.18]:[-.58,.79,.20],-.32,-.78,-.025),k(.45,[-.28,1.01,.19],[-.86,.38,.34],-.05,-.55,0),k(.5,ih,id,.34,.15,.04),k(.68,[.29,1.03,.18],[.81,.44,.39],.54,.65,.055,.12,-.15),k(1,mode==='punch'?[.40,1.08,.16]:[.37,1.18,.10],mode==='punch'?[.78,.56,.27]:[.10,.98,-.12],.68,.88,.065,.24,-.30)];
       const three=mode==='three-quarter';
-      return [k(0,a,di,0,0),k(.07,[a[0]-.10,a[1]+.055,a[2]-.012],[-.65,-.65,.35],-.06,-.20,-.006),k(.13,[-.20,Math.max(.94,a[1]+.13),a[2]-.035],[-.94,-.09,.32],-.10,-.30,-.012),k(.28,[-.40,1.17,.09],[-.30,.92,.25],-.38,-.96,-.028),k(.365,three?[-.41,1.46,.02]:[-.43,1.60,.015],three?[.28,.94,-.18]:[.91,.28,-.30],-.60,three?-1.16:-1.40,-.032),k(.4,three?[-.40,1.48,.02]:[-.42,1.62,.015],three?[.35,.92,-.18]:[.94,.16,-.30],-.55,three?-1.20:-1.45,-.025),k(.445,[-.37,1.21,.07],[.12,.97,-.20],-.12,three?-.95:-1.10,.006),k(.477,[-.24,.98,.20],[-.91,.14,.39],.25,-.48,.035),k(.5,ih,id,.55,.20,.055,.025),k(.60,[.30,1.03,.20],[.93,.10,.35],.82,.72,.07,.30,-.18),k(.73,[.42,1.29,.055],[.30,.94,-.16],1,1.21,.08,.64,-.55),k(.87,three?[.28,1.38,-.025]:[.23,1.47,-.04],three?[-.44,.83,-.34]:[-.80,.32,-.50],1.10,three?1.40:1.52,.085,.90,-.90),k(1,three?[.25,1.40,-.035]:[.20,1.48,-.065],three?[-.55,.72,-.42]:[-.90,-.12,-.42],1.12,three?1.43:1.56,.085,1,-1.05)];
+      return [k(0,a,di,0,0),k(.07,[a[0]-.10,a[1]+.055,a[2]-.012],[-.65,-.65,.35],-.06,-.20,-.006),k(.13,[-.20,Math.max(.94,a[1]+.13),a[2]-.035],[-.94,-.09,.32],-.10,-.30,-.012),k(.28,[-.35,1.22,-.06],[-.30,.92,.25],-.38,-.96,-.028),k(.365,three?[-.35,1.48,-.15]:[-.38,1.64,-.22],three?[.28,.94,-.18]:[.91,.28,-.30],-.60,three?-1.16:-1.40,-.032),k(.4,three?[-.35,1.50,-.16]:[-.37,1.66,-.23],three?[.35,.92,-.18]:[.94,.16,-.30],-.55,three?-1.20:-1.45,-.025),k(.445,[-.34,1.24,-.10],[.12,.97,-.20],-.12,three?-.95:-1.10,.006),k(.477,[-.24,.98,.20],[-.91,.14,.39],.25,-.48,.035),k(.5,ih,id,.55,.20,.055,.025),k(.60,[.30,1.03,.20],[.93,.10,.35],.82,.72,.07,.30,-.18),k(.73,[.42,1.29,.055],[.30,.94,-.16],1,1.21,.08,.64,-.55),k(.87,three?[.28,1.38,-.025]:[.23,1.47,-.04],three?[-.44,.83,-.34]:[-.80,.32,-.50],1.10,three?1.40:1.52,.085,.90,-.90),k(1,three?[.25,1.40,-.035]:[.20,1.48,-.065],three?[-.55,.72,-.42]:[-.90,-.12,-.42],1.12,three?1.43:1.56,.085,1,-1.05)];
     }
     static sample(keys,t) {
       const o={};for(const f of ['hx','hy','hz','dx','dy','dz','hip','chest','shift','heel','roll'])o[f]=hermite(keys,t,f);
+      if(keys.length>7){const channels={hip:[[0,0],[.13,-.10],[.28,-.38],[.355,-.62],[.4,-.48],[.445,.12],[.48,.53],[.5,.65],[.60,.90],[.73,1.07],[1,1.12]],chest:[[0,0],[.13,-.30],[.28,-.96],[.4,-1.43],[.43,-1.35],[.47,-.70],[.5,.20],[.60,.76],[.73,1.23],[1,1.56]]};for(const [field,values]of Object.entries(channels))o[field]=hermite(values.map(([t,v])=>({t,[field]:v})),t,field);}
       o.hand=V(o.hx,o.hy,o.hz);o.direction=V(o.dx,o.dy,o.dz).normalize();
       // The face turns with the forearms, rather than holding a world-Z frame
       // throughout the backswing. Address and impact remain exactly calibrated.
-      const rollKeys=[[0,0],[.13,70],[.28,85],[.4,85],[.445,90],[.477,38],[.5,0],[.6,-65],[.73,-65],[.87,-35],[1,-20]].map(([t,roll])=>({t,roll}));
+      const rollKeys=[[0,0],[.07,35],[.13,115],[.28,105],[.4,85],[.445,60],[.46,75],[.477,113],[.5,0],[.6,-65],[.73,-65],[.87,-35],[1,-20]].map(([t,roll])=>({t,roll}));
       const amplitude=keys.length===4?0:keys.length===5?.20:keys.length===7?.72:1;
-      o.rotation=orientation(o.direction,o.roll+rad(hermite(rollKeys,t,'roll'))*amplitude);return o;
+      const halfRelease=keys.length===7?hermite([[0,0],[.4,0],[.44,45],[.5,0],[.60,-35],[.68,-60],[.80,-35],[1,0]].map(([t,roll])=>({t,roll})),t,'roll'):0;o.rotation=orientation(o.direction,o.roll+rad(hermite(rollKeys,t,'roll'))*amplitude+rad(halfRelease));return o;
     }
   }
   class GolfAthlete {
@@ -67,7 +68,7 @@
       for(const n of ['Hips','Spine','Chest','Neck','Head','UpperArm.L','Forearm.L','Hand.L','UpperArm.R','Forearm.R','Hand.R','Thigh.L','Shin.L','Foot.L','Thigh.R','Shin.R','Foot.R'])if(!this.bones[n])throw Error('Golf rig mapping missing '+n);
       if(!this.skinMeshes.length)throw Error('Golf athlete requires a skinned human');
       this.model.updateMatrixWorld(true);
-      this.model.traverse(o=>{if(o.isBone)this.rest[o.uuid]={p:o.position.clone(),q:o.quaternion.clone(),s:o.scale.clone(),worldQ:o.getWorldQuaternion(new T.Quaternion())};});
+      this.model.traverse(o=>{if(o.isBone)this.rest[o.uuid]={p:o.position.clone(),q:o.quaternion.clone(),s:o.scale.clone(),worldQ:o.getWorldQuaternion(new T.Quaternion()),worldP:o.getWorldPosition(V())};});
       this.restLengths={};this.feet={};this.footRotations={};
       for(const side of ['L','R']) {
         this.restLengths['arm'+side]=[this.bones['Forearm.'+side].position.length(),this.bones['Hand.'+side].position.length()];
@@ -259,7 +260,7 @@
       const t=GolfMotion.time(phase,p),q=this.model.getWorldQuaternion(new T.Quaternion()),o=this.model.getWorldPosition(V());
       const key=[this.clubKey,mode,...this.ball.toArray(),...o.toArray(),...q.toArray()].map(v=>typeof v==='number'?Math.round(v*1e6)/1e6:v).join(':');
       if(this._poseCacheKey!==key){this._poseCacheKey=key;this._poseCache=[];}
-      const clone=state=>Object.fromEntries(Object.entries(state||{}).map(([s,a])=>[s,{t:a.t,pole:a.pole.clone(),axis:a.axis.clone(),upperQ:a.upperQ.clone()}]));
+      const clone=state=>Object.fromEntries(Object.entries(state||{}).map(([s,a])=>[s,{t:a.t,pole:a.pole.clone(),axis:a.axis.clone(),upperQ:a.upperQ.clone(),twist:a.twist}]));
       const frame=x=>x<=.4?['backswing',x/.4]:x<=.5?['downswing',(x-.4)/.1]:['followthrough',(x-.5)/.5];
       const n=Math.min(100,Math.floor(t*100+1e-7));
       // Canonical 1%-phase knots make the transported elbow/upper-arm frame
@@ -290,10 +291,10 @@
       const keys=GolfMotion.keys(mode,hand,d,impactH,impactD),m=GolfMotion.sample(keys,t),release=smooth(.65,1,t)*(mode==='putt'?0:mode==='chip'?.08:(mode==='half'||mode==='punch')?.55:1),address=GolfMotion.address(this.club,mode);
       const terrainDrop=clamp((this.radius-this.ball.y)*1.05,0,.14)*(1-smooth(hand.y+.16,hand.y+.46,m.hand.y));
       const stanceDrop=(this.club.cat==='wood'?.035:this.club.cat==='wedge'?.075:.062)+(mode==='chip'?.006:mode==='punch'?.004:0);
-      const hip=this.bones.Hips,r=this.rest[hip.uuid];hip.position.copy(r.p).add(V(m.shift,-stanceDrop+release*(stanceDrop-.005)-terrainDrop,-.018+release*.018));
+      const hip=this.bones.Hips,r=this.rest[hip.uuid];hip.position.copy(r.p);if(this.isMPFB)this.shiftHips(V(m.shift,-(this.club.cat==='wood'?.098:this.club.isPutter?.060:.055)+release*(this.club.cat==='wood'?.093:this.club.isPutter?.055:.050)-terrainDrop,-.012+release*.012));else hip.position.add(V(m.shift,-stanceDrop+release*(stanceDrop-.005)-terrainDrop,-.018+release*.018));if(this.isMPFB)this.shiftHips(V(0,0,-(this.club.isPutter?.13:this.club.cat==='wood'?.18:.045)*(1-release*.65))); 
       const baseHinge=clamp((mode==='putt'?.60:clamp(.40+(1.1557-this.spec.length)*.35,.40,.57))+(this.radius-this.ball.y)*.80,.45,.88);
       const hinge=baseHinge-release*(baseHinge-.13);
-      this.bodyRotation('Hips',m.hip,.15-release*.10);this.bodyRotation('Spine',m.hip*.55+m.chest*.45,hinge*.67);this.bodyRotation('Chest',m.chest,hinge,((mode==='putt'?0:this.club.cat==='wood'?.10:.04)+(mode==='putt'?m.hand.x*1.1:0))*(1-release));
+      this.bodyRotation('Hips',m.hip,.15-release*.10);this.bodyRotation('Spine',m.hip*.55+m.chest*.45,hinge*.67);this.bodyRotation('Chest',m.chest,hinge,((mode==='putt'?0:this.isMPFB?T.MathUtils.lerp(T.MathUtils.lerp(.29,-.24,smooth(.13,.39,t)),.28,smooth(.41,.5,t)):this.club.cat==='wood'?.10:.04)+(mode==='putt'?m.hand.x*1.1:0))*(1-release));
       this.bodyRotation('Neck',m.chest*(1-smooth(.52,.9,t))*.18,hinge*.78);
       const headLocal=this.model.worldToLocal(this.bones.Head.getWorldPosition(V())),gaze=this.ball.clone().sub(headLocal),gazeRelease=mode==='putt'||mode==='chip'?0:smooth(.57,.93,t),gazeYaw=Math.atan2(gaze.x,gaze.z),gazePitch=clamp(Math.atan2(-gaze.y,Math.hypot(gaze.x,gaze.z)),.65,1.15);
       this.bodyRotation('Head',T.MathUtils.lerp(gazeYaw,1.53,gazeRelease),T.MathUtils.lerp(gazePitch,.10,gazeRelease));
@@ -304,7 +305,7 @@
         const horizontal=(ft.x-thigh.x)**2+(ft.z-thigh.z)**2,allowed=Math.sqrt(Math.max(.01,max*max-horizontal));
         this.groundDrop=Math.max(this.groundDrop,thigh.y-ft.y-allowed);
       }
-      if(this.groundDrop>0){hip.position.y-=clamp(this.groundDrop,0,.09);this.model.updateMatrixWorld(true);}
+      if(this.groundDrop>0){if(this.isMPFB)this.shiftHips(V(0,-clamp(this.groundDrop,0,.09),0));else hip.position.y-=clamp(this.groundDrop,0,.09);this.model.updateMatrixWorld(true);}
       const buttPose=m.hand.clone().addScaledVector(m.direction,-.055);
       this.grip.position.copy(buttPose);this.grip.quaternion.copy(m.rotation);this.grip.scale.set(1,1,1);
       const headOffset=impactFit.contact.clone().sub(impactFit.origin).applyQuaternion(impactFit.q.clone().invert());this.anchor.position.copy(V(0,this.shaftLength,0).add(headOffset));this.anchor.scale.set(1,1,1);this.anchor.quaternion.identity();
@@ -312,7 +313,7 @@
       // Keep the rigid grip/contact fixed; flex the knees on a lower ball lie
       // instead of stretching the trail arm away from its hand target.
       let armDrop=0;for(const side of ['L','R']){const shoulder=this.bones['UpperArm.'+side].getWorldPosition(V()),target=this.handTargets[side],max=this.restLengths['arm'+side].reduce((a,b)=>a+b,0)-.004,horizontal=(shoulder.x-target.x)**2+(shoulder.z-target.z)**2;if(shoulder.y>target.y&&horizontal<max*max)armDrop=Math.max(armDrop,shoulder.y-target.y-Math.sqrt(max*max-horizontal));}
-      if(armDrop>0){hip.position.y-=clamp(armDrop,0,.11);this.model.updateMatrixWorld(true);}
+      if(armDrop>0){if(this.isMPFB)this.shiftHips(V(0,-clamp(armDrop,0,.11),0));else hip.position.y-=clamp(armDrop,0,.11);this.model.updateMatrixWorld(true);}
       this.gripCorrection=0;this.constrainGrip(mode,t);
       const modelQ=this.model.getWorldQuaternion(new T.Quaternion());this.reachExcess=0;
       for(const [side,sign]of [['L',1],['R',-1]]) {
@@ -333,7 +334,7 @@
       this.model.traverse(o=>{const r=this.rest[o.uuid];if(r){o.position.copy(r.p);o.quaternion.copy(r.q);o.scale.copy(r.s);}});
       for(const side of ['L','R'])for(const b of this.forearmTwistChains[side])b.quaternion.identity();
       const cycle=distance/.50*.60,phase=cycle%1,bob=.009*(1-Math.cos(phase*Math.PI*4));
-      this.bones.Hips.position.y-=.055-bob*.7;this.bodyRotation('Hips',Math.sin(phase*Math.PI*2)*.035,.03);this.bodyRotation('Spine',0,.035);this.bodyRotation('Chest',-Math.sin(phase*Math.PI*2)*.03,.055);this.bodyRotation('Neck',0,0);this.bodyRotation('Head',0,.04);this.model.updateMatrixWorld(true);
+      if(this.isMPFB)this.shiftHips(V(0,-.055+bob*.7,0));else this.bones.Hips.position.y-=.055-bob*.7;this.bodyRotation('Hips',Math.sin(phase*Math.PI*2)*.035,.03);this.bodyRotation('Spine',0,.035);this.bodyRotation('Chest',-Math.sin(phase*Math.PI*2)*.03,.055);this.bodyRotation('Neck',0,0);this.bodyRotation('Head',0,.04);this.model.updateMatrixWorld(true);
       const footPoses=[];let legDrop=0;
       for(const[side,sign]of [['L',1],['R',-1]]){
         const ph=(cycle+(side==='R'?.80:.30))%1,f=this._walkFeet[side],ground=(x,z)=>this.groundHeight?this.groundHeight(x,z):this.model.position.y;
@@ -343,7 +344,7 @@
         else target.y=ground(target.x,target.z)+this.feet[side].y;
         const thigh=this.bones['Thigh.'+side].getWorldPosition(V()),max=this.restLengths['leg'+side].reduce((a,b)=>a+b,0)-.003,horizontal=(target.x-thigh.x)**2+(target.z-thigh.z)**2;legDrop=Math.max(legDrop,thigh.y-target.y-Math.sqrt(Math.max(.01,max*max-horizontal)));footPoses.push({side,sign,target,rotation});f.last.copy(target);f.phase=ph;
       }
-      if(legDrop>0){this.bones.Hips.position.y-=Math.min(.12,legDrop);this.model.updateMatrixWorld(true);}
+      if(legDrop>0){if(this.isMPFB)this.shiftHips(V(0,-Math.min(.12,legDrop),0));else this.bones.Hips.position.y-=Math.min(.12,legDrop);this.model.updateMatrixWorld(true);}
       for(const{side,sign,target,rotation}of footPoses){this.ik('Thigh.'+side,'Shin.'+side,target,V(sign*.12,-.05,1).applyQuaternion(modelQ),this.restLengths['leg'+side]);this.rotateWorld(this.bones['Foot.'+side],rotation);}
       this.grip.position.set(.32,.98,.13);this.grip.quaternion.copy(orientation(V(.06,-.98,.13)));this.model.updateMatrixWorld(true);this.gripHands();
       const carrying=window.CaddieSystem?!!window.CaddieSystem.heldClub:!!this.club.isPutter;
@@ -354,7 +355,7 @@
       this.model.updateMatrixWorld(true);for(const mesh of this.skinMeshes)mesh.skeleton.update();this.current='walk';
     }
     debug() {
-      const point=n=>this.bones[n].getWorldPosition(V());return {version:'motion38',skinMeshes:this.skinMeshes.length,joints:Object.keys(this.bones).length,clips:Object.values(styleNames),style:this.style,frame:this.frame,head:this.headName,club:this.club.id,length:this.spec.length,lie:this.spec.lie,loft:this.spec.loft,clubScale:this.grip.scale.toArray(),contact:point('ClubFaceAnchor').toArray(),target:this.model.localToWorld(this.contactTarget.clone()).toArray(),wristErrors:['L','R'].map(s=>point('Hand.'+s).distanceTo(this.handTargets[s])),reachExcess:this.reachExcess,heelRelease:this.heelRelease,turn:this.bodyTurn,feet:['L','R'].map(s=>point('Foot.'+s).toArray()),footErrors:['L','R'].map(s=>point('Foot.'+s).distanceTo(this.footTargets[s]))};
+      const point=n=>this.bones[n].getWorldPosition(V());return {version:this.isMPFB?'golfer41':'motion38',skinMeshes:this.skinMeshes.length,joints:this.isMPFB?new Set(this.skinMeshes.flatMap(m=>m.skeleton.bones)).size:Object.keys(this.bones).length,clips:Object.values(styleNames),style:this.style,frame:this.frame,head:this.headName,club:this.club.id,length:this.spec.length,lie:this.spec.lie,loft:this.spec.loft,clubScale:this.grip.scale.toArray(),contact:point('ClubFaceAnchor').toArray(),target:this.model.localToWorld(this.contactTarget.clone()).toArray(),wristErrors:['L','R'].map(s=>point('Hand.'+s).distanceTo(this.handTargets[s])),reachExcess:this.reachExcess,heelRelease:this.heelRelease,turn:this.bodyTurn,feet:['L','R'].map(s=>point('Foot.'+s).toArray()),footErrors:['L','R'].map(s=>point('Foot.'+s).distanceTo(this.footTargets[s]))};
     }
     dispose(){for(const c of this.clubs.values()){c.traverse(o=>{if(o.isMesh){o.geometry.dispose();if(!Object.values(this.clubSources).some(s=>s.material===o.material)){for(const m of Array.isArray(o.material)?o.material:[o.material])m.dispose();}}});c.removeFromParent();}for(const s of Object.values(this.clubSources)){s.geometry.dispose();for(const m of Array.isArray(s.material)?s.material:[s.material])m.dispose();}}
   }
