@@ -1,5 +1,5 @@
 /* PuttClub atomic offline runtime. Only this game's scope is managed. */
-const WORKER_RELEASE = 'pwa9-20261013';
+const WORKER_RELEASE = 'desktop27-20261017';
 const SCOPE = self.registration.scope;
 const CACHE_PREFIX = 'puttclub-runtime:' + new URL(SCOPE).pathname + ':';
 const META_CACHE = 'puttclub-meta:' + new URL(SCOPE).pathname;
@@ -118,7 +118,8 @@ self.addEventListener('fetch',event => {
   const url=new URL(event.request.url);
   if(url.origin!==new URL(SCOPE).origin||!url.href.startsWith(SCOPE))return;
   if(url.pathname.endsWith('/release.json')) {
-    event.respondWith(fetch(event.request,{cache:'no-store'}));return;
+    const fresh=new URL(event.request.url);fresh.searchParams.set('__check',Date.now());
+    event.respondWith(fetch(fresh.href,{cache:'no-store'}));return;
   }
   event.respondWith((async () => {
     const current=await state();

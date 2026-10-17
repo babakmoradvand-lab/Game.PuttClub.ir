@@ -8,7 +8,7 @@
   const bar = document.getElementById('boot-progress');
   const retry = document.getElementById('boot-retry');
   const underlying = ['putt-club-splash','setup-shell','game-ui'];
-  let checking = false, running = false, lastCheckpoint = null;
+  let checking = false, running = false, lastCheckpoint = null, activeCheck = null, updateDeferred = false;
   function show(message) {
     overlay.hidden=false;label.textContent=message;retry.hidden=true;
     underlying.forEach(id=>document.getElementById(id).inert=true);
@@ -23,7 +23,7 @@
       const worker=navigator.serviceWorker.controller;
       if(!worker)return reject(Error('No offline worker'));
       const channel=new MessageChannel();
-      let timer;const arm=()=>{clearTimeout(timer);timer=setTimeout(()=>{channel.port1.close();reject(Error('Offline operation timed out'));},180000);};arm();
+      let timer;const arm=()=>{clearTimeout(timer);timer=setTimeout(()=>{channel.port1.close();reject(Error('Offline operation timed out'));},type==='INSTALL_RUNTIME'?180000:15000);};arm();
       channel.port1.onmessage=event=>{
         const value=event.data;
         if(value.type==='PROGRESS') {arm();if(progress)progress(value);return;}
@@ -35,10 +35,11 @@
   }
   async function controller() {
     if(!('serviceWorker' in navigator)||!isSecureContext)throw Error('Offline installation requires HTTPS and Service Workers');
-    let reg=await navigator.serviceWorker.getRegistration('./');
-    if(!reg)reg=await navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'});
-    else if(navigator.onLine) {
-      try {await reg.update();}catch(error) {console.info('Worker check unavailable:',error.message);}
+    const scope=new URL('./',location.href).href;
+    let reg=await navigator.serviceWorker.getRegistration(scope);
+    if(!reg||reg.scope!==scope||navigator.onLine) {
+      try {reg=await navigator.serviceWorker.register('./sw.js?v=desktop27-20261017',{scope:'./',updateViaCache:'none'});}
+      catch(error){if(!reg||reg.scope!==scope)throw error;console.info('Worker check unavailable:',error.message);}
     }
     const pending=reg.installing||reg.waiting;
     if(pending&&pending.state!=='activated'&&pending.state!=='redundant') {
@@ -46,16 +47,19 @@
         if(['activated','redundant'].includes(pending.state))resolve();
       })),new Promise((_,reject)=>setTimeout(()=>reject(Error('Worker activation timed out')),20000))]);
     }
-    if(!navigator.serviceWorker.controller)await Promise.race([
-      new Promise(resolve=>navigator.serviceWorker.addEventListener('controllerchange',resolve,{once:true})),
-      new Promise((_,reject)=>setTimeout(()=>reject(Error('Worker control timed out')),20000))
-    ]);
+    const controlled=()=>navigator.serviceWorker.controller && (!reg.active||navigator.serviceWorker.controller.scriptURL===reg.active.scriptURL);
+    if(!controlled())await new Promise((resolve,reject)=>{
+      const done=()=>{if(controlled()){clearTimeout(timer);navigator.serviceWorker.removeEventListener('controllerchange',done);resolve();}};
+      const timer=setTimeout(()=>{navigator.serviceWorker.removeEventListener('controllerchange',done);reject(Error('Worker control timed out'));},20000);
+      navigator.serviceWorker.addEventListener('controllerchange',done);done();
+    });
     return reg;
   }
   async function descriptor() {
     const abort=new AbortController(),timer=setTimeout(()=>abort.abort(),10000);
     try {
-      const response=await fetch('./release.json',{cache:'no-store',signal:abort.signal});
+      const url=new URL('./release.json',location.href);url.searchParams.set('__check',Date.now());
+      const response=await fetch(url.href,{cache:'no-store',signal:abort.signal});
       if(!response.ok)throw Error('Release check HTTP '+response.status);
       return await response.json();
     } finally {clearTimeout(timer);}
@@ -96,19 +100,26 @@
     if(!window.PuttUI)throw Error('Game interface did not initialize');
   }
   function checkpoint() {
-    try {const value=window.PuttUI?.exportSession();if(value){lastCheckpoint=value;if(value.started)localStorage.setItem('puttclub-round-v1',JSON.stringify(value));}}catch(error) {console.info(error.message);}
+    try {const value=window.PuttUI?.exportSession();if(value){lastCheckpoint=value;if(value.started)localStorage.setItem('puttclub-round-v1',JSON.stringify(value));return true;}}catch(error) {console.info(error.message);}
+    return false;
   }
-  async function check() {
-    if(checking)return;checking=true;
+  function check() {
+    if(activeCheck)return activeCheck;
+    activeCheck=performCheck().finally(()=>{activeCheck=null;});return activeCheck;
+  }
+  async function performCheck() {
+    if(checking)return;
+    if(running&&!checkpoint()){updateDeferred=true;return {deferred:true};}
+    updateDeferred=false;checking=true;
     show('بررسی نسخه و ذخیرهٔ بازی…');bar.removeAttribute('value');detail.textContent='بازی پس از بررسی نسخهٔ کامل باز می‌شود.';
     try {
       await controller();
       const result=await runtime();
-      window.PuttBoot={ready:true,version:result.state.manifest.version,count:result.state.manifest.assets.length,bytes:result.state.manifest.assets.reduce((s,a)=>s+a.bytes,0),status:result.status,reason:result.reason||null,rpc,check};
+      window.PuttBoot={ready:true,version:result.state.manifest.version,count:result.state.manifest.assets.length,bytes:result.state.manifest.assets.reduce((s,a)=>s+a.bytes,0),status:result.status,reason:result.reason||null,checkedAt:Date.now(),rpc,check};
       if(result.state.manifest.version!==pageVersion) {
         // New HTML and scripts must belong to the same committed release.
-        // Foreground updates preserve an idle checkpoint; unfinished shots are
-        // explicitly rolled back to their pre-strike position, never fabricated.
+        // Foreground updates wait for an idle checkpoint; no airborne shot is
+        // interrupted, rewound or counted twice by the updater.
         if(running) {
           checkpoint();
           if(lastCheckpoint)sessionStorage.setItem('puttclub-update-session',JSON.stringify(lastCheckpoint));
@@ -128,21 +139,23 @@
       }
       window.PuttUI?.refreshOffline();hide();checkpoint();
     } catch(error) {
-      label.textContent='ذخیرهٔ کامل بازی انجام نشد.';
-      detail.textContent='اینترنت و فضای خالی گوشی را بررسی کنید و دوباره تلاش کنید. '+error.message;
+      const storageProblem=/quota|storage.*(denied|full|unavailable)/i.test(error.message);
+      label.textContent=storageProblem?'فضای ذخیره‌سازی در دسترس نیست.':'ذخیرهٔ کامل بازی انجام نشد.';
+      detail.textContent=storageProblem?'از پنجرهٔ معمولی مرورگر، نه حالت خصوصی، استفاده کنید و فضای خالی دستگاه را بررسی کنید. هیچ دور ذخیره‌شده‌ای حذف نشد.':'اینترنت و فضای خالی دستگاه را بررسی کنید و دوباره تلاش کنید. '+error.message;
       retry.hidden=false;bar.value=0;
       console.warn('Game boot:',error.message);
     } finally {checking=false;}
   }
-  setInterval(()=>{if(running&&!window.PuttBootPaused)checkpoint();},1500);
+  setInterval(()=>{if(running&&!window.PuttBootPaused){const safe=checkpoint();if(updateDeferred&&safe&&!document.hidden)check();}},1500);
   retry.addEventListener('click',check);
+  addEventListener('online',()=>{if(running&&!document.hidden)check();});
   document.addEventListener('click',event=>{
     if(event.target.closest('#btn-launch-shot,#btn-putt-action'))checkpoint();
   },true);
   document.addEventListener('visibilitychange',()=>{
     if(document.hidden) {checkpoint();window.PuttBootPaused=true;}
-    else if(running)check();
+    else {window.PuttBootPaused=false;if(running)check();}
   });
-  addEventListener('pageshow',event=>{if(event.persisted&&running)check();});
+  addEventListener('pageshow',event=>{if(event.persisted&&running&&!document.hidden){window.PuttBootPaused=false;check();}});
   document.readyState==='loading'?document.addEventListener('DOMContentLoaded',check,{once:true}):check();
 })();

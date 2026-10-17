@@ -1336,6 +1336,7 @@ group.name = name;
     const aimDirection = new THREE.Vector3(0, 0, 1);
     let aimBaseYaw = 0;
     const ADDRESS_CAMERA = Object.freeze({distance: 4.2, height: 1.35, lookAhead: 15, lookHeight: 0.9});
+    const gameplayView = {yaw:0,pitch:0};
     const ballMarker = new THREE.Mesh(
       new THREE.RingGeometry(0.055, 0.07, 32).rotateX(-Math.PI / 2),
       new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.DoubleSide, transparent: true, opacity: 0.65})
@@ -2056,7 +2057,7 @@ group.name = name;
     }
 
     document.getElementById('minimap-container').addEventListener('click', () => {
-      if (canAdjustAim()) setAddressCamera(false);
+      if (canAdjustAim()) resetGameplayView(false);
     });
 
     // Carry & Roll TrackMan Calculator
@@ -2320,6 +2321,15 @@ group.name = name;
       const portraitFit = Math.max(1, 0.8 / camera.aspect);
       targetCameraPos.set(ballPos.x - aimDirection.x * c.distance * portraitFit, ballPos.y + c.height * portraitFit, ballPos.z - aimDirection.z * c.distance * portraitFit);
       targetOrbitTarget.set(ballPos.x + aimDirection.x * c.lookAhead, ballPos.y + c.lookHeight, ballPos.z + aimDirection.z * c.lookAhead);
+      if (gameplayView.yaw || gameplayView.pitch) {
+        const focus=new THREE.Vector3(ballPos.x,ballPos.y+.60,ballPos.z),offset=targetCameraPos.clone().sub(focus);
+        offset.applyAxisAngle(new THREE.Vector3(0,1,0),gameplayView.yaw);
+        const horizontal=Math.hypot(offset.x,offset.z),radius=offset.length();
+        const elevation=THREE.MathUtils.clamp(Math.atan2(offset.y,horizontal)+gameplayView.pitch,.08,1.20);
+        const scale=Math.cos(elevation)*radius/Math.max(.0001,horizontal);
+        offset.x*=scale;offset.z*=scale;offset.y=Math.sin(elevation)*radius;
+        targetCameraPos.copy(focus).add(offset);targetOrbitTarget.copy(focus);
+      }
       const lift=constrainCameraToTerrain(targetCameraPos);
       if(lift>.01)targetOrbitTarget.lerp(new THREE.Vector3(ballPos.x,ballPos.y+.55,ballPos.z),Math.min(1,lift/1.5));
       if (immediate) {
@@ -2462,7 +2472,27 @@ group.name = name;
     aimCanvas.style.touchAction = 'none';
     const gameplayTouches = new Map();
     let gameplayPinch = null, gameplayHadPinch = false;
-    let lookAimPointer = null;
+    let lookAimPointer = null, nativeGameplayGesture = null;
+    aimCanvas.tabIndex=0;
+    aimCanvas.setAttribute('aria-label','Golf course. Drag to aim; scroll to zoom; Option-drag or right-drag to look. R resets the view.');
+    aimCanvas.setAttribute('aria-describedby','desktop-input-help');
+    function gameplayInputActive() {
+      return document.body.dataset.view==='game' && !document.getElementById('game-ui').inert &&
+        document.getElementById('runtime-boot')?.hidden!==false &&
+        !document.querySelector('.game-panel:not([hidden])') &&
+        getComputedStyle(document.getElementById('celebration-overlay')).display==='none';
+    }
+    function resetGameplayView(immediate=true,resetZoom=false) {
+      gameplayView.yaw=0;gameplayView.pitch=0;
+      if(resetZoom)setGameplayZoom(1);
+      if(canAdjustAim())setAddressCamera(immediate);
+    }
+    function turnGameplayView(yaw,pitch) {
+      if(!canAdjustAim())return false;
+      gameplayView.yaw=Math.atan2(Math.sin(gameplayView.yaw+yaw),Math.cos(gameplayView.yaw+yaw));
+      gameplayView.pitch=THREE.MathUtils.clamp(gameplayView.pitch+pitch,-.10,1.10);
+      setAddressCamera(true);return true;
+    }
     function setGameplayZoom(value) {
       if (!Number.isFinite(value)) return false;
       camera.zoom = THREE.MathUtils.clamp(value, 0.5, 3);
@@ -2488,11 +2518,11 @@ group.name = name;
     function clearGameplayGesture() {
       const ids=[...gameplayTouches.keys()];
       if (lookAimPointer) ids.push(lookAimPointer.id);
-      gameplayTouches.clear();gameplayPinch=null;gameplayHadPinch=false;lookAimPointer=null;
+      gameplayTouches.clear();gameplayPinch=null;gameplayHadPinch=false;lookAimPointer=null;nativeGameplayGesture=null;
       for (const id of ids) if (aimCanvas.hasPointerCapture(id)) aimCanvas.releasePointerCapture(id);
     }
     aimCanvas.addEventListener('pointerdown', event => {
-      if (document.body.dataset.view !== 'game') return;
+      if (!gameplayInputActive()) return;
       if (event.pointerType === 'touch') {
         gameplayTouches.set(event.pointerId,{x:event.clientX,y:event.clientY});
         aimCanvas.setPointerCapture(event.pointerId);
@@ -2505,13 +2535,15 @@ group.name = name;
         }
         if (gameplayHadPinch) {event.preventDefault();return;}
       }
-      if (!event.isPrimary || event.button !== 0 || !canAdjustAim()) return;
-      lookAimPointer = {id:event.pointerId,x:event.clientX};
+      if (!event.isPrimary || ![0,2].includes(event.button) || !canAdjustAim()) return;
+      const inspect=event.pointerType!=='touch'&&(event.button===2||event.altKey||event.ctrlKey);
+      lookAimPointer = {id:event.pointerId,x:event.clientX,y:event.clientY,mode:inspect?'look':'aim'};
+      if(event.pointerType!=='touch')aimCanvas.focus({preventScroll:true});
       aimCanvas.setPointerCapture(event.pointerId);
       event.preventDefault();
     });
     aimCanvas.addEventListener('pointermove', event => {
-      if (document.body.dataset.view !== 'game') {clearGameplayGesture();return;}
+      if (!gameplayInputActive()) {clearGameplayGesture();return;}
       if (gameplayTouches.has(event.pointerId)) {
         gameplayTouches.set(event.pointerId,{x:event.clientX,y:event.clientY});
         if (gameplayHadPinch) {
@@ -2530,12 +2562,18 @@ group.name = name;
         else endLookAim(event);
         return;
       }
-      const dx = event.clientX - lookAimPointer.x;
-      lookAimPointer.x = event.clientX;
-      if (!dx) return;
-      const current = THREE.MathUtils.radToDeg(Math.atan2(aimDirection.x,aimDirection.z)-aimBaseYaw);
-      const degreesPerPixel = 180 / Math.max(360,window.innerWidth);
-      setAimAngle(current-dx*degreesPerPixel,true);
+      const dx = event.clientX - lookAimPointer.x,dy=event.clientY-lookAimPointer.y;
+      lookAimPointer.x = event.clientX;lookAimPointer.y=event.clientY;
+      if (!dx&&!dy) return;
+      if(lookAimPointer.mode==='look')turnGameplayView(-dx*.006,-dy*.004);
+      else {
+        if(dx) {
+          const current = THREE.MathUtils.radToDeg(Math.atan2(aimDirection.x,aimDirection.z)-aimBaseYaw);
+          const degreesPerPixel = 180 / Math.max(360,window.innerWidth);
+          setAimAngle(current-dx*degreesPerPixel,true);
+        }
+        if(dy&&event.pointerType!=='touch')turnGameplayView(0,-dy*.004);
+      }
       event.preventDefault();
     });
     function finishGameplayPointer(event) {
@@ -2548,6 +2586,47 @@ group.name = name;
     aimCanvas.addEventListener('pointerup',finishGameplayPointer);
     aimCanvas.addEventListener('pointercancel',finishGameplayPointer);
     aimCanvas.addEventListener('lostpointercapture',finishGameplayPointer);
+    // Non-passive only on the course: menu scrolling and browser zoom elsewhere
+    // remain native. Magic Mouse pixel deltas, wheel lines and pages are normalized.
+    aimCanvas.addEventListener('wheel',event=>{
+      if(!gameplayInputActive()||nativeGameplayGesture)return;
+      const unit=event.deltaMode===1?16:event.deltaMode===2?innerHeight:1;
+      let x=THREE.MathUtils.clamp(event.deltaX*unit,-240,240),y=THREE.MathUtils.clamp(event.deltaY*unit,-240,240);
+      if(!Number.isFinite(x)||!Number.isFinite(y))return;
+      if(event.shiftKey&&!event.ctrlKey&&!x){x=y;y=0;}
+      if(!event.ctrlKey&&Math.abs(x)>Math.abs(y)*1.5&&Math.abs(x)>2) {
+        if(canAdjustAim())turnGameplayView(-x*.0035,0);
+      } else if(y) setGameplayZoom(camera.zoom*Math.exp(-y*(event.ctrlKey?.012:.0035)));
+      event.preventDefault();
+    },{passive:false});
+    aimCanvas.addEventListener('contextmenu',event=>{if(gameplayInputActive())event.preventDefault();});
+    // Safari's cumulative GestureEvent scale is separate from ctrl-wheel pinch.
+    aimCanvas.addEventListener('gesturestart',event=>{
+      if(!gameplayInputActive())return;
+      nativeGameplayGesture={zoom:camera.zoom};event.preventDefault();
+    },{passive:false});
+    aimCanvas.addEventListener('gesturechange',event=>{
+      if(!gameplayInputActive()||!nativeGameplayGesture)return;
+      if(Number.isFinite(event.scale)&&event.scale>0)setGameplayZoom(nativeGameplayGesture.zoom*event.scale);
+      event.preventDefault();
+    },{passive:false});
+    aimCanvas.addEventListener('gestureend',event=>{
+      if(nativeGameplayGesture){nativeGameplayGesture=null;event.preventDefault();}
+    },{passive:false});
+    aimCanvas.addEventListener('keydown',event=>{
+      if(!gameplayInputActive()||event.ctrlKey||event.metaKey||event.altKey)return;
+      let handled=true;
+      if(event.key==='+'||event.key==='=')setGameplayZoom(camera.zoom*1.1);
+      else if(event.key==='-'||event.key==='_')setGameplayZoom(camera.zoom/1.1);
+      else if(event.key.toLowerCase()==='r')resetGameplayView(true,true);
+      else if(event.key==='ArrowUp')turnGameplayView(0,.04);
+      else if(event.key==='ArrowDown')turnGameplayView(0,-.04);
+      else if(event.key==='ArrowLeft'||event.key==='ArrowRight') {
+        const angle=THREE.MathUtils.radToDeg(Math.atan2(aimDirection.x,aimDirection.z)-aimBaseYaw);
+        setAimAngle(angle+(event.key==='ArrowLeft'?-1:1)*(event.shiftKey?5:1),true);
+      } else handled=false;
+      if(handled)event.preventDefault();
+    });
     window.addEventListener('blur',clearGameplayGesture);
     window.addEventListener('orientationchange',clearGameplayGesture);
     document.addEventListener('visibilitychange',()=>{if(document.hidden)clearGameplayGesture();});
@@ -2954,6 +3033,7 @@ group.name = name;
 
     window.setupHole = setupHole;
     function setupHole(hNum) {
+      gameplayView.yaw=0;gameplayView.pitch=0;
       if(isPuttClub())resetPuttClubHole();
       updateHoleVisualIsolation(hNum);
       currentHoleNumber = hNum;

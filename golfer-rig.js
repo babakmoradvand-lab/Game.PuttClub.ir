@@ -1,4 +1,4 @@
-/* Putt Club swing25. Existing skinned human, metre-calibrated rigid clubs.
+/* Putt Club hands26. Existing skinned human, metre-calibrated rigid clubs.
  * Original key-pose animation, NOT mocap or a biomechanical certification.
  * GolfMotion is skeleton-independent; GolfAthlete is the replaceable rig adapter.
  */
@@ -51,7 +51,12 @@
     }
     static sample(keys,t) {
       const o={};for(const f of ['hx','hy','hz','dx','dy','dz','hip','chest','shift','heel','roll'])o[f]=hermite(keys,t,f);
-      o.hand=V(o.hx,o.hy,o.hz);o.direction=V(o.dx,o.dy,o.dz).normalize();o.rotation=orientation(o.direction,o.roll);return o;
+      o.hand=V(o.hx,o.hy,o.hz);o.direction=V(o.dx,o.dy,o.dz).normalize();
+      // The face turns with the forearms, rather than holding a world-Z frame
+      // throughout the backswing. Address and impact remain exactly calibrated.
+      const rollKeys=[[0,0],[.13,70],[.28,85],[.4,85],[.445,90],[.477,38],[.5,0],[.6,-65],[.73,-65],[.87,-35],[1,-20]].map(([t,roll])=>({t,roll}));
+      const amplitude=keys.length===4?0:keys.length===5?.20:keys.length===7?.72:1;
+      o.rotation=orientation(o.direction,o.roll+rad(hermite(rollKeys,t,'roll'))*amplitude);return o;
     }
   }
   class GolfAthlete {
@@ -140,6 +145,46 @@
       const along=(lengths[0]**2-lengths[1]**2+dist**2)/(2*dist),height=Math.sqrt(Math.max(0,lengths[0]**2-along**2)),elbow=start.clone().addScaledVector(direction,along).addScaledVector(projected,height);
       this.point(upper,elbow.clone().sub(start));this.point(lower,target.clone().sub(lower.getWorldPosition(V())));
     }
+    arm(side,target,bodyPole) {
+      const upper=this.bones['UpperArm.'+side],lower=this.bones['Forearm.'+side],hand=this.bones['Hand.'+side],lengths=this.restLengths['arm'+side];
+      const start=upper.getWorldPosition(V()),delta=target.clone().sub(start),distance=clamp(delta.length(),Math.abs(lengths[0]-lengths[1])+.0001,lengths[0]+lengths[1]-.0001),axis=delta.normalize();
+      const desired=this.handRotations[side].clone().multiply(this.rest[hand.uuid].q.clone().invert()),neutralY=Y.clone().applyQuaternion(desired);
+      const project=v=>v.clone().addScaledVector(axis,-v.dot(axis));
+      let pole=project(bodyPole);if(pole.lengthSq()<1e-9)pole=project(Z);pole.normalize();
+      const previous=this._armState?.[side];
+      if(previous) {
+        const transport=new T.Quaternion().setFromUnitVectors(previous.axis,axis);
+        pole=project(previous.pole.clone().applyQuaternion(transport)).normalize();
+      }
+      const along=(lengths[0]**2-lengths[1]**2+distance**2)/(2*distance),height=Math.sqrt(Math.max(0,lengths[0]**2-along**2));
+      const best=project(neutralY).negate(),sine=best.length();
+      if(height>.00001&&sine>.00001) {
+        best.divideScalar(sine);
+        const angle=Math.atan2(axis.dot(pole.clone().cross(best)),clamp(pole.dot(best),-1,1));
+        const A=(distance-along)/lengths[1]*axis.dot(neutralY),B=height/lengths[1]*sine;
+        const allowed=Math.acos(clamp((Math.cos(rad(52))-A)/B,-1,1));
+        let turn=Math.max(0,Math.abs(angle)-allowed);
+        if(previous) {
+          const step=Math.max(0,this.frame/100-previous.t),limit=rad(30)*Math.min(1,step*100);
+          const safety=Math.acos(clamp((Math.cos(rad(70))-A)/B,-1,1));
+          turn=Math.max(Math.min(turn,limit),Math.abs(angle)-safety,0);
+        }
+        pole.applyAxisAngle(axis,Math.sign(angle)*turn);
+      }
+      const elbow=start.clone().addScaledVector(axis,along).addScaledVector(pole,height),upperDirection=elbow.clone().sub(start).normalize();
+      const upperBase=previous?previous.upperQ.clone():upper.getWorldQuaternion(new T.Quaternion());
+      const upperQ=new T.Quaternion().setFromUnitVectors(Y.clone().applyQuaternion(upperBase),upperDirection).multiply(upperBase);
+      this.rotateWorld(upper,upperQ);
+      this._armState=this._armState||{};this._armState[side]={t:this.frame/100,pole:pole.clone(),axis:axis.clone(),upperQ:upperQ.clone()};
+      const actual=target.clone().sub(lower.getWorldPosition(V())).normalize();
+      // Forearm pronation carries the grip roll. The wrist receives only the
+      // remaining swing, never a 180-degree axial twist or an Euler sign flip.
+      const before=lower.getWorldQuaternion(new T.Quaternion()),after=new T.Quaternion().setFromUnitVectors(neutralY,actual).multiply(desired),deltaQ=before.clone().invert().multiply(after);
+      const addedTwist=Math.atan2(Math.sin(2*Math.atan2(deltaQ.y,deltaQ.w)),Math.cos(2*Math.atan2(deltaQ.y,deltaQ.w)));
+      this.armDiagnostics=this.armDiagnostics||{};this.armDiagnostics[side]={addedTwist:addedTwist*180/Math.PI};
+      this.rotateWorld(lower,after);
+      this.rotateWorld(hand,this.handRotations[side]);
+    }
     bodyRotation(name,yaw,hinge,side=0) {
       const b=this.bones[name],q=new T.Quaternion().setFromEuler(new T.Euler(hinge,yaw,side,'YXZ')).multiply(this.rest[b.uuid].worldQ);
       this.rotateWorld(b,this.model.getWorldQuaternion(new T.Quaternion()).multiply(q));
@@ -160,7 +205,7 @@
     gripHands() {
       const q=this.grip.getWorldQuaternion(new T.Quaternion()),origin=this.grip.getWorldPosition(V());this.handRotations={};
       for(const [side,sign,along]of [['L',1,.025],['R',-1,.095]]) {
-        const handQ=new T.Quaternion().setFromAxisAngle(Y,sign*Math.PI/2).multiply(new T.Quaternion().setFromAxisAngle(Z,-sign*rad(68)));
+        const handQ=new T.Quaternion().setFromAxisAngle(Y,sign*rad(65)).multiply(new T.Quaternion().setFromAxisAngle(Z,-sign*rad(68)));
         const calibration=this.binding.hands?.[side];if(calibration?.rotation)handQ.multiply(new T.Quaternion().setFromEuler(new T.Euler(...calibration.rotation)));
         const palm=calibration?.palm?V(...calibration.palm):V(sign*.010,.090,.026),wrist=V(0,calibration?.along??along,0).sub(palm.applyQuaternion(handQ));
         this.handTargets[side]=origin.clone().add(wrist.applyQuaternion(q));this.handRotations[side]=q.clone().multiply(handQ);
@@ -176,8 +221,26 @@
       for(const [s,d]of [[1,[-sign*.58,.74,.34]],[2,[-sign*.68,.72,.12]],[3,[-sign*.68,.67,-.28]]]){const b=this.bones[`Finger1_${s}.${side}`];if(b)this.point(b,V(...d).applyQuaternion(hq));}
     }
     pose(mode,phase,p) {
+      mode=this.club.isPutter?'putt':styleNames[mode]?mode:'full';
+      const t=GolfMotion.time(phase,p),q=this.model.getWorldQuaternion(new T.Quaternion()),o=this.model.getWorldPosition(V());
+      const key=[this.clubKey,mode,...this.ball.toArray(),...o.toArray(),...q.toArray()].map(v=>typeof v==='number'?Math.round(v*1e6)/1e6:v).join(':');
+      if(this._poseCacheKey!==key){this._poseCacheKey=key;this._poseCache=[];}
+      const clone=state=>Object.fromEntries(Object.entries(state||{}).map(([s,a])=>[s,{t:a.t,pole:a.pole.clone(),axis:a.axis.clone(),upperQ:a.upperQ.clone()}]));
+      const frame=x=>x<=.4?['backswing',x/.4]:x<=.5?['downswing',(x-.4)/.1]:['followthrough',(x-.5)/.5];
+      const n=Math.min(100,Math.floor(t*100+1e-7));
+      // Canonical 1%-phase knots make the transported elbow/upper-arm frame
+      // deterministic for normal play, arbitrary seeking, replay and export.
+      for(let i=this._poseCache.length;i<=n;i++) {
+        this._armState=i?clone(this._poseCache[i-1]):{};
+        this._pose(mode,...frame(i/100));this._poseCache.push(clone(this._armState));
+      }
+      const exact=Math.abs(t-n/100)<1e-7;
+      this._armState=exact?(n?clone(this._poseCache[n-1]):{}):clone(this._poseCache[n]);
+      this._pose(mode,phase,p);
+    }
+    _pose(mode,phase,p) {
       mode=this.club.isPutter?'putt':styleNames[mode]?mode:'full';this.current=mode;this.style=mode;const t=GolfMotion.time(phase,p);this.frame=t*100;
-      // Reset to bind pose, never feed previous IK output back into the next frame.
+      // Reset the skeleton; deterministic cached arm frames are reapplied explicitly.
       this.model.traverse(o=>{const r=this.rest[o.uuid];if(r){o.position.copy(r.p);o.quaternion.copy(r.q);o.scale.copy(r.s);}});
       this.grip.scale.set(1,1,1);this.model.updateMatrixWorld(true);
       const lie=rad(this.spec.lie),shaftAngle=rad(this.spec.addressAngle),addressLead=this.club.cat==='wood'?GolfMotion.address(this.club,mode).lead/(this.shaftLength-.055):0,d=V(addressLead,-Math.sin(shaftAngle)*Math.sqrt(1-addressLead*addressLead),Math.cos(shaftAngle)*Math.sqrt(1-addressLead*addressLead)),loft=rad(this.spec.loft),headY=this.ball.y-this.radius+this.headFloor+.002;
@@ -217,7 +280,7 @@
         const target=this.handTargets[side],shoulder=this.bones['UpperArm.'+side].getWorldPosition(V()),max=this.restLengths['arm'+side].reduce((a,b)=>a+b,0);
         this.reachExcess=Math.max(this.reachExcess,target.distanceTo(shoulder)-max);
         const bodyTurn=new T.Quaternion().setFromAxisAngle(Y,m.chest),pole=V(sign*.40,-.18,.56).applyQuaternion(bodyTurn).applyQuaternion(modelQ);
-        this.ik('UpperArm.'+side,'Forearm.'+side,target,pole,this.restLengths['arm'+side]);this.rotateWorld(this.bones['Hand.'+side],this.handRotations[side]);this.fingers(side);
+        this.arm(side,target,pole);this.fingers(side);
       }
       for(const [side,sign]of [['L',1],['R',-1]]) {
         const ft=this.footTarget(side,address.width,m.heel,m.chest);this.footTargets[side]=ft.position.clone();
@@ -226,7 +289,7 @@
       this.heelRelease=m.heel;this.bodyTurn={hips:m.hip,chest:m.chest};this.model.updateMatrixWorld(true);for(const mesh of this.skinMeshes)mesh.skeleton.update();
     }
     debug() {
-      const point=n=>this.bones[n].getWorldPosition(V());return {version:'swing25',skinMeshes:this.skinMeshes.length,joints:Object.keys(this.bones).length,clips:Object.values(styleNames),style:this.style,frame:this.frame,head:this.headName,club:this.club.id,length:this.spec.length,lie:this.spec.lie,loft:this.spec.loft,clubScale:this.grip.scale.toArray(),contact:point('ClubFaceAnchor').toArray(),target:this.model.localToWorld(this.contactTarget.clone()).toArray(),wristErrors:['L','R'].map(s=>point('Hand.'+s).distanceTo(this.handTargets[s])),reachExcess:this.reachExcess,heelRelease:this.heelRelease,turn:this.bodyTurn,feet:['L','R'].map(s=>point('Foot.'+s).toArray()),footErrors:['L','R'].map(s=>point('Foot.'+s).distanceTo(this.footTargets[s]))};
+      const point=n=>this.bones[n].getWorldPosition(V());return {version:'hands26',skinMeshes:this.skinMeshes.length,joints:Object.keys(this.bones).length,clips:Object.values(styleNames),style:this.style,frame:this.frame,head:this.headName,club:this.club.id,length:this.spec.length,lie:this.spec.lie,loft:this.spec.loft,clubScale:this.grip.scale.toArray(),contact:point('ClubFaceAnchor').toArray(),target:this.model.localToWorld(this.contactTarget.clone()).toArray(),wristErrors:['L','R'].map(s=>point('Hand.'+s).distanceTo(this.handTargets[s])),reachExcess:this.reachExcess,heelRelease:this.heelRelease,turn:this.bodyTurn,feet:['L','R'].map(s=>point('Foot.'+s).toArray()),footErrors:['L','R'].map(s=>point('Foot.'+s).distanceTo(this.footTargets[s]))};
     }
     dispose(){for(const c of this.clubs.values()){c.traverse(o=>{if(o.isMesh){o.geometry.dispose();if(!Object.values(this.clubSources).some(s=>s.material===o.material)){for(const m of Array.isArray(o.material)?o.material:[o.material])m.dispose();}}});c.removeFromParent();}for(const s of Object.values(this.clubSources)){s.geometry.dispose();for(const m of Array.isArray(s.material)?s.material:[s.material])m.dispose();}}
   }

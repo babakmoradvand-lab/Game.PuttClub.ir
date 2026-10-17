@@ -316,7 +316,9 @@
         ? isBallFlying
           ? "Ball in play · controls return when the shot settles."
           : "Swing in progress · waiting for impact."
-        : GOLF_BAG[currentClubIndex].isPutter
+        : matchMedia('(any-pointer: fine)').matches
+          ? "Drag: aim · Scroll: zoom · Option/right-drag: look · R: reset"
+          : GOLF_BAG[currentClubIndex].isPutter
           ? "دید را به چپ و راست بچرخان · راهنمای پات تا ۲ یارد روی زمین"
           : "دید را به چپ و راست بچرخان · قوس اولیهٔ ضربه تا ۳۰ یارد";
       [...$("hole-grid-picker").children].forEach((e) => (e.disabled = busy));
@@ -547,9 +549,18 @@
       attributeFilter: ["class"],
     }),
   );
+  listen("btn-reset-view",()=>resetGameplayView(true,true));
+  listen("btn-runtime-check",async()=>{
+    const button=$("btn-runtime-check"),status=$("runtime-check-status");button.disabled=true;
+    status.textContent="Checking the current release; saved rounds are kept.";
+    try{const result=await window.PuttBoot.check();const b=window.PuttBoot;status.textContent=result?.deferred?"Finish the shot first; updates never interrupt ball physics.":b.status==='offline'?"Offline · using the complete saved version.":b.status==='update-unavailable'?"Update unavailable · saved version remains playable.":"Current version verified: "+b.version;}
+    catch(error){status.textContent="Update check unavailable; your round has not been deleted.";}
+    finally{button.disabled=false;button.focus({preventScroll:true});}
+  });
   function refreshOffline() {
     const result=window.PuttBoot;
     offlineReady=!!result?.ready;
+    $("runtime-version").textContent=result?.version?"Installed build: "+result.version:"Installed build not yet verified.";
     $("offline-state").textContent=offlineReady
       ? `All ${result.count} game resources verified and saved (${(result.bytes/1048576).toFixed(1)} MB). ${result.status==='offline'?'Offline · saved build.':result.status==='update-unavailable'?'Update unavailable · using complete saved build.':'Version checked before play.'} iOS may remove storage when space is low.`
       : "A complete saved build has not been verified.";

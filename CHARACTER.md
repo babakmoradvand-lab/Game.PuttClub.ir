@@ -1,4 +1,29 @@
-# Current runtime: swing25 (2026-10-17)
+# desktop27 — combined desktop controls and hands26 release (2026-10-17)
+
+Includes the tested hands26 wrist correction below without changing its rig code
+or the original 6,690,736-byte human GLB. Desktop course input now supports wheel
+zoom, horizontal aim drag, vertical view tilt, Option/Alt/right-button inspection,
+horizontal wheel inspection and focused-canvas keyboard controls. Inspection does
+not steer the ball. Touch pinch, the scripted flight camera and launch physics are
+preserved. Settings show the installed release and provide an explicit update check.
+The bootstrap registers the exact app scope, checks a cache-busted descriptor and
+waits for a safe checkpoint before replacing an in-progress round. Existing saved
+rounds and atomic verified offline caches are not cleared to recover an update.
+See DESKTOP27_RELEASE_FA.md for test scope, controls and the WebKit environment limit.
+
+# hands26 — hand/forearm orientation correction
+
+Tested revision following swing25 (352278b), included in the combined desktop27 release.
+The human GLB, game physics, six launch timings, clubs and terrain placement
+are unchanged. New behavior: opposing diagonal hand calibration, authored
+club-face roll with exact neutral address/impact, elbow-plane wrist-flex
+constraints and rotation-minimizing upper-arm transport. Canonical 1%-phase
+knots make seek/replay independent of request order; no bone length scaling.
+The wrist receives swing, with forearm rotation carrying the axial roll.
+The numerical joint constraints are rig-fitting safeguards, not professional
+biomechanical certification or proof of zero skin/finger intersections.
+
+# Historical baseline: swing25 (2026-10-17)
 
 The human GLB is unchanged from the verified published asset (SHA-256
 `5a4af205f0ccab7d462a739fb48bf1e559a3f515ef600212cb992c260bd7fb01`).
