@@ -294,7 +294,8 @@
   }
   function updateShotState(force = false) {
     const equipment=window.CaddieSystem;
-    const busy = isBallFlying || golferSwingPhase !== "idle" || starting || !!courseRelief || !!equipment?.busy;
+    const shotBusy = isBallFlying || golferSwingPhase !== "idle" || starting || !!courseRelief;
+    const busy = shotBusy || !!equipment?.busy;
     const equipmentKey=(equipment?.phase||"none")+":"+(equipment?.canStrike||false);
     if (force || lastBusy !== busy || updateShotState.equipmentKey!==equipmentKey) {
       lastBusy = busy;updateShotState.equipmentKey=equipmentKey;
@@ -313,21 +314,16 @@
       ])
         $(id).disabled = busy;
       $("swing-trigger-card").disabled =
-        busy || !!GOLF_BAG[currentClubIndex].isPutter;
+        shotBusy || !!GOLF_BAG[currentClubIndex].isPutter;
+      $("swing-power-slider").disabled=shotBusy;
+      $("putter-backswing-slider").disabled=shotBusy;
       $("btn-launch-shot").disabled=busy||!!equipment&&!equipment.canStrike;
       $("btn-putt-action").disabled=busy||!!equipment&&!equipment.canStrike;
       $("btn-launch-shot").setAttribute("aria-busy", String(busy));
-      $("btn-launch-shot").innerHTML =
-        (equipment&&!isBallFlying&&golferSwingPhase==="idle"&&!equipment.canStrike ? equipment.busy ? "تحویل کلاب…" : "ابتدا کلاب را دریافت کنید" : busy ? "Shot in progress" : "Strike ball") + icon("arrow");
-      $("shot-status").textContent = equipment&&!isBallFlying&&golferSwingPhase==="idle"&&!equipment.canStrike ? equipment.busy ? "کدی در حال دریافت و تحویل کلاب واقعی است؛ تا پایان تحویل صبر کنید." : "دست گلفر خالی است؛ کلاب دلخواه را از کیف انتخاب کنید، حتی اگر همان کلاب قبلی باشد." : courseRelief ? "گزینهٔ رهاسازی توپ را انتخاب کنید." : busy
-        ? isBallFlying
-          ? "Ball in play · controls return when the shot settles."
-          : "Swing in progress · waiting for impact."
-        : matchMedia('(any-pointer: fine)').matches
-          ? "Drag: aim · Scroll: zoom · Option/right-drag: look · R: reset"
-          : GOLF_BAG[currentClubIndex].isPutter
-          ? "دید را به چپ و راست بچرخان · راهنمای پات تا ۲ یارد روی زمین"
-          : "دید را به چپ و راست بچرخان · قوس اولیهٔ ضربه تا ۳۰ یارد";
+      $("btn-launch-shot").innerHTML = "Strike ball" + icon("arrow");
+      $("shot-status").textContent="";
+      $("shot-status").hidden=true;
+      if(equipment?.empty&&!equipment.busy){$("selected-club-label").textContent="Club";$("club-trigger-badge").textContent="—";}
       [...$("hole-grid-picker").children].forEach((e) => (e.disabled = busy));
       $("return-title").disabled = busy;
       for(const id of ["btn-celeb-next","btn-celeb-return"])$(id).disabled=!!equipment&&(equipment.busy||!equipment.empty);

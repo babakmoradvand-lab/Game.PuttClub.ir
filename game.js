@@ -1485,6 +1485,7 @@ group.name = name;
     }
 
     // Dynamic Swing State Machine
+    let golferFinishHold = 0; // Two active-play seconds at the completed follow-through.
     let golferSwingPhase = 'idle'; // 'idle', 'address', 'backswing', 'downswing', 'followthrough', 'fade'
     let golferSwingProgress = 0.0;
     let golferImpactCallback = null;
@@ -1720,6 +1721,7 @@ group.name = name;
       resetGolferPosture();
       golferGroup.visible = true;
       golferSwingPhase = 'idle';
+      golferFinishHold = 0;
       golferSwingProgress = 0;
     }
 
@@ -1884,16 +1886,18 @@ group.name = name;
 
         if (golferSwingProgress >= 1.0) {
           golferSwingPhase = 'fade';
+          golferFinishHold = 2.0;
           golferSwingProgress = 0.0;
         }
       }
       else if (golferSwingPhase === 'fade') {
+        golferFinishHold = Math.max(0,golferFinishHold-dt);
         golferSwingProgress += dt * 1.8;
         if (golferSwingProgress >= 1.0 && !window.CaddieSystem?.initialized) {
           golferGroup.visible = false;
         }
       }
-      if (proGolferAnimator) {
+      if (proGolferAnimator && !window.CaddieSystem?.controlsPose) {
         if(window.CaddieSystem?.heldClub)proGolferAnimator.setClub(window.CaddieSystem.heldClub);
         const mode = golferSwingPhase === 'idle' ? ((window.CaddieSystem?.heldClub||GOLF_BAG[currentClubIndex]||{}).isPutter ? 'putt' : currentSwingMode) : activeSwingStyle;
         proGolferAnimator.pose(mode,golferSwingPhase,golferSwingProgress);
@@ -2244,7 +2248,7 @@ group.name = name;
       });
 
       updateAimTracer();
-      if (!isBallFlying && golferSwingPhase === 'idle' && !(window.CaddieSystem?.busy&&window.CaddieSystem.heldClub)) positionGolferAtBall();
+      if (!isBallFlying && golferSwingPhase === 'idle' && !window.CaddieSystem?.busy) positionGolferAtBall();
       drawMinimap();
       if (window.PuttUI) window.PuttUI.sync();
     }
@@ -2673,6 +2677,7 @@ group.name = name;
     document.addEventListener('visibilitychange',()=>{if(document.hidden)clearGameplayGesture();});
 
     function autoSuggestClub() {
+      if(window.CaddieSystem?.retainPutter){currentClubIndex=window.CaddieSystem.heldIndex;updateSelectedClubUI();return;}
       const pinPos = holePins3D[currentHoleNumber];
       if (!pinPos) return;
 
