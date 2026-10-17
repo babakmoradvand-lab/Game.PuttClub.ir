@@ -1,5 +1,5 @@
 /* PuttClub UI controller. Classic script intentionally shares the existing engine's
-   lexical state. Presentation never changes GOLF_BAG / shot-spec / physics values. */
+   lexical state. Original bag and physics are retained; continuous power is an explicit shot input. */
 (() => {
   "use strict";
   const $ = (id) => document.getElementById(id);
@@ -207,14 +207,23 @@
     if (!modes.includes(value) || isBallFlying || golferSwingPhase !== "idle")
       return;
     currentSwingMode = value;
+    swingPowerPercent = null;
     updateSelectedClubUI();
     sync();
+  }
+  function setPower(value) {
+    if (isBallFlying || golferSwingPhase !== "idle" || courseRelief) return;
+    swingPowerPercent = Math.max(1, Math.min(100, Math.round(Number(value)) || 1));
+    currentSwingMode = swingPowerPercent <= 25 ? "chip" : swingPowerPercent <= 50 ? "half" : swingPowerPercent <= 75 ? "three-quarter" : "full";
+    updateSelectedClubUI();
+    saveSession();
   }
   function sync() {
     const club = GOLF_BAG[currentClubIndex],
       isPutter = !!club.isPutter;
     const mode = currentSwingMode,
-      spec = calculateShotSpecs(currentClubIndex, mode);
+      spec = calculateShotSpecs(currentClubIndex, mode, swingPowerPercent);
+    const power = swingPowerPercent ?? powers[mode] ?? 100;
     $("hud-course-name").textContent =
       window.activeCourseId === "puttclub" ? "زمین باشگاه پات کلاب" : window.activeCourseId === "tehran"
         ? "TEHRAN / SURFACE PRESENTATION"
@@ -238,17 +247,17 @@
           : "Controlled arc";
     $("swing-badge-label").textContent = isPutter
       ? $("putter-backswing-slider").value + "%"
-      : (powers[mode] || 100) + "%";
+      : power + "%";
     $("swing-trigger-card").disabled =
       isPutter || isBallFlying || golferSwingPhase !== "idle";
-    $("power-readout").innerHTML = (powers[mode] || 100) + "<small>%</small>";
-    $("swing-power-slider").value = Math.max(0, modes.indexOf(mode));
+    $("power-readout").innerHTML = power + "<small>%</small>";
+    $("swing-power-slider").value = power;
     $("swing-power-slider").setAttribute(
       "aria-valuetext",
-      `${modeNames[mode]}, ${powers[mode]} percent`,
+      `${power} percent, ${modeNames[mode]}`,
     );
     document.querySelectorAll("[data-mode]").forEach((e) => {
-      const active = e.dataset.mode === mode;
+      const active = powers[e.dataset.mode] === power;
       e.classList.toggle("active", active);
       e.setAttribute("aria-pressed", String(active));
     });
@@ -290,6 +299,8 @@
         "btn-launch-shot",
         "btn-putt-action",
         "putter-backswing-slider",
+        "btn-read-green",
+        "swing-power-slider",
         "btn-toggle-tee",
         "btn-tee-men",
         "btn-tee-women",
@@ -387,9 +398,9 @@
   listen("btn-open-settings", () => openPanel("settings-panel"));
   document
     .querySelectorAll("[data-mode]")
-    .forEach((e) => e.addEventListener("click", () => setMode(e.dataset.mode)));
+    .forEach((e) => e.addEventListener("click", () => { setMode(e.dataset.mode); closePanel(); saveSession(); }));
   $("swing-power-slider").addEventListener("input", (e) =>
-    setMode(modes[Number(e.target.value)]),
+    setPower(e.target.value),
   );
   $("putter-backswing-slider").addEventListener("input", () => {
     const value = $("putter-backswing-slider").value;
@@ -545,7 +556,7 @@
   }
   function exportSession() {
     if(isBallFlying||golferSwingPhase!=="idle"||isCameraTransitioning)return null;
-    return {schema:1,started,view:document.body.dataset.view,step,skill,course,mode:gameMode,hole:currentHoleNumber,single:selectedSingleHole,strokes:strokesCurrentHole,tee:isWomenTee,courseTee:courseTeeColor,scores:[...holeScores],courseState:isPuttClub()?exportPuttClubState():null,club:currentClubIndex,swing:currentSwingMode,ball:ballPos.toArray(),aim:aimDirection.toArray(),camera:camera.position.toArray(),zoom:camera.zoom,target:orbitControls.target.toArray(),putt:$("putter-backswing-slider").value,celebrating:$("celebration-overlay").style.display!=="none",telemetry:["tele-carry","tele-roll","tele-total"].map(id=>$(id).textContent)};
+    return {schema:1,started,view:document.body.dataset.view,step,skill,course,mode:gameMode,hole:currentHoleNumber,single:selectedSingleHole,strokes:strokesCurrentHole,tee:isWomenTee,courseTee:courseTeeColor,scores:[...holeScores],courseState:isPuttClub()?exportPuttClubState():null,club:currentClubIndex,swing:currentSwingMode,power:swingPowerPercent,ball:ballPos.toArray(),aim:aimDirection.toArray(),camera:camera.position.toArray(),zoom:camera.zoom,target:orbitControls.target.toArray(),putt:$("putter-backswing-slider").value,celebrating:$("celebration-overlay").style.display!=="none",telemetry:["tele-carry","tele-roll","tele-total"].map(id=>$(id).textContent)};
   }
   async function importSession(data) {
     if(data?.schema!==1||!data.started)return;
@@ -554,7 +565,7 @@
     gameMode=data.mode;selectedSingleHole=data.single;window.gameMode=gameMode;window.selectedSingleHole=selectedSingleHole;
     courseTeeColor=["blue","white","red"].includes(data.courseTee)?data.courseTee:"blue";isWomenTee=data.tee;setupHole(data.hole);strokesCurrentHole=data.strokes;
     data.scores.forEach((score,n)=>holeScores[n]=score);
-    currentClubIndex=data.club;currentSwingMode=data.swing;
+    currentClubIndex=data.club;currentSwingMode=data.swing;swingPowerPercent=Number.isFinite(data.power)?Math.max(1,Math.min(100,Math.round(data.power))):null;
     ballPos.fromArray(data.ball);
     if(strokesCurrentHole>0&&!data.courseState?.pending)ballPos.y=getTerrainHeight(ballPos.x,ballPos.z)+BALL_RADIUS;
     ballMesh.position.copy(ballPos);ballVel.set(0,0,0);

@@ -185,6 +185,7 @@
 
     let currentClubIndex = 0;
     let currentSwingMode = 'full';
+    let swingPowerPercent = null; // null retains the original four preset specifications.
     let currentHoleNumber = 1;
     let strokesCurrentHole = 0;
     let isWomenTee = false;
@@ -994,7 +995,7 @@ group.name = name;
       const pinPos = holePins3D[hNum];
       if (pinPos) {
         skyBeaconGroup.position.set(pinPos.x, pinPos.y, pinPos.z);
-        skyBeaconGroup.visible = true;
+        skyBeaconGroup.visible = !GOLF_BAG[currentClubIndex]?.isPutter;
       }
     }
 
@@ -1761,6 +1762,7 @@ group.name = name;
     }
 
     function triggerGolferSwing(specs, onImpactCallback) {
+      window.GreenReader?.close();
       // Determine active swing profile based on specs or selected mode
       const club = GOLF_BAG[currentClubIndex] || {};
       if (club.isPutter || specs.isPutt) {
@@ -1773,6 +1775,7 @@ group.name = name;
       // Clear the previous putt path AT SWING START, not one backswing later
       // at impact. Ordinary non-putt flight trails keep their existing behavior.
       if (club.isPutter || specs.isPutt || tracerShotIsPutt) resetToptracer();
+      resetRadarTrack();
       // Re-evaluate address after changing club/mode, before the stroke starts.
       hideToptracerYardageTag();
       // A fast next-shot tap must not start with the camera passing the athlete.
@@ -1937,6 +1940,30 @@ group.name = name;
     const minimapCanvas = document.getElementById('minimap-canvas');
     const minimapCtx = minimapCanvas.getContext('2d');
 
+    // Actual world-space motion only; independent of physics, tracer and saved zoom.
+    let radarTrack = null, radarWasMoving = false, radarDrawElapsed = 0;
+    const radarMapDiagnostics = {draws:0, moving:false, points:0, ball:null, marker:null};
+    function resetRadarTrack(redraw = true) {
+      radarTrack = null; radarWasMoving = false; radarDrawElapsed = 0;
+      document.body.dataset.ballTracking = 'false';
+      if (redraw) drawMinimap();
+    }
+    function updateRadarTracking(dt) {
+      const moving = isBallFlying;
+      if (moving && (!radarWasMoving || !radarTrack || radarTrack.hole !== currentHoleNumber || radarTrack.course !== window.activeCourseId)) {
+        radarTrack = {hole:currentHoleNumber,course:window.activeCourseId,origin:shotStartPos.clone(),points:[[shotStartPos.x,shotStartPos.z]],putt:!!tracerShotIsPutt};
+      }
+      if (radarTrack && (moving || radarWasMoving)) {
+        const points=radarTrack.points,last=points[points.length-1];
+        if (Math.hypot(ballPos.x-last[0],ballPos.z-last[1])>.08 || (!moving && radarWasMoving)) points.push([ballPos.x,ballPos.z]);
+        if (points.length>256) radarTrack.points=points.filter((_,i)=>i%2===0 || i===points.length-1);
+      }
+      if (moving!==radarWasMoving) document.body.dataset.ballTracking=String(moving);
+      radarDrawElapsed+=dt;
+      if ((moving && radarDrawElapsed>=1/12) || moving!==radarWasMoving) {drawMinimap();radarDrawElapsed=0;}
+      radarWasMoving=moving;
+    }
+
     function drawMinimap() {
       const w = minimapCanvas.width;
       const h = minimapCanvas.height;
@@ -1949,10 +1976,15 @@ group.name = name;
       const targetPin = holePins3D[currentHoleNumber];
       if (!targetPin) return;
 
-      const midX = (ballPos.x + targetPin.x) / 2;
-      const midZ = (ballPos.z + targetPin.z) / 2;
-      const span = Math.max(140, new THREE.Vector2(ballPos.x - targetPin.x, ballPos.z - targetPin.z).length() * 1.5);
-      const scale = (w * 0.75) / span;
+      const track=radarTrack && radarTrack.hole===currentHoleNumber && radarTrack.course===window.activeCourseId ? radarTrack : null;
+      const origin=track ? track.origin : ballPos;
+      // Keep the start/pin frame fixed during a shot. Enlarge only for an off-line ball.
+      const midX=(origin.x+targetPin.x)/2, midZ=(origin.z+targetPin.z)/2;
+      const minimum=track?.putt ? 25 : 100;
+      let halfX=Math.max(minimum/2,Math.abs(origin.x-targetPin.x)*.7),halfZ=Math.max(minimum/2,Math.abs(origin.z-targetPin.z)*.7);
+      for (const q of track?.points || []) {halfX=Math.max(halfX,Math.abs(q[0]-midX)*1.15);halfZ=Math.max(halfZ,Math.abs(q[1]-midZ)*1.15);}
+      halfX=Math.max(halfX,Math.abs(ballPos.x-midX)*1.15);halfZ=Math.max(halfZ,Math.abs(ballPos.z-midZ)*1.15);
+      const span=Math.max(halfX,halfZ)*2,scale=Math.min((w-28)/(2*halfX),(h-24)/(2*halfZ));
 
       function mapToMinimap(wx, wz) {
         const mx = (w / 2) + (wx - midX) * scale;
@@ -1980,10 +2012,18 @@ group.name = name;
         }
       });
 
-      // Aim Line
+      // Last/current shot trail uses sampled positions, never a predicted aim trajectory.
+      if (track && track.points.length>1) {
+        minimapCtx.beginPath();track.points.forEach((q,i)=>{const p=mapToMinimap(q[0],q[1]);if(i)minimapCtx.lineTo(p.mx,p.my);else minimapCtx.moveTo(p.mx,p.my);});
+        const head=mapToMinimap(ballPos.x,ballPos.z);minimapCtx.lineTo(head.mx,head.my);
+        minimapCtx.strokeStyle='#d4bd88';minimapCtx.lineWidth=1.7;minimapCtx.stroke();
+        const start=mapToMinimap(track.origin.x,track.origin.z);minimapCtx.beginPath();minimapCtx.arc(start.mx,start.my,2.6,0,Math.PI*2);minimapCtx.strokeStyle='#d4bd88';minimapCtx.stroke();
+      }
+      // Aim Line (not a second, misleading trajectory during ball motion)
       const bM = mapToMinimap(ballPos.x, ballPos.z);
       const pM = mapToMinimap(targetPin.x, targetPin.z);
 
+      if (!isBallFlying) {
       minimapCtx.beginPath();
       minimapCtx.setLineDash([3, 3]);
       minimapCtx.moveTo(bM.mx, bM.my);
@@ -1994,6 +2034,7 @@ group.name = name;
       minimapCtx.lineWidth = 1.5;
       minimapCtx.stroke();
       minimapCtx.setLineDash([]);
+      }
 
       // Hole Pin
       minimapCtx.beginPath();
@@ -2006,12 +2047,13 @@ group.name = name;
 
       // Ball
       minimapCtx.beginPath();
-      minimapCtx.arc(bM.mx, bM.my, 4, 0, Math.PI * 2);
+      minimapCtx.arc(bM.mx, bM.my, isBallFlying ? 4.8 : 4, 0, Math.PI * 2);
       minimapCtx.fillStyle = '#f1eee5';
       minimapCtx.fill();
       minimapCtx.strokeStyle = '#d4bd88';
       minimapCtx.lineWidth = 1.5;
       minimapCtx.stroke();
+      Object.assign(radarMapDiagnostics,{draws:radarMapDiagnostics.draws+1,moving:isBallFlying,points:track?.points.length||0,ball:[ballPos.x,ballPos.z],marker:[bM.mx,bM.my]});
     }
 
     document.getElementById('minimap-container').addEventListener('click', () => {
@@ -2025,7 +2067,7 @@ group.name = name;
       if (typeof updateSelectedClubUI === 'function') updateSelectedClubUI();
     }
 
-    function calculateShotSpecs(clubIndex, swingMode) {
+    function calculateShotSpecs(clubIndex, swingMode, powerPercent = null) {
       const club = GOLF_BAG[clubIndex];
       const hLevel = window.currentHandicap || 'scratch';
       const hMult = (window.handicapMultipliers && window.handicapMultipliers[hLevel]) || 1.0;
@@ -2051,6 +2093,17 @@ group.name = name;
           carryMultiplier = 1.0;
           rollMultiplier = 1.0;
           break;
+      }
+
+      // Continuous strength interpolates the original preset endpoints, never
+      // changing the bag, handicap, launch integrator or existing preset values.
+      if (!club.isPutter && Number.isFinite(powerPercent)) {
+        const p = THREE.MathUtils.clamp(powerPercent, 1, 100);
+        const knots = [[0,0,0],[25,.25,1.20],[50,.50,.60],[75,.75,.80],[100,1,1]];
+        const i = knots.findIndex(k => k[0] >= p), a = knots[i-1], b = knots[i];
+        const t = (p-a[0])/(b[0]-a[0]);
+        carryMultiplier = THREE.MathUtils.lerp(a[1], b[1], t);
+        rollMultiplier = THREE.MathUtils.lerp(a[2], b[2], t);
       }
 
       const effHMult = club.isPutter ? 1.0 : hMult;
@@ -2141,6 +2194,13 @@ group.name = name;
       const club = GOLF_BAG[currentClubIndex];
       const isPutter = club.isPutter === true;
 
+      skyBeaconGroup.visible = !isPutter;
+      // On entering putting, remove the incoming approach, not a previous putt.
+      if (isPutter && !isBallFlying && !tracerShotIsPutt && ribbonHistory.length) {
+        resetToptracer();
+        resetRadarTrack();
+      }
+      window.GreenReader?.sync();
       document.getElementById('selected-club-label').textContent = club.name;
       const clubBadge = document.getElementById('club-trigger-badge');
       if (clubBadge) {
@@ -2148,7 +2208,7 @@ group.name = name;
         const code = club.id;
         clubBadge.textContent = code;
       }
-      const specs = calculateShotSpecs(currentClubIndex, currentSwingMode);
+      const specs = calculateShotSpecs(currentClubIndex, currentSwingMode, swingPowerPercent);
       const cSub = document.getElementById('selected-club-sub'); if (cSub) cSub.textContent = `${specs.totalYards} یارد ▾`;
 
       document.getElementById('swing-mode-panel').style.display = isPutter ? 'none' : 'flex';
@@ -2175,7 +2235,7 @@ group.name = name;
     const btnCloseSwing = document.getElementById('btn-close-swing-picker');
     document.getElementById('btn-launch-shot').addEventListener('click', () => {
       if (isBallFlying || golferSwingPhase !== 'idle') return;
-      const specs = calculateShotSpecs(currentClubIndex, currentSwingMode);
+      const specs = calculateShotSpecs(currentClubIndex, currentSwingMode, swingPowerPercent);
       const shotDirection = aimDirection.clone();
       triggerGolferSwing(specs, () => executeGolfShot(specs, shotDirection));
     });
@@ -2224,6 +2284,36 @@ group.name = name;
       return true;
     }
 
+    const BROADCAST_CAMERA=Object.freeze({aerialHeight:130});
+    const cameraSafetyDiagnostics={lifts:0,lastLift:0};
+    function constrainCameraToTerrain(position, focus=ballPos, sight=true) {
+      const originalY=position.y;
+      const footprint=Math.max(.18,camera.near*Math.tan(THREE.MathUtils.degToRad(camera.fov/2))*Math.max(1,camera.aspect)/Math.max(.5,camera.zoom)*1.4);
+      let safeY=originalY;
+      for (const [x,z] of [[0,0],[footprint,0],[-footprint,0],[0,footprint],[0,-footprint],[footprint,footprint],[-footprint,-footprint],[footprint,-footprint],[-footprint,footprint]]) {
+        const y=getTerrainHeight(position.x+x,position.z+z);if(Number.isFinite(y))safeY=Math.max(safeY,y+.65);
+      }
+      if(sight) {
+        const dx=position.x-focus.x,dz=position.z-focus.z,fy=focus.y+.18;
+        const steps=Math.min(48,Math.max(8,Math.ceil(Math.hypot(dx,dz)/.65)));
+        for(let i=1;i<steps;i++) {
+          const t=i/steps,y=getTerrainHeight(focus.x+dx*t,focus.z+dz*t);
+          if(Number.isFinite(y))safeY=Math.max(safeY,fy+(y+.06+.54*t-fy)/t);
+        }
+      }
+      position.y=safeY;return safeY-originalY;
+    }
+    function enforceGameplayCameraSafety() {
+      const lift=constrainCameraToTerrain(camera.position);
+      if(lift>1e-5) {
+        cameraSafetyDiagnostics.lifts++;
+        if(isBallFlying) camera.lookAt(cameraFollowLook.x,cameraFollowLook.y+(hasImpacted?.4:0),cameraFollowLook.z);
+        else if(isCameraTransitioning)camera.lookAt(ballPos.x,ballPos.y+.55,ballPos.z);
+        else camera.lookAt(orbitControls.target);
+      }
+      cameraSafetyDiagnostics.lastLift=lift;camera.updateMatrixWorld();return lift;
+    }
+
     function setAddressCamera(immediate = false) {
       const c = ADDRESS_CAMERA;
       // A narrower portrait frustum needs more distance, not a rescaled athlete.
@@ -2231,6 +2321,8 @@ group.name = name;
       const portraitFit = Math.max(1, 0.8 / camera.aspect);
       targetCameraPos.set(ballPos.x - aimDirection.x * c.distance * portraitFit, ballPos.y + c.height * portraitFit, ballPos.z - aimDirection.z * c.distance * portraitFit);
       targetOrbitTarget.set(ballPos.x + aimDirection.x * c.lookAhead, ballPos.y + c.lookHeight, ballPos.z + aimDirection.z * c.lookAhead);
+      const lift=constrainCameraToTerrain(targetCameraPos);
+      if(lift>.01)targetOrbitTarget.lerp(new THREE.Vector3(ballPos.x,ballPos.y+.55,ballPos.z),Math.min(1,lift/1.5));
       if (immediate) {
         isCameraTransitioning = false;
         camera.position.copy(targetCameraPos);
@@ -2294,7 +2386,7 @@ group.name = name;
       const pts = [ballPos.clone()];
       const pos = ballPos.clone();
       pos.y += 0.05; // same launch clearance as executeGolfShot
-      const velocity = getShotLaunchVelocity(calculateShotSpecs(currentClubIndex, currentSwingMode));
+      const velocity = getShotLaunchVelocity(calculateShotSpecs(currentClubIndex, currentSwingMode, swingPowerPercent));
       const dt = 1 / 120;
       for (let step = 0; step < 1440; step++) {
         const previous = pos.clone();
@@ -2866,6 +2958,7 @@ group.name = name;
       if(isPuttClub())resetPuttClubHole();
       updateHoleVisualIsolation(hNum);
       currentHoleNumber = hNum;
+      resetRadarTrack(false);
       strokesCurrentHole = 0;
       isBallFlying = false;
       isBallSettled = false;
@@ -2937,6 +3030,43 @@ group.name = name;
       if (golferSwingPhase === 'idle') golferGroup.visible = !isCameraTransitioning;
     }
 
+    function updateBroadcastCamera(dt) {
+        // Dynamic Broadcast Director: 100% Smooth Continuous Interpolation (Zero Jump at Impact)
+        if (!hasImpacted) {
+          if (flightElapsedTime < 1.4) {
+            // Phase 1: Behind Tee Broadcast Camera admiring the rising Toptracer laser ribbon
+            cameraFollowLook.lerp(ballPos, dt * 8.0);
+            camera.lookAt(cameraFollowLook.x, cameraFollowLook.y + 1.2, cameraFollowLook.z);
+          } else {
+            // Phase 2: Higher helicopter view, 130m above the live ball; saved pinch zoom stays independent.
+            const targetOverheadX = ballPos.x - ballVel.x * 0.18;
+            const targetOverheadZ = ballPos.z - ballVel.z * 0.18;
+            const targetOverheadY = ballPos.y + BROADCAST_CAMERA.aerialHeight;
+
+            camera.position.lerp(new THREE.Vector3(targetOverheadX, targetOverheadY, targetOverheadZ), dt * 2.2);
+            cameraFollowLook.lerp(ballPos, dt * 6.0);
+            camera.lookAt(cameraFollowLook.x, cameraFollowLook.y, cameraFollowLook.z);
+          }
+        } else {
+          // Phase 3: Seamless Ground Landing & Roll Tracking
+          // The camera smoothly descends from the helicopter view towards the rolling ball (8m) without ANY sudden snap!
+          const horizSpeed = Math.hypot(ballVel.x, ballVel.z);
+          const fwdDir = horizSpeed > 0.05 
+            ? new THREE.Vector2(ballVel.x / horizSpeed, ballVel.z / horizSpeed)
+            : new THREE.Vector2(ballPos.x - shotStartPos.x, ballPos.z - shotStartPos.z).normalize();
+
+          const followDist = 14.0;
+          const targetRollX = ballPos.x - fwdDir.x * followDist;
+          const targetRollZ = ballPos.z - fwdDir.y * followDist;
+          const targetRollY = ballPos.y + 7.5;
+
+          // Smooth exponential descent into the roll tracking view
+          camera.position.lerp(new THREE.Vector3(targetRollX, targetRollY, targetRollZ), dt * 2.6);
+          cameraFollowLook.lerp(ballPos, dt * 6.0);
+          camera.lookAt(cameraFollowLook.x, cameraFollowLook.y + 0.4, cameraFollowLook.z);
+        }
+    }
+
     function animate() {
       requestAnimationFrame(animate);
       const dt = Math.min(clock.getDelta(), 0.1);
@@ -2957,47 +3087,12 @@ group.name = name;
         beaconHalo.scale.set(pulse, pulse, 1.0);
       }
 
-      if(isPuttClub())window.PuttClubCourse.update(camera,dt);
-
       // Physics & Dynamic Broadcast Camera
       if (isBallFlying) {
         stepPhysics(dt);
         flightElapsedTime += dt;
 
-        // Dynamic Broadcast Director: 100% Smooth Continuous Interpolation (Zero Jump at Impact)
-        if (!hasImpacted) {
-          if (flightElapsedTime < 1.4) {
-            // Phase 1: Behind Tee Broadcast Camera admiring the rising Toptracer laser ribbon
-            cameraFollowLook.lerp(ballPos, dt * 8.0);
-            camera.lookAt(cameraFollowLook.x, cameraFollowLook.y + 1.2, cameraFollowLook.z);
-          } else {
-            // Phase 2: HIGH OVERHEAD BLIMP CAMERA (65m+ Altitude - Wide majestic broadcast view!)
-            const targetOverheadX = ballPos.x - ballVel.x * 0.18;
-            const targetOverheadZ = ballPos.z - ballVel.z * 0.18;
-            const targetOverheadY = ballPos.y + 68.0; // Higher overhead view as requested!
-
-            camera.position.lerp(new THREE.Vector3(targetOverheadX, targetOverheadY, targetOverheadZ), dt * 2.2);
-            cameraFollowLook.lerp(ballPos, dt * 6.0);
-            camera.lookAt(cameraFollowLook.x, cameraFollowLook.y, cameraFollowLook.z);
-          }
-        } else {
-          // Phase 3: Seamless Ground Landing & Roll Tracking
-          // The camera smoothly descends from overhead (68m) towards the rolling ball (8m) without ANY sudden snap!
-          const horizSpeed = Math.hypot(ballVel.x, ballVel.z);
-          const fwdDir = horizSpeed > 0.05 
-            ? new THREE.Vector2(ballVel.x / horizSpeed, ballVel.z / horizSpeed)
-            : new THREE.Vector2(ballPos.x - shotStartPos.x, ballPos.z - shotStartPos.z).normalize();
-
-          const followDist = 14.0;
-          const targetRollX = ballPos.x - fwdDir.x * followDist;
-          const targetRollZ = ballPos.z - fwdDir.y * followDist;
-          const targetRollY = ballPos.y + 7.5;
-
-          // Smooth exponential descent into the roll tracking view
-          camera.position.lerp(new THREE.Vector3(targetRollX, targetRollY, targetRollZ), dt * 2.6);
-          cameraFollowLook.lerp(ballPos, dt * 6.0);
-          camera.lookAt(cameraFollowLook.x, cameraFollowLook.y + 0.4, cameraFollowLook.z);
-        }
+        updateBroadcastCamera(dt);
       } else {
         updateAddressCamera(dt);
       }
@@ -3016,6 +3111,10 @@ group.name = name;
         camera.position.x += (Math.random() - 0.5) * 0.12;
         camera.position.y += (Math.random() - 0.5) * 0.08;
       }
+
+      enforceGameplayCameraSafety();
+      updateRadarTracking(dt);
+      if(isPuttClub())window.PuttClubCourse.update(camera,dt);
 
       // Title/setup completely cover the canvas; do not spend GPU time behind them.
       if (document.body.dataset.view === 'game') {
