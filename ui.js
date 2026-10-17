@@ -293,9 +293,11 @@
     syncAimControlsLayout();
   }
   function updateShotState(force = false) {
-    const busy = isBallFlying || golferSwingPhase !== "idle" || starting || !!courseRelief;
-    if (force || lastBusy !== busy) {
-      lastBusy = busy;
+    const equipment=window.CaddieSystem;
+    const busy = isBallFlying || golferSwingPhase !== "idle" || starting || !!courseRelief || !!equipment?.busy;
+    const equipmentKey=(equipment?.phase||"none")+":"+(equipment?.canStrike||false);
+    if (force || lastBusy !== busy || updateShotState.equipmentKey!==equipmentKey) {
+      lastBusy = busy;updateShotState.equipmentKey=equipmentKey;
       for (const id of [
         "club-trigger-card",
         "btn-launch-shot",
@@ -312,10 +314,12 @@
         $(id).disabled = busy;
       $("swing-trigger-card").disabled =
         busy || !!GOLF_BAG[currentClubIndex].isPutter;
+      $("btn-launch-shot").disabled=busy||!!equipment&&!equipment.canStrike;
+      $("btn-putt-action").disabled=busy||!!equipment&&!equipment.canStrike;
       $("btn-launch-shot").setAttribute("aria-busy", String(busy));
       $("btn-launch-shot").innerHTML =
-        (busy ? "Shot in progress" : "Strike ball") + icon("arrow");
-      $("shot-status").textContent = courseRelief ? "گزینهٔ رهاسازی توپ را انتخاب کنید." : busy
+        (equipment&&!isBallFlying&&golferSwingPhase==="idle"&&!equipment.canStrike ? equipment.busy ? "تحویل کلاب…" : "ابتدا کلاب را دریافت کنید" : busy ? "Shot in progress" : "Strike ball") + icon("arrow");
+      $("shot-status").textContent = equipment&&!isBallFlying&&golferSwingPhase==="idle"&&!equipment.canStrike ? equipment.busy ? "کدی در حال دریافت و تحویل کلاب واقعی است؛ تا پایان تحویل صبر کنید." : "دست گلفر خالی است؛ کلاب دلخواه را از کیف انتخاب کنید، حتی اگر همان کلاب قبلی باشد." : courseRelief ? "گزینهٔ رهاسازی توپ را انتخاب کنید." : busy
         ? isBallFlying
           ? "Ball in play · controls return when the shot settles."
           : "Swing in progress · waiting for impact."
@@ -326,6 +330,7 @@
           : "دید را به چپ و راست بچرخان · قوس اولیهٔ ضربه تا ۳۰ یارد";
       [...$("hole-grid-picker").children].forEach((e) => (e.disabled = busy));
       $("return-title").disabled = busy;
+      for(const id of ["btn-celeb-next","btn-celeb-return"])$(id).disabled=!!equipment&&(equipment.busy||!equipment.empty);
     }
   }
   function updateScoreSummary() {
@@ -490,7 +495,8 @@
     );
   }
   $("quality-select").addEventListener("change", setQuality);
-  $("camera-zoom-slider").addEventListener("input",e=>setGameplayZoom(Number(e.target.value)));
+  $("btn-view-course").addEventListener("click",()=>{closePanel();showWholeCourse();saveSession();});
+  $("camera-zoom-slider").addEventListener("input",e=>setGameplayZoom(2**Number(e.target.value)));
   addEventListener("resize", () => {
     const q = $("quality-select").value;
     if (q !== "auto") {
@@ -570,7 +576,7 @@
   }
   function exportSession() {
     if(isBallFlying||golferSwingPhase!=="idle"||isCameraTransitioning)return null;
-    return {schema:1,started,view:document.body.dataset.view,step,skill,course,mode:gameMode,hole:currentHoleNumber,single:selectedSingleHole,strokes:strokesCurrentHole,tee:isWomenTee,courseTee:courseTeeColor,scores:[...holeScores],courseState:isPuttClub()?exportPuttClubState():null,wind:window.WindSystem?.exportState(),club:currentClubIndex,swing:currentSwingMode,power:swingPowerPercent,ball:ballPos.toArray(),aim:aimDirection.toArray(),camera:camera.position.toArray(),zoom:camera.zoom,target:orbitControls.target.toArray(),putt:$("putter-backswing-slider").value,celebrating:$("celebration-overlay").style.display!=="none",telemetry:["tele-carry","tele-roll","tele-total"].map(id=>$(id).textContent)};
+    return {schema:1,started,view:document.body.dataset.view,step,skill,course,mode:gameMode,hole:currentHoleNumber,single:selectedSingleHole,strokes:strokesCurrentHole,tee:isWomenTee,courseTee:courseTeeColor,scores:[...holeScores],courseState:isPuttClub()?exportPuttClubState():null,wind:window.WindSystem?.exportState(),equipment:window.CaddieSystem?.exportState(),club:currentClubIndex,swing:currentSwingMode,power:swingPowerPercent,ball:ballPos.toArray(),aim:aimDirection.toArray(),camera:camera.position.toArray(),zoom:gameplayView.zoom,target:orbitControls.target.toArray(),putt:$("putter-backswing-slider").value,celebrating:$("celebration-overlay").style.display!=="none",telemetry:["tele-carry","tele-roll","tele-total"].map(id=>$(id).textContent)};
   }
   async function importSession(data) {
     if(data?.schema!==1||!data.started)return;
@@ -597,6 +603,7 @@
     ["tele-carry","tele-roll","tele-total"].forEach((id,n)=>$(id).textContent=data.telemetry[n]);
     started=true;updateSelectedClubUI();updateHoleUI();positionGolferAtBall();sync();
     if(data.view==='game')showGame();else if(data.view==='setup')showStep(data.step);else showTitle();
+    window.CaddieSystem?.restore(data.equipment);
     if(data.celebrating)handleHoleCompleted();
     if(isPuttClub())restorePuttClubState(data.courseState);
     toast("Updated build loaded · round restored. An unfinished shot restarts from its pre-strike position.");

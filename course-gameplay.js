@@ -28,6 +28,7 @@ function checkPuttClubCup(from,to){
  if(Math.hypot(x-pin.x,z-pin.z)<=.054-BALL_RADIUS&&Math.hypot(ballVel.x,ballVel.z)<1.8&&to.y<=pin.y+BALL_RADIUS+.06){ballPos.set(pin.x,pin.y-.085,pin.z);ballMesh.position.copy(ballPos);ballVel.set(0,0,0);isBallFlying=false;isBallSettled=false;golferSwingPhase='idle';golferImpactCallback=null;courseEvents.push({type:'cup',hole:currentHoleNumber,strokes:strokesCurrentHole});handleHoleCompleted();return true;}return false;
 }
 function pendingPuttClubRelief(kind,hazard=null){
+ window.CaddieSystem?.finishInterruptedShot();
  const origin=courseShotOrigin||{position:shotStartPos.toArray(),fromTee:false};courseRelief={kind,hazardId:hazard?.id||null,cross:hazard&&courseLastEntries[hazard.id]?courseLastEntries[hazard.id].toArray():null,shotStart:origin.position,fromTee:origin.fromTee,ball:ballPos.toArray()};
  golferSwingPhase='idle';golferSwingProgress=0;golferImpactCallback=null;isCameraTransitioning=false;
  ballVel.set(0,0,0);ballMesh.position.copy(ballPos);isBallFlying=false;isBallSettled=false;isBallGrounded=true;hideToptracerYardageTag();aimLine.visible=false;golferGroup.visible=false;teePegGroup.visible=false;courseEvents.push({type:kind,hole:currentHoleNumber,hazard:hazard?.id,cross:courseRelief.cross});showPuttClubRelief();window.PuttUI?.updateShotState(true);window.PuttUI?.saveSession?.();

@@ -1336,8 +1336,8 @@ group.name = name;
     // One horizontal direction drives the shot, athlete, guide and minimap.
     const aimDirection = new THREE.Vector3(0, 0, 1);
     let aimBaseYaw = 0;
-    const ADDRESS_CAMERA = Object.freeze({distance: 4.2, height: 1.35, lookAhead: 15, lookHeight: 0.9});
-    const gameplayView = {yaw:0,pitch:0};
+    const ADDRESS_CAMERA = Object.freeze({distance: 5.2, height: 2.25, side: -1.55, lookAhead: 10, lookHeight: 0.35});
+    const gameplayView = {yaw:0,pitch:0,zoom:1};
     const ballMarker = new THREE.Mesh(
       new THREE.RingGeometry(0.055, 0.07, 32).rotateX(-Math.PI / 2),
       new THREE.MeshBasicMaterial({color: 0xffffff, side: THREE.DoubleSide, transparent: true, opacity: 0.65})
@@ -1732,7 +1732,7 @@ group.name = name;
         proGolferContainer.scale.set(1, 1, 1);
       }
       
-      const club = GOLF_BAG[currentClubIndex] || {};
+      const club = window.CaddieSystem?.heldClub || GOLF_BAG[currentClubIndex] || {};
       if (proGolferAnimator) {
         proGolferContainer.position.set(0,0,0);proGolferContainer.rotation.set(0,0,0);
         golferGroup.updateMatrixWorld(true);
@@ -1763,6 +1763,7 @@ group.name = name;
     }
 
     function triggerGolferSwing(specs, onImpactCallback) {
+      if(window.CaddieSystem&&!window.CaddieSystem.onShot())return false;
       window.GreenReader?.close();
       window.WindSystem?.captureShot();
       // Determine active swing profile based on specs or selected mode
@@ -1888,12 +1889,13 @@ group.name = name;
       }
       else if (golferSwingPhase === 'fade') {
         golferSwingProgress += dt * 1.8;
-        if (golferSwingProgress >= 1.0) {
+        if (golferSwingProgress >= 1.0 && !window.CaddieSystem?.initialized) {
           golferGroup.visible = false;
         }
       }
       if (proGolferAnimator) {
-        const mode = golferSwingPhase === 'idle' ? ((GOLF_BAG[currentClubIndex]||{}).isPutter ? 'putt' : currentSwingMode) : activeSwingStyle;
+        if(window.CaddieSystem?.heldClub)proGolferAnimator.setClub(window.CaddieSystem.heldClub);
+        const mode = golferSwingPhase === 'idle' ? ((window.CaddieSystem?.heldClub||GOLF_BAG[currentClubIndex]||{}).isPutter ? 'putt' : currentSwingMode) : activeSwingStyle;
         proGolferAnimator.pose(mode,golferSwingPhase,golferSwingProgress);
       }
     }
@@ -2185,6 +2187,7 @@ group.name = name;
           <span class="selection-tick" aria-hidden="true">✓</span>
         `;
         btn.addEventListener('click', () => {
+          if(window.CaddieSystem&&!window.CaddieSystem.request(idx))return;
           currentClubIndex = idx;
           updateSelectedClubUI();
           if (window.PuttUI) window.PuttUI.closePanel();
@@ -2228,7 +2231,7 @@ group.name = name;
       });
 
       updateAimTracer();
-      if (!isBallFlying && golferSwingPhase === 'idle') positionGolferAtBall();
+      if (!isBallFlying && golferSwingPhase === 'idle' && !(window.CaddieSystem?.busy&&window.CaddieSystem.heldClub)) positionGolferAtBall();
       drawMinimap();
       if (window.PuttUI) window.PuttUI.sync();
     }
@@ -2266,7 +2269,7 @@ group.name = name;
     });
 
     function canAdjustAim() {
-      return !isBallFlying && golferSwingPhase === 'idle' && !(typeof courseRelief!=='undefined'&&courseRelief);
+      return !isBallFlying && golferSwingPhase === 'idle' && !(typeof courseRelief!=='undefined'&&courseRelief) && !window.CaddieSystem?.busy;
     }
 
     function resetAimToPin() {
@@ -2318,12 +2321,25 @@ group.name = name;
       cameraSafetyDiagnostics.lastLift=lift;camera.updateMatrixWorld();return lift;
     }
 
+    // Playable-course bounds, not an invented fixed three-metre camera limit.
+    function getCourseOverviewBounds() {
+      if(isPuttClub()) {
+        const b=window.PuttClubCourse.data.bounds;
+        return {min:new THREE.Vector3().fromArray(b.playableCourseMin),max:new THREE.Vector3().fromArray(b.playableCourseMax)};
+      }
+      const points=[...Object.values(teeBoxes3D),...Object.values(holePins3D)].filter(p=>p?.isVector3);
+      const b=new THREE.Box3().setFromPoints(points);b.expandByScalar(80);return {min:b.min,max:b.max};
+    }
+    function showWholeCourse() {
+      gameplayView.yaw=0;gameplayView.pitch=0;setGameplayZoom(.001);setAddressCamera(true);
+    }
     function setAddressCamera(immediate = false) {
       const c = ADDRESS_CAMERA;
       // A narrower portrait frustum needs more distance, not a rescaled athlete.
       // The same framing rule is used for the first and every subsequent shot.
       const portraitFit = Math.max(1, 0.8 / camera.aspect);
-      targetCameraPos.set(ballPos.x - aimDirection.x * c.distance * portraitFit, ballPos.y + c.height * portraitFit, ballPos.z - aimDirection.z * c.distance * portraitFit);
+      const side=new THREE.Vector3(aimDirection.z,0,-aimDirection.x);
+      targetCameraPos.copy(ballPos).addScaledVector(aimDirection,-c.distance*portraitFit).addScaledVector(side,c.side*portraitFit);targetCameraPos.y+=c.height*portraitFit;
       targetOrbitTarget.set(ballPos.x + aimDirection.x * c.lookAhead, ballPos.y + c.lookHeight, ballPos.z + aimDirection.z * c.lookAhead);
       if (gameplayView.yaw || gameplayView.pitch) {
         const focus=new THREE.Vector3(ballPos.x,ballPos.y+.60,ballPos.z),offset=targetCameraPos.clone().sub(focus);
@@ -2333,6 +2349,12 @@ group.name = name;
         const scale=Math.cos(elevation)*radius/Math.max(.0001,horizontal);
         offset.x*=scale;offset.z*=scale;offset.y=Math.sin(elevation)*radius;
         targetCameraPos.copy(focus).add(offset);targetOrbitTarget.copy(focus);
+      }
+      if(gameplayView.zoom<.5) {
+        const t=THREE.MathUtils.smoothstep(Math.log(.5/gameplayView.zoom),0,Math.log(500)),b=getCourseOverviewBounds(),center=b.min.clone().add(b.max).multiplyScalar(.5);
+        const focus=ballPos.clone().lerp(center,t),offset=targetCameraPos.clone().sub(ballPos),radius=offset.length()*.5/gameplayView.zoom;
+        const yaw=Math.atan2(offset.x,offset.z),elevation=THREE.MathUtils.lerp(Math.atan2(offset.y,Math.hypot(offset.x,offset.z)),Math.PI/2-.025,t);
+        targetCameraPos.copy(focus).add(new THREE.Vector3(Math.sin(yaw)*Math.cos(elevation)*radius,Math.sin(elevation)*radius,Math.cos(yaw)*Math.cos(elevation)*radius));targetOrbitTarget.copy(focus);
       }
       const lift=constrainCameraToTerrain(targetCameraPos);
       if(lift>.01)targetOrbitTarget.lerp(new THREE.Vector3(ballPos.x,ballPos.y+.55,ballPos.z),Math.min(1,lift/1.5));
@@ -2499,12 +2521,14 @@ group.name = name;
     }
     function setGameplayZoom(value) {
       if (!Number.isFinite(value)) return false;
-      camera.zoom = THREE.MathUtils.clamp(value, 0.5, 3);
+      gameplayView.zoom=THREE.MathUtils.clamp(value,.001,3);
+      camera.zoom = Math.max(.5,gameplayView.zoom);
       camera.updateProjectionMatrix();
       const control=document.getElementById('camera-zoom-slider');
       const readout=document.getElementById('camera-zoom-value');
-      if (control) {control.value=String(camera.zoom);control.setAttribute('aria-valuetext',camera.zoom.toFixed(2)+' times');}
-      if (readout) readout.textContent=camera.zoom.toFixed(2)+'×';
+      if (control) {control.value=String(Math.log2(gameplayView.zoom));control.setAttribute('aria-valuetext',gameplayView.zoom.toFixed(3)+' times');}
+      if (readout) readout.textContent=gameplayView.zoom<.05?'نمای هوایی':gameplayView.zoom.toFixed(2)+'×';
+      if(canAdjustAim()&&!window.GreenReader?.enabled)setAddressCamera(true);
       if (isBallFlying) updateToptracerYardageTag(ballPos);
       return true;
     }
@@ -2534,7 +2558,7 @@ group.name = name;
           // Retain the first finger's capture, but end its aim gesture. Never
           // resume aiming from a surviving finger after a pinch; require lift.
           lookAimPointer=null;gameplayHadPinch=true;
-          gameplayPinch={distance:Math.max(1,gameplayTouchDistance()),zoom:camera.zoom};
+          gameplayPinch={distance:Math.max(1,gameplayTouchDistance()),zoom:gameplayView.zoom};
           event.preventDefault();return;
         }
         if (gameplayHadPinch) {event.preventDefault();return;}
@@ -2600,14 +2624,14 @@ group.name = name;
       if(event.shiftKey&&!event.ctrlKey&&!x){x=y;y=0;}
       if(!event.ctrlKey&&Math.abs(x)>Math.abs(y)*1.5&&Math.abs(x)>2) {
         if(canAdjustAim())turnGameplayView(-x*.0035,0);
-      } else if(y) setGameplayZoom(camera.zoom*Math.exp(-y*(event.ctrlKey?.012:.0035)));
+      } else if(y) setGameplayZoom(gameplayView.zoom*Math.exp(-y*(event.ctrlKey?.012:.0035)));
       event.preventDefault();
     },{passive:false});
     aimCanvas.addEventListener('contextmenu',event=>{if(gameplayInputActive())event.preventDefault();});
     // Safari's cumulative GestureEvent scale is separate from ctrl-wheel pinch.
     aimCanvas.addEventListener('gesturestart',event=>{
       if(!gameplayInputActive())return;
-      nativeGameplayGesture={zoom:camera.zoom};event.preventDefault();
+      nativeGameplayGesture={zoom:gameplayView.zoom};event.preventDefault();
     },{passive:false});
     aimCanvas.addEventListener('gesturechange',event=>{
       if(!gameplayInputActive()||!nativeGameplayGesture)return;
@@ -2620,8 +2644,8 @@ group.name = name;
     aimCanvas.addEventListener('keydown',event=>{
       if(!gameplayInputActive()||event.ctrlKey||event.metaKey||event.altKey)return;
       let handled=true;
-      if(event.key==='+'||event.key==='=')setGameplayZoom(camera.zoom*1.1);
-      else if(event.key==='-'||event.key==='_')setGameplayZoom(camera.zoom/1.1);
+      if(event.key==='+'||event.key==='=')setGameplayZoom(gameplayView.zoom*1.1);
+      else if(event.key==='-'||event.key==='_')setGameplayZoom(gameplayView.zoom/1.1);
       else if(event.key.toLowerCase()==='r')resetGameplayView(true,true);
       else if(event.key==='ArrowUp')turnGameplayView(0,.04);
       else if(event.key==='ArrowDown')turnGameplayView(0,-.04);
@@ -2920,6 +2944,7 @@ group.name = name;
     }
 
     function handleBallCameToRest() {
+      if(window.CaddieSystem?.deferRest(handleBallCameToRest))return;
       hideToptracerYardageTag();
       aimLine.visible = false;
 
@@ -2947,6 +2972,7 @@ group.name = name;
     }
 
     function handleHoleCompleted() {
+      window.CaddieSystem?.finishInterruptedShot();
       hideToptracerYardageTag();
       holeScores[currentHoleNumber] = strokesCurrentHole;
       const holeData = courseHoles[currentHoleNumber] || {};
@@ -3049,6 +3075,7 @@ group.name = name;
       if(isPuttClub())resetPuttClubHole();
       updateHoleVisualIsolation(hNum);
       currentHoleNumber = hNum;
+      window.CaddieSystem?.reset();
       resetRadarTrack(false);
       strokesCurrentHole = 0;
       isBallFlying = false;
@@ -3204,6 +3231,8 @@ group.name = name;
         camera.position.y += (Math.random() - 0.5) * 0.08;
       }
 
+      window.CaddieSystem?.tick(dt);
+      window.GreenReader?.tick();
       const activeCamera=window.GreenReader?.enabled?window.GreenReader.camera:camera;
       if(!window.GreenReader?.enabled)enforceGameplayCameraSafety();
       updateRadarTracking(dt);

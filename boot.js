@@ -38,7 +38,7 @@
     const scope=new URL('./',location.href).href;
     let reg=await navigator.serviceWorker.getRegistration(scope);
     if(!reg||reg.scope!==scope||navigator.onLine) {
-      try {reg=await navigator.serviceWorker.register('./sw.js?v=elbow29-20261017',{scope:'./',updateViaCache:'none'});}
+      try {reg=await navigator.serviceWorker.register('./sw.js?v=caddie30-20261017',{scope:'./',updateViaCache:'none'});}
       catch(error){if(!reg||reg.scope!==scope)throw error;console.info('Worker check unavailable:',error.message);}
     }
     const pending=reg.installing||reg.waiting;
@@ -96,6 +96,7 @@
         document.body.appendChild(script);
       });
       if(source.dataset.runtimeSrc.includes('course-runtime.js'))await window.PuttCourseReady;
+      if(source.dataset.runtimeSrc.includes('caddie-system.js'))await window.CaddieReady;
     }
     if(!window.PuttUI)throw Error('Game interface did not initialize');
   }

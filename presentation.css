@@ -111,3 +111,8 @@ body[data-green-read="true"] #green-read-legend{bottom:calc(12px + var(--safe-bo
 @media(max-width:360px){#top-left-hud-column{width:146px}#wind-advice{width:132px}}
 @media(max-height:460px) and (min-width:601px){#green-read-toolbar{left:12px;transform:none;width:240px}body[data-green-read="true"] #green-read-legend{right:12px;transform:none;width:250px;bottom:12px;max-height:65vh}}
 @media(prefers-reduced-transparency:reduce){#green-read-toolbar,#wind-advice,#btn-read-course{background:#14271e;backdrop-filter:none;-webkit-backdrop-filter:none}}
+/* Camera30: one READ layer, real-world origin label; all movement is user driven. */
+#green-read-toolbar>div{grid-column:1/-1}#green-read-toolbar>small{grid-column:1/-1}
+#read-origin-tag[hidden]{display:none}#read-origin-tag{position:fixed;z-index:27;transform:translate(-50%,-50%);display:flex;align-items:center;gap:5px;max-width:160px;padding:5px 8px;border:1px solid #d6bd8199;border-radius:8px;background:#183528df;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);font:10px/1.7 Vazirmatn,Inter,sans-serif;color:#fff3d2;pointer-events:none}
+#read-origin-arrow{display:inline-block;font-size:19px;line-height:1}#green-read-orientation{font-size:10px;line-height:1.8;color:#efdab0}
+@media(max-height:460px) and (min-width:601px){#green-read-toolbar{width:216px;padding:7px 9px;gap:4px 6px}#green-read-toolbar strong{font-size:10px}#green-read-toolbar button{font-size:10px;padding:4px 6px}#green-read-toolbar small{font-size:8px}}

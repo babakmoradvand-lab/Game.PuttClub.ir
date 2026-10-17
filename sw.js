@@ -1,5 +1,5 @@
 /* PuttClub atomic offline runtime. Only this game's scope is managed. */
-const WORKER_RELEASE = 'elbow29-20261017';
+const WORKER_RELEASE = 'caddie30-20261017';
 const SCOPE = self.registration.scope;
 const CACHE_PREFIX = 'puttclub-runtime:' + new URL(SCOPE).pathname + ':';
 const META_CACHE = 'puttclub-meta:' + new URL(SCOPE).pathname;
