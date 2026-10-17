@@ -604,11 +604,13 @@
     if(isPuttClub())restorePuttClubState(data.courseState);
     toast("Updated build loaded · round restored. An unfinished shot restarts from its pre-strike position.");
   }
-  listen("btn-map-detail",()=>{
+  listen("minimap-container",event=>{
+    // The frame is the control; wind disclosure remains independently usable.
+    if(event.target.closest("#wind-advice"))return;
     const expanded=document.body.dataset.mapExpanded!=="true";
     document.body.dataset.mapExpanded=String(expanded);
-    $("btn-map-detail").setAttribute("aria-expanded",String(expanded));
-    $("btn-map-detail").setAttribute("aria-label",expanded?"Collapse hole map":"Expand hole map");
+    $("minimap-toggle").setAttribute("aria-expanded",String(expanded));
+    $("minimap-toggle").setAttribute("aria-label",expanded?"Collapse hole map":"Expand hole map");
   });
   listen("btn-toggle-estimates",()=>{
     const expanded=document.body.dataset.estimates!=="true";

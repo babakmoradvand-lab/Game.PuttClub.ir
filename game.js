@@ -1336,7 +1336,7 @@ group.name = name;
     // One horizontal direction drives the shot, athlete, guide and minimap.
     const aimDirection = new THREE.Vector3(0, 0, 1);
     let aimBaseYaw = 0;
-    const ADDRESS_CAMERA = Object.freeze({distance: 5.2, height: 2.25, side: -1.55, lookAhead: 10, lookHeight: 0.35});
+    const ADDRESS_CAMERA = Object.freeze({distance: 6.5, height: 3.0, side: 0, lookAhead: 7, lookHeight: 0.35});
     const gameplayView = {yaw:0,pitch:0,zoom:1};
     const ballMarker = new THREE.Mesh(
       new THREE.RingGeometry(0.055, 0.07, 32).rotateX(-Math.PI / 2),
@@ -1686,7 +1686,7 @@ group.name = name;
     const clubHeadMesh = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.055, 0.075).translate(0, -0.93, 0.02), matClubTitanium);
     clubRig.add(clubGripMesh); clubRig.add(clubShaftMesh); clubRig.add(clubHeadMesh);
 
-    function positionGolferAtBall() {
+    function positionGolferAtBall(preserveFreePose = false) {
       if (!ballPos) return;
       const dirToPin = aimDirection.clone();
 
@@ -1715,6 +1715,7 @@ group.name = name;
       // Asset front is local +Z (verified from cap visor / club-head nodes).
       // The body must face the BALL, not the target or the stance offset.
       // With this yaw, local +Z equals -sideVec and local +X is the lead side.
+      if (preserveFreePose) return; // Aim may move the stance, but must not snap the study pose back to address.
       golferGroup.rotation.y = angle - Math.PI / 2; // Native +X is the left/lead side, along the pin.
       
       // Reset address posture
@@ -2065,9 +2066,7 @@ group.name = name;
       Object.assign(radarMapDiagnostics,{draws:radarMapDiagnostics.draws+1,moving:isBallFlying,points:track?.points.length||0,ball:[ballPos.x,ballPos.z],marker:[bM.mx,bM.my]});
     }
 
-    document.getElementById('minimap-container').addEventListener('click', () => {
-      if (canAdjustAim()) resetGameplayView(false);
-    });
+    // Radar expansion belongs to its frame (ui.js); never reset aim or view here.
 
     // Carry & Roll TrackMan Calculator
     window.recalibrateBagForHandicap = recalibrateBagForHandicap;
@@ -2205,6 +2204,9 @@ group.name = name;
         `;
         btn.addEventListener('click', () => {
           if(window.CaddieSystem&&!window.CaddieSystem.request(idx))return;
+          // Clear the previous shot only after an accepted, explicit selection.
+          resetToptracer();
+          resetRadarTrack();
           currentClubIndex = idx;
           updateSelectedClubUI();
           if (window.PuttUI) window.PuttUI.closePanel();
@@ -2301,7 +2303,7 @@ group.name = name;
       if (!canAdjustAim() || window.GreenReader?.enabled || !Number.isFinite(degrees)) return false;
       const yaw = aimBaseYaw + THREE.MathUtils.degToRad(degrees);
       aimDirection.set(Math.sin(yaw), 0, Math.cos(yaw));
-      positionGolferAtBall();
+      positionGolferAtBall(!!window.CaddieSystem?.controlsPose);
       updateAimTracer();
       drawMinimap();
       setAddressCamera(immediateCamera);
@@ -2356,7 +2358,8 @@ group.name = name;
       // The same framing rule is used for the first and every subsequent shot.
       const portraitFit = Math.max(1, 0.8 / camera.aspect);
       const side=new THREE.Vector3(aimDirection.z,0,-aimDirection.x);
-      targetCameraPos.copy(ballPos).addScaledVector(aimDirection,-c.distance*portraitFit).addScaledVector(side,c.side*portraitFit);targetCameraPos.y+=c.height*portraitFit;
+      const landscapeDistance=camera.aspect>1.35?1.35:1;
+      targetCameraPos.copy(ballPos).addScaledVector(aimDirection,-c.distance*portraitFit*landscapeDistance).addScaledVector(side,c.side*portraitFit);targetCameraPos.y+=c.height*portraitFit;
       targetOrbitTarget.set(ballPos.x + aimDirection.x * c.lookAhead, ballPos.y + c.lookHeight, ballPos.z + aimDirection.z * c.lookAhead);
       if (gameplayView.yaw || gameplayView.pitch) {
         const focus=new THREE.Vector3(ballPos.x,ballPos.y+.60,ballPos.z),offset=targetCameraPos.clone().sub(focus);
@@ -2375,6 +2378,24 @@ group.name = name;
       }
       const lift=constrainCameraToTerrain(targetCameraPos);
       if(lift>.01)targetOrbitTarget.lerp(new THREE.Vector3(ballPos.x,ballPos.y+.55,ballPos.z),Math.min(1,lift/1.5));
+      if (!gameplayView.yaw && !gameplayView.pitch && gameplayView.zoom >= .5) {
+        // Frame the actual ball inside the unoccluded play area, not under the
+        // lower dock. The camera is on the true aim axis; the athlete stays to
+        // its anatomical side, with the original club/lie/feet geometry intact.
+        const dock=document.getElementById('shot-controls-row').getBoundingClientRect();
+        const hud=document.getElementById('top-left-hud-column').getBoundingClientRect();
+        const map=document.getElementById('minimap-container').getBoundingClientRect();
+        const safeTop=Math.min(innerHeight*.36,Math.max(hud.bottom,map.bottom)+12);
+        const safeBottom=dock.height?Math.min(innerHeight-24,dock.top-16):innerHeight-150;
+        const desiredY=safeTop+Math.max(32,safeBottom-safeTop)*.76;
+        const distance=Math.hypot(targetCameraPos.x-ballPos.x,targetCameraPos.z-ballPos.z);
+        const height=targetCameraPos.y-ballPos.y;
+        const projectionOffset=camera.view?.enabled?camera.view.offsetY*innerHeight/camera.view.height:0;
+        const below=Math.atan(((desiredY+projectionOffset)/innerHeight*2-1)*Math.tan(THREE.MathUtils.degToRad(camera.fov/2))/camera.zoom);
+        const down=Math.max(.025,Math.atan2(height,distance)-below);
+        const ahead=THREE.MathUtils.clamp((height-c.lookHeight)/Math.tan(down)-distance,-distance*.5,40);
+        targetOrbitTarget.set(ballPos.x+aimDirection.x*ahead,ballPos.y+c.lookHeight,ballPos.z+aimDirection.z*ahead);
+      }
       if (immediate) {
         isCameraTransitioning = false;
         camera.position.copy(targetCameraPos);
@@ -2614,7 +2635,8 @@ group.name = name;
       else {
         if(dx) {
           const current = THREE.MathUtils.radToDeg(Math.atan2(aimDirection.x,aimDirection.z)-aimBaseYaw);
-          const degreesPerPixel = 180 / Math.max(360,window.innerWidth);
+          // Fine touch aim; keep the approved desktop mouse response unchanged.
+          const degreesPerPixel = event.pointerType === 'touch' ? .12 / Math.max(1,gameplayView.zoom) : 180 / Math.max(360,window.innerWidth);
           setAimAngle(current-dx*degreesPerPixel,true);
         }
         if(dy&&event.pointerType!=='touch')turnGameplayView(0,-dy*.004);

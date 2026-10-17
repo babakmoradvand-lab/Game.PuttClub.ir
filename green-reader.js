@@ -1,7 +1,7 @@
 /* Green Atelier inspection: independent camera, real surface gradients, no aim/physics edits. */
 (() => {
 'use strict';
-const T=THREE,button=document.getElementById('btn-read-green'),courseButton=document.getElementById('btn-read-course'),legend=document.getElementById('green-read-legend'),toolbar=document.getElementById('green-read-toolbar'),back=document.getElementById('btn-read-return');
+const T=THREE,button=document.getElementById('btn-read-green'),courseButton=document.getElementById('btn-read-course'),legend=document.getElementById('green-read-legend'),toolbar=document.getElementById('green-read-toolbar'),back=document.getElementById('btn-read-return'),help=document.getElementById('read-help-dialog'),helpButton=document.getElementById('btn-read-help');
 const group=new T.Group();group.name='GreenAtelier';group.visible=false;scene.add(group);
 const ink=new T.LineBasicMaterial({color:0xf1edda,transparent:true,opacity:.38,depthWrite:false});
 const gold=new T.LineBasicMaterial({color:0xddc594,transparent:true,opacity:.72,depthWrite:false});
@@ -19,15 +19,38 @@ function nearPlayer(){const c=context();if(!c)return false;const[x0,z0,x1,z1]=c.
 function originGeometry(){const c=context();if(!c)return;actualBall.position.copy(ballPos);actualBall.position.y+=.04;const end=selected||{x:(c.b[0]+c.b[2])/2,z:(c.b[1]+c.b[3])/2},d=new T.Vector2(end.x-ballPos.x,end.z-ballPos.z),length=d.length();d.normalize();const start={x:end.x-d.x*Math.min(12,length),z:end.z-d.y*Math.min(12,length)},arr=[];
  const add=(a,b)=>{for(const q of [a,b])arr.push(q.x,getTerrainHeight(q.x,q.z)+c.offset+.04,q.z);};for(let i=0;i<20;i+=2)add({x:T.MathUtils.lerp(start.x,end.x,i/20),z:T.MathUtils.lerp(start.z,end.z,i/20)},{x:T.MathUtils.lerp(start.x,end.x,(i+1)/20),z:T.MathUtils.lerp(start.z,end.z,(i+1)/20)});for(const sign of [-1,1])add(end,{x:end.x-d.x*.75+d.y*.4*sign,z:end.z-d.y*.75-d.x*.4*sign});incoming.geometry.dispose();incoming.geometry=new T.BufferGeometry();incoming.geometry.setAttribute('position',new T.Float32BufferAttribute(arr,3));
 }
-function tick(){if(!enabled)return;const f=diagnostics.safeFrame;if(!f)return;const q=ballPos.clone().add(new T.Vector3(0,.12,0)),p=q.clone().project(readCamera),px=(p.x+1)*innerWidth/2,py=(1-p.y)*innerHeight/2,left=f.left+76,right=innerWidth-f.right-76,top=f.top+24,bottom=innerHeight-f.bottom-24,inside=p.z>-1&&p.z<1&&px>=f.left&&px<=innerWidth-f.right&&py>=f.top&&py<=innerHeight-f.bottom;
- let x=T.MathUtils.clamp(px,left,right),y=T.MathUtils.clamp(py,top,bottom);const dx=px-innerWidth/2,dy=py-innerHeight/2;originArrow.style.transform=`rotate(${Math.atan2(dy,dx)*180/Math.PI+90}deg)`;originArrow.hidden=inside;originTag.style.left=x+'px';originTag.style.top=y+'px';originTag.dataset.offscreen=String(!inside);const d=Math.hypot(ballPos.x-context().pin.x,ballPos.z-context().pin.z)/.9144,text=(inside?'توپ و بازیکن':'توپ و بازیکن، بیرون کادر')+' · '+fmt(d)+' یارد تا حفره';if(originCopy.textContent!==text)originCopy.textContent=text;diagnostics.origin={world:ballPos.toArray(),screen:[px,py],label:[x,y],offscreen:!inside,distanceYards:d};
+function tick(){
+ if(!enabled)return;const f=diagnostics.safeFrame,c=context();if(!f||!c)return;
+ const project=v=>{const p=v.clone().project(readCamera);return{x:(p.x+1)*innerWidth/2,y:(1-p.y)*innerHeight/2,z:p.z};};
+ const p=project(ballPos.clone().add(new T.Vector3(0,.12,0))),px=p.x,py=p.y;
+ const inside=p.z>-1&&p.z<1&&px>=f.left&&px<=innerWidth-f.right&&py>=f.top&&py<=innerHeight-f.bottom;
+ const d=Math.hypot(ballPos.x-c.pin.x,ballPos.z-c.pin.z)/.9144,text=(inside?'توپ و بازیکن':'توپ و بازیکن، بیرون کادر')+' · '+fmt(d)+' یارد تا حفره';
+ if(originCopy.textContent!==text)originCopy.textContent=text;
+ const width=originTag.offsetWidth||160,height=originTag.offsetHeight||32;
+ const left=f.left+width/2+6,right=innerWidth-f.right-width/2-6,top=f.top+height/2+6,bottom=innerHeight-f.bottom-height/2-6;
+ let actor=null;const a=proGolferAnimator;
+ if(golferGroup.visible&&a){
+  golferGroup.updateMatrixWorld(true);const pts=[];
+  for(const name of ['Hips','Head','UpperArm.L','UpperArm.R','Hand.L','Hand.R','Foot.L','Foot.R']){const bone=a.bones[name];if(!bone)continue;const q=bone.getWorldPosition(new T.Vector3());for(const dx of [-.22,.22])for(const dz of [-.22,.22])for(const dy of [-.12,.15]){const v=project(q.clone().add(new T.Vector3(dx,dy,dz)));if(v.z>-1&&v.z<1)pts.push(v);}}
+  if(pts.length)actor={left:Math.min(...pts.map(p=>p.x))-8,right:Math.max(...pts.map(p=>p.x))+8,top:Math.min(...pts.map(p=>p.y))-8,bottom:Math.max(...pts.map(p=>p.y))+8};
+ }
+ const cup=project(c.pin),exclusions=[{left:cup.x-14,right:cup.x+14,top:cup.y-14,bottom:cup.y+14}];if(actor)exclusions.push(actor);
+ if(selected){const t=project(marker.position);exclusions.push({left:t.x-12,right:t.x+12,top:t.y-12,bottom:t.y+12});}
+ const candidates=[[px+width/2+22,py-30],[px-width/2-22,py-30]];
+ if(actor)candidates.push([(actor.left+actor.right)/2,actor.top-height/2-12],[actor.right+width/2+12,(actor.top+actor.bottom)/2],[actor.left-width/2-12,(actor.top+actor.bottom)/2]);
+ candidates.push([left,bottom],[right,bottom],[right,top],[left,top]);
+ const choices=candidates.map(([x,y])=>{x=T.MathUtils.clamp(x,left,right);y=T.MathUtils.clamp(y,top,bottom);const rect={left:x-width/2,right:x+width/2,top:y-height/2,bottom:y+height/2};const overlap=exclusions.reduce((n,r)=>n+Math.max(0,Math.min(rect.right,r.right)-Math.max(rect.left,r.left))*Math.max(0,Math.min(rect.bottom,r.bottom)-Math.max(rect.top,r.top)),0);return{x,y,rect,overlap};});
+ const choice=choices.find(c=>!c.overlap)||choices.reduce((a,b)=>a.overlap<=b.overlap?a:b),{x,y}=choice;
+ originArrow.style.transform=`rotate(${Math.atan2(py-y,px-x)*180/Math.PI+90}deg)`;originArrow.hidden=inside;
+ originTag.style.left=x+'px';originTag.style.top=y+'px';originTag.dataset.offscreen=String(!inside);
+ diagnostics.origin={world:ballPos.toArray(),screen:[px,py],label:[x,y],labelBounds:choice.rect,actorBounds:actor,overlapPx2:choice.overlap,offscreen:!inside,distanceYards:d};
 }
 const fmt=(n,d=0)=>Number(n).toLocaleString('fa-IR',{maximumFractionDigits:d});
 function key(){return (window.activeCourseId||'mis')+':'+currentHoleNumber;}
 function allowed(){return canAdjustAim()&&document.body.dataset.view==='game'&&!document.querySelector('.game-panel:not([hidden])')&&!document.getElementById('game-ui').inert;}
 function capture(){return{position:camera.position.clone(),quaternion:camera.quaternion.clone(),up:camera.up.clone(),zoom:camera.zoom,fov:camera.fov,view:camera.view?{...camera.view}:null,width:innerWidth,height:innerHeight,target:orbitControls.target.clone(),targetPos:targetCameraPos.clone(),targetLook:targetOrbitTarget.clone(),follow:cameraFollowLook.clone(),transition:isCameraTransitioning,orbit:orbitControls.enabled,desktop:{...gameplayView},visible:[golferGroup,aimLine,ballMarker,landingRing,skyBeaconGroup].map(o=>[o,o.visible])};}
 function close(restore=true){
- if(!enabled)return;enabled=false;group.visible=false;origins.visible=false;originTag.hidden=true;marker.visible=false;legend.hidden=true;toolbar.hidden=true;button.setAttribute('aria-pressed','false');courseButton.setAttribute('aria-pressed','false');document.body.dataset.greenRead='false';
+ if(!enabled)return;if(help.open)help.close();enabled=false;group.visible=false;origins.visible=false;originTag.hidden=true;marker.visible=false;legend.hidden=true;toolbar.hidden=true;button.setAttribute('aria-pressed','false');courseButton.setAttribute('aria-pressed','false');document.body.dataset.greenRead='false';
  if(snapshot){for(const[o,v]of snapshot.visible)o.visible=v;if(restore){camera.position.copy(snapshot.position);camera.quaternion.copy(snapshot.quaternion);camera.up.copy(snapshot.up);camera.zoom=snapshot.zoom;camera.fov=snapshot.fov;if(innerWidth===snapshot.width&&innerHeight===snapshot.height)camera.view=snapshot.view?{...snapshot.view}:null;camera.updateProjectionMatrix();camera.updateMatrixWorld(true);orbitControls.target.copy(snapshot.target);targetCameraPos.copy(snapshot.targetPos);targetOrbitTarget.copy(snapshot.targetLook);cameraFollowLook.copy(snapshot.follow);isCameraTransitioning=snapshot.transition;orbitControls.enabled=snapshot.orbit;Object.assign(gameplayView,snapshot.desktop);}}
  if(restore&&snapshot&&!snapshot.transition&&canAdjustAim())updateAimTracer();snapshot=null;touches.clear();diagnostics.mode='shot';if(restore&&returnFocus?.isConnected&&!returnFocus.closest('[hidden]'))returnFocus.focus({preventScroll:true});
 }
@@ -80,7 +103,7 @@ function build(){
 }
 function fit(reset=false){if(!enabled)return;const c=context();if(!c)return;
  if(reset){Object.assign(view,{mode:'green',yaw:Math.atan2(ballPos.x-(c.b[0]+c.b[2])/2,ballPos.z-(c.b[1]+c.b[3])/2),pitch:1.30,zoom:1,panX:0,panZ:0});}
- const w=innerWidth,h=innerHeight,landscape=h<460&&w>600,top=landscape?12:Math.max(76,toolbar.getBoundingClientRect().bottom+10),bottom=landscape?12:Math.min(h*.40,legend.getBoundingClientRect().height+24),left=landscape?toolbar.getBoundingClientRect().width+24:16,right=landscape?legend.getBoundingClientRect().width+24:16;
+ const w=innerWidth,h=innerHeight,top=Math.max(68,toolbar.getBoundingClientRect().bottom+10),bottom=16,left=16,right=16; // Explanations are modal, never permanent reserved scene space.
  let b=c.b.slice(),lo=diagnostics.low||0,hi=diagnostics.high||0;const include=(x,z,pad=2)=>{b[0]=Math.min(b[0],x-pad);b[1]=Math.min(b[1],z-pad);b[2]=Math.max(b[2],x+pad);b[3]=Math.max(b[3],z+pad);};
  if(view.mode==='course'){const cb=getCourseOverviewBounds();b=[cb.min.x,cb.min.z,cb.max.x,cb.max.z];lo=cb.min.y;hi=cb.max.y;}
  else if(view.mode==='player'||nearPlayer()){include(ballPos.x,ballPos.z);include(golferGroup.position.x,golferGroup.position.z);lo=Math.min(lo,ballPos.y-1);hi=Math.max(hi,ballPos.y+2.1);}
@@ -106,9 +129,9 @@ function selectPoint(x,z){const c=context();if(!enabled||!c?.inside(x,z))return 
  document.getElementById('green-read-rise').textContent=Math.abs(rise)<1?'نقطهٔ بررسی تقریباً هم‌ارتفاع حفره است':`نقطهٔ بررسی ${fmt(Math.abs(rise))} سانتی‌متر ${rise>0?'بالاتر':'پایین‌تر'} از حفره`;
  document.getElementById('green-landing').textContent=`در جهت ورود از توپ: ${Math.abs(along)<.15?'تقریباً تخت':`${fmt(Math.abs(along),1)}٪ ${along>0?'سربالایی':'سرازیری'}`} · شیب جانبی: ${Math.abs(cross)<.15?'تقریباً تخت':`${fmt(Math.abs(cross),1)}٪، سرازیری به ${cross>0?'چپ':'راست'}`}`;
  document.getElementById('green-read-key').textContent=`فاصلهٔ خطوط تراز ${fmt(interval*100)} سانتی‌متر`;
- diagnostics.selection={x,z,height:h,abovePinCm:rise,alongGrade:along,crossGrade:cross,gradient:[gx,gz],profile:profile(x,z)};originGeometry();fit(false);return true;
+ helpButton.dataset.hasSelection='true';diagnostics.selection={x,z,height:h,abovePinCm:rise,alongGrade:along,crossGrade:cross,gradient:[gx,gz],profile:profile(x,z)};originGeometry();fit(false);return true;
 }
-function open(){if(enabled){close();return true;}if(!allowed())return false;if(cacheKey!==key()&&!build())return false;returnFocus=document.activeElement;snapshot=capture();clearGameplayGesture();enabled=true;group.visible=true;legend.hidden=false;toolbar.hidden=false;document.body.dataset.greenRead='true';button.setAttribute('aria-pressed','true');courseButton.setAttribute('aria-pressed','true');for(const[o]of snapshot.visible)if(o!==golferGroup)o.visible=false;golferGroup.visible=!!proGolferLoaded;origins.visible=true;originTag.hidden=false;selected=null;marker.visible=false;diagnostics.mode='green-read';
+function open(){if(enabled){close();return true;}if(!allowed())return false;if(cacheKey!==key()&&!build())return false;returnFocus=document.activeElement;snapshot=capture();clearGameplayGesture();enabled=true;group.visible=true;legend.hidden=false;toolbar.hidden=false;document.body.dataset.greenRead='true';button.setAttribute('aria-pressed','true');courseButton.setAttribute('aria-pressed','true');for(const[o]of snapshot.visible)if(o!==golferGroup)o.visible=false;golferGroup.visible=!!proGolferLoaded;origins.visible=true;originTag.hidden=false;selected=null;diagnostics.selection=null;delete helpButton.dataset.hasSelection;marker.visible=false;diagnostics.mode='green-read';
  document.getElementById('green-read-local').textContent='روی گرین بزنید تا محل فرود را بررسی کنید.';document.getElementById('green-read-rise').textContent='بررسی سطح، بدون تغییر کلاب، قدرت یا نشانه‌گیری';document.getElementById('green-read-key').textContent=`فاصلهٔ خطوط تراز ${fmt(interval*100)} سانتی‌متر`;document.getElementById('green-landing').textContent='';document.getElementById('green-profile').innerHTML='';document.getElementById('green-profile-label').textContent='';document.getElementById('green-read-orientation').textContent='پیکان طلایی: جهت ورود از توپ واقعی. شیب چپ/راست نسبت به همین جهت محاسبه می‌شود، نه جهت صفحه.';originGeometry();fit(true);back.focus({preventScroll:true});return true;
 }
 function sync(){const next=key();if(next!==stateKey)close(false);stateKey=next;}
@@ -122,6 +145,11 @@ for(const n of ['pointerup','pointercancel','lostpointercapture'])canvas.addEven
 canvas.addEventListener('wheel',e=>{if(!enabled||gesture)return;const unit=e.deltaMode===1?16:e.deltaMode===2?innerHeight:1;zoom(view.zoom*Math.exp(-T.MathUtils.clamp(e.deltaY*unit,-240,240)*.0035));e.preventDefault();},{passive:false});
 canvas.addEventListener('gesturestart',e=>{if(enabled){gesture={zoom:view.zoom};e.preventDefault();}},{passive:false});canvas.addEventListener('gesturechange',e=>{if(enabled&&gesture&&Number.isFinite(e.scale)){zoom(gesture.zoom*e.scale);e.preventDefault();}},{passive:false});canvas.addEventListener('gestureend',e=>{if(gesture){gesture=null;e.preventDefault();}},{passive:false});
 document.addEventListener('keydown',e=>{if(!enabled)return;if(e.key==='Escape'){close();e.preventDefault();return;}if(e.target!==canvas||e.ctrlKey||e.metaKey||e.altKey)return;let handled=true;if(e.key==='+'||e.key==='=')zoom(view.zoom*1.1);else if(e.key==='-')zoom(view.zoom/1.1);else if(e.key.toLowerCase()==='q')rotate(-.12);else if(e.key.toLowerCase()==='e')rotate(.12);else if(e.key.toLowerCase()==='w')rotate(0,.08);else if(e.key.toLowerCase()==='s')rotate(0,-.08);else if(e.key.toLowerCase()==='r')fit(true);else if(e.key.startsWith('Arrow')){const c=context(),p=selected||{x:c.pin.x,z:c.pin.z},step=Math.max(.15,Math.min(c.b[2]-c.b[0],c.b[3]-c.b[1])/30);selectPoint(p.x+(e.key==='ArrowRight'?step:e.key==='ArrowLeft'?-step:0),p.z+(e.key==='ArrowDown'?step:e.key==='ArrowUp'?-step:0));}else handled=false;if(handled)e.preventDefault();});
+helpButton.addEventListener('click',()=>{if(!enabled)return;if(help.open)help.close();else{help.showModal();helpButton.setAttribute('aria-expanded','true');}});
+document.getElementById('btn-read-help-close').addEventListener('click',()=>help.close());
+help.addEventListener('close',()=>helpButton.setAttribute('aria-expanded','false'));
+help.addEventListener('keydown',e=>{if(e.key==='Escape')e.stopPropagation();if(e.key==='Tab'){e.preventDefault();document.getElementById('btn-read-help-close').focus();}});
+help.addEventListener('click',e=>{if(e.target!==help)return;const r=help.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)help.close();});
 button.addEventListener('click',open);courseButton.addEventListener('click',open);back.addEventListener('click',()=>close());document.getElementById('btn-read-fit').addEventListener('click',()=>fit(true));document.getElementById('btn-read-whole').addEventListener('click',()=>mode('course'));document.getElementById('btn-read-player').addEventListener('click',()=>mode('player'));canvas.addEventListener('contextmenu',e=>{if(enabled)e.preventDefault();});
 window.GreenReader={open,close,sync,tick,rotate,zoom,mode,resize:()=>fit(false),selectPoint,diagnostics,get enabled(){return enabled;},get camera(){return readCamera;},group};sync();
 })();
