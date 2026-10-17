@@ -294,7 +294,7 @@
   }
   function updateShotState(force = false) {
     const equipment=window.CaddieSystem;
-    const shotBusy = isBallFlying || golferSwingPhase !== "idle" || starting || !!courseRelief;
+    const shotBusy = isBallFlying || golferSwingPhase !== "idle" || starting || !!courseRelief || !!window.GolferLocomotion?.blocksAim;
     const busy = shotBusy || !!equipment?.busy;
     const equipmentKey=(equipment?.phase||"none")+":"+(equipment?.canStrike||false);
     if (force || lastBusy !== busy || updateShotState.equipmentKey!==equipmentKey) {

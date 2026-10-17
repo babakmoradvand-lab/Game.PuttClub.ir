@@ -56,7 +56,7 @@ function plan(goal){
  diagnostics.pathFailures++;event('no-safe-path');path=[];return false;
 }
 function move(goal,dt){navRetry=Math.max(0,navRetry-dt);const gap=Math.hypot(actor.position.x-goal.x,actor.position.z-goal.z);if(!pathGoal||pathGoal.distanceTo(goal)>.30||(!path.length&&gap>=.008&&navRetry===0)){navRetry=plan(goal)?0:.75;}let remaining=dt*MOVE_SPEED;walking=false;
- while(path.length&&remaining>0){const q=path[0],d=V(q.x-actor.position.x,0,q.z-actor.position.z),len=d.length();if(len<.005){actor.position.x=q.x;actor.position.z=q.z;path.shift();continue;}const n=Math.min(len,remaining);actor.position.addScaledVector(d,n/len);remaining-=n;walking=true;const target=Math.atan2(d.x,d.z),delta=Math.atan2(Math.sin(target-actor.rotation.y),Math.cos(target-actor.rotation.y));actor.rotation.y+=delta*Math.min(1,dt*10);if(n>=len-.001)path.shift();}
+ while(path.length&&remaining>0){const q=path[0],d=V(q.x-actor.position.x,0,q.z-actor.position.z),len=d.length();if(len<.005){actor.position.x=q.x;actor.position.z=q.z;path.shift();continue;}const n=Math.min(len,remaining),candidate=actor.position.clone().addScaledVector(d,n/len);if(Math.hypot(candidate.x-golferGroup.position.x,candidate.z-golferGroup.position.z)<BODY_CLEARANCE){path=[];pathGoal=null;navRetry=0;break;}actor.position.addScaledVector(d,n/len);remaining-=n;walking=true;const target=Math.atan2(d.x,d.z),delta=Math.atan2(Math.sin(target-actor.rotation.y),Math.cos(target-actor.rotation.y));actor.rotation.y+=delta*Math.min(1,dt*10);if(n>=len-.001)path.shift();}
  actor.position.y=getTerrainHeight(actor.position.x,actor.position.z);return Math.hypot(actor.position.x-goal.x,actor.position.z-goal.z)<.008;
 }
 function lookAtAthlete(dt){const p=golferGroup.position.clone().add(V(0,1.3,0)),yaw=Math.atan2(p.x-actor.position.x,p.z-actor.position.z),d=Math.atan2(Math.sin(yaw-actor.rotation.y),Math.cos(yaw-actor.rotation.y));actor.rotation.y+=d*Math.min(1,dt*12);}
@@ -113,7 +113,7 @@ function relaxArms(a){
 }
 function exchangePose(a){
  const sm=a.bones['UpperArm.L'].getWorldPosition(V()),sc=bones.Bip01_R_UpperArm.getWorldPosition(V()),dir=actor.position.clone().sub(golferGroup.position).setY(0).normalize(),q=golferGroup.getWorldQuaternion(new T.Quaternion()).multiply(new T.Quaternion().setFromAxisAngle(V(1,0,0),Math.PI-.09)),axis=Y.clone().applyQuaternion(q);
- const handQ=new T.Quaternion().setFromAxisAngle(Y,65*Math.PI/180).multiply(new T.Quaternion().setFromAxisAngle(V(0,0,1),-68*Math.PI/180));
+ const handQ=GolfAthlete.handFrame('L');
  const om=V(0,.025,0).sub(V(.010,.090,.026).applyQuaternion(handQ)).applyQuaternion(q),oc=axis.clone().multiplyScalar(state.held!==null?.16:.14),cm=sm.clone().sub(om),cc=sc.clone().sub(oc),rm=a.restLengths.armL.reduce((x,y)=>x+y,0)-.012;
  const rc=bones.Bip01_R_UpperArm.getWorldPosition(V()).distanceTo(bones.Bip01_R_Forearm.getWorldPosition(V()))+bones.Bip01_R_Forearm.getWorldPosition(V()).distanceTo(bones.Bip01_R_Hand.getWorldPosition(V()))-.012;
  const near=sm.clone().addScaledVector(dir,.30),mid=cm.clone().lerp(cc,rm/(rm+rc)),p=near.lerp(mid,smooth((1.42-distance())/.35));
@@ -139,6 +139,7 @@ function studying(a,t){
  maleHand(a,'R',at,hq,false);diagnostics.studyWristError=a.bones['Hand.R'].getWorldPosition(V()).distanceTo(target);
 }
 function controlsPose(){
+ if(window.GolferLocomotion?.busy)return true;
  if(!state.initialized)return false;
  if(golferSwingPhase==='backswing'||golferSwingPhase==='downswing'||golferSwingPhase==='followthrough')return false;
  if(golferSwingPhase==='fade'&&golferFinishHold>0)return false;
@@ -149,6 +150,7 @@ function desiredAddressPosition(){
  p.y=strokesCurrentHole===0?getTerrainHeight(ballPos.x,ballPos.z)+(isPuttClub()?0:.15):getTerrainHeight(p.x,p.z);return p;
 }
 function poseGolfer(dt){
+ if(window.GolferLocomotion?.busy)return;
  const a=proGolferAnimator;if(!state.initialized||!a)return;
  if(golferSwingPhase==='followthrough'||golferSwingPhase==='fade'&&golferFinishHold>0){lookHuman(a,ballPos);diagnostics.pose='watch-finish';return;}
  if(!controlsPose())return;
@@ -196,8 +198,9 @@ function initialize(){
 }
 function reset(){if(!state.initialized)return;for(let i=0;i<clubs.length;i++)putInBag(i);Object.assign(state,{held:null,active:null,pending:null,purpose:null,struck:false,lowerTime:0,holeDone:false});finishPose=null;offerStart=null;addressStart=null;offerTime=0;studyBlend=0;maleLean=0;releaseStart=null;releaseTime=0;restCallback=null;path=[];pathGoal=null;poseRelease=1;holeKey=(window.activeCourseId||'mis')+':'+currentHoleNumber;lastBall.copy(ballPos);actor.position.copy(safePlace());actor.rotation.y=Math.atan2(golferGroup.position.x-actor.position.x,golferGroup.position.z-actor.position.z);phase('empty');syncClubs();}
 
-function atBall(){if(!state.initialized)return;const key=(window.activeCourseId||'mis')+':'+currentHoleNumber;if(key!==holeKey){reset();return;}if(lastBall.distanceTo(ballPos)>.4&&!isBallFlying&&golferSwingPhase==='idle'){lastBall.copy(ballPos);actor.position.copy(safePlace());path=[];pathGoal=null;if(state.phase==='retire-empty')phase('empty');}}
+function atBall(){if(!state.initialized)return;const key=(window.activeCourseId||'mis')+':'+currentHoleNumber;if(key!==holeKey){reset();return;}if(window.GolferLocomotion?.continuous){lastBall.copy(ballPos);return;}if(lastBall.distanceTo(ballPos)>.4&&!isBallFlying&&golferSwingPhase==='idle'){lastBall.copy(ballPos);actor.position.copy(safePlace());path=[];pathGoal=null;if(state.phase==='retire-empty')phase('empty');}}
 function request(index){
+ if(window.GolferLocomotion?.busy)return false;
  if(!state.initialized||busy()||isBallFlying||golferSwingPhase!=='idle'||!Number.isInteger(index)||index<0||index>=clubs.length)return false;
  if(state.held===index&&state.phase==='ready')return true;
  state.pending=index;state.purpose='delivery';state.struck=false;state.lowerTime=0;state.holeDone=false;finishPose=null;offerStart=null;addressStart=null;pathGoal=null;
@@ -225,7 +228,7 @@ function finishStored(){
  else{state.struck=false;state.active=null;state.pending=null;if(state.holeDone&&!isBallFlying&&golferSwingPhase==='fade'&&golferFinishHold<=0){golferSwingPhase='idle';golferSwingProgress=0;}phase('retire-empty');const callback=restCallback;restCallback=null;if(callback)callback();window.PuttUI?.saveSession();}
 }
 function busy(){return !state.initialized||!['empty','ready','follow','shot','retire-empty'].includes(state.phase);}
-function canStrike(){const d=actor.position.clone().sub(ballPos),inShot=d.dot(aimDirection)>0&&Math.abs(d.x*aimDirection.z-d.z*aimDirection.x)<3;return !inShot&&state.initialized&&state.phase==='ready'&&state.held===currentClubIndex&&owners[currentClubIndex]==='golfer'&&distance()>=PARK_CLEARANCE&&!isBallFlying&&golferSwingPhase==='idle';}
+function canStrike(){const d=actor.position.clone().sub(ballPos),inShot=d.dot(aimDirection)>0&&Math.abs(d.x*aimDirection.z-d.z*aimDirection.x)<3;return !window.GolferLocomotion?.busy&&!inShot&&state.initialized&&state.phase==='ready'&&state.held===currentClubIndex&&owners[currentClubIndex]==='golfer'&&distance()>=PARK_CLEARANCE&&!isBallFlying&&golferSwingPhase==='idle';}
 function restore(data){savedEquipment=data;if(!state.initialized)return;reset();if(data?.schema===1&&Number.isInteger(data.heldClub)&&data.heldClub===currentClubIndex&&data.heldClub>=0&&data.heldClub<clubs.length){giveGolfer(data.heldClub);state.active=data.heldClub;phase('ready');}savedEquipment=null;syncClubs();}
 function tick(dt){
  initialize();if(!state.initialized)return;atBall();if(window.GreenReader?.enabled){syncClubs();return;}

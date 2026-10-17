@@ -1427,6 +1427,9 @@ group.name = name;
     // 3D ANIMATED PRO GOLFER (AUTHENTIC TOURNAMENT CHARACTER & SWING RIG)
     // ========================================================
     const golferGroup = new THREE.Group();
+    // Caddie quaternion blends must decompose as pure yaw. XYZ otherwise
+    // flips X/Z by pi beyond 90 degrees, so a later .rotation.y faces backwards.
+    golferGroup.rotation.order = 'YXZ';
     golferGroup.castShadow = true;
     scene.add(golferGroup);
 
@@ -1687,6 +1690,8 @@ group.name = name;
     clubRig.add(clubGripMesh); clubRig.add(clubShaftMesh); clubRig.add(clubHeadMesh);
 
     function positionGolferAtBall(preserveFreePose = false) {
+      if(window.GolferLocomotion?.requestAim())return;
+      if(window.GolferLocomotion?.busy)return;
       if (!ballPos) return;
       const dirToPin = aimDirection.clone();
 
@@ -1715,7 +1720,7 @@ group.name = name;
       // Asset front is local +Z (verified from cap visor / club-head nodes).
       // The body must face the BALL, not the target or the stance offset.
       // With this yaw, local +Z equals -sideVec and local +X is the lead side.
-      if (preserveFreePose) return; // Aim may move the stance, but must not snap the study pose back to address.
+      if (preserveFreePose && !window.CaddieSystem?.heldClub) return; // Only the empty-handed study pose may keep its independent gaze.
       golferGroup.rotation.y = angle - Math.PI / 2; // Native +X is the left/lead side, along the pin.
       
       // Reset address posture
@@ -1766,7 +1771,9 @@ group.name = name;
     }
 
     function triggerGolferSwing(specs, onImpactCallback) {
+      if(window.GolferLocomotion?.busy)return false;
       if(window.CaddieSystem&&!window.CaddieSystem.onShot())return false;
+      window.GolferLocomotion?.beginShot();
       window.GreenReader?.close();
       window.WindSystem?.captureShot();
       // Determine active swing profile based on specs or selected mode
@@ -2288,7 +2295,7 @@ group.name = name;
     });
 
     function canAdjustAim() {
-      return !isBallFlying && golferSwingPhase === 'idle' && !(typeof courseRelief!=='undefined'&&courseRelief) && !window.CaddieSystem?.busy;
+      return !isBallFlying && golferSwingPhase === 'idle' && !(typeof courseRelief!=='undefined'&&courseRelief) && !window.CaddieSystem?.busy && !window.GolferLocomotion?.blocksAim;
     }
 
     function resetAimToPin() {
@@ -2352,7 +2359,8 @@ group.name = name;
     function showWholeCourse() {
       gameplayView.yaw=0;gameplayView.pitch=0;setGameplayZoom(.001);setAddressCamera(true);
     }
-    function setAddressCamera(immediate = false) {
+    function setAddressCamera(immediate = false, force = false) {
+      if(window.GolferLocomotion?.continuous&&!force){isCameraTransitioning=false;return;}
       const c = ADDRESS_CAMERA;
       // A narrower portrait frustum needs more distance, not a rescaled athlete.
       // The same framing rule is used for the first and every subsequent shot.
@@ -3002,6 +3010,7 @@ group.name = name;
       document.getElementById('tele-total').textContent = `${actualTotalYards} YDS`;
       teleHUD.style.display = 'flex';
 
+      if(window.GolferLocomotion?.beginRest(()=>{autoSuggestClub();updateHoleUI();positionGolferAtBall();drawMinimap();}))return;
       resetAimToPin();
       setAddressCamera(false);
 
@@ -3109,6 +3118,7 @@ group.name = name;
 
     window.setupHole = setupHole;
     function setupHole(hNum) {
+      window.GolferLocomotion?.reset();
       window.GreenReader?.close(false);
       window.WindSystem?.enterHole(hNum);
       gameplayView.yaw=0;gameplayView.pitch=0;
@@ -3185,7 +3195,7 @@ group.name = name;
         } else {
           orbitControls.update();
         }
-      if (golferSwingPhase === 'idle') golferGroup.visible = !isCameraTransitioning;
+      if (golferSwingPhase === 'idle') golferGroup.visible = !!window.GolferLocomotion?.continuous || !isCameraTransitioning;
     }
 
     function updateBroadcastCamera(dt) {
@@ -3251,7 +3261,7 @@ group.name = name;
         stepPhysics(dt);
         flightElapsedTime += dt;
 
-        updateBroadcastCamera(dt);
+        if(!window.GolferLocomotion?.continuous)updateBroadcastCamera(dt);
       } else if (!window.GreenReader?.enabled) {
         updateAddressCamera(dt);
       }
@@ -3272,6 +3282,7 @@ group.name = name;
       }
 
       window.CaddieSystem?.tick(dt);
+      window.GolferLocomotion?.tick(dt);
       window.GreenReader?.tick();
       const activeCamera=window.GreenReader?.enabled?window.GreenReader.camera:camera;
       if(!window.GreenReader?.enabled)enforceGameplayCameraSafety();
