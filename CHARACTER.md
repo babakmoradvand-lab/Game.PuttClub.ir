@@ -1,11 +1,3 @@
-# golfer32 — approved Rocketbox male and real skinned golf wardrobe
-
-Active character: Microsoft Rocketbox Male_Adult_01 (MIT), converted from FBX with original face/visible skin and embedded source images. Canonical +Y bone frames, corrected anatomical parent chains, skinned one-piece ivory golf trousers, fitted ivory crown/curved visor, navy polo and restrained chest mark. The prior avatar is no longer the active human. Original calibrated club source geometry and GolfMotion profiles are retained. See GOLFER32_RELEASE_FA.md for scope and explicit numerical/visual test limitations; CHARACTER_ASSET_LICENSE.txt contains the full MIT notice.
-
-The notes below are historical releases, not a claim that the old GLB is still active.
-
----
-
 # elbow29 — elbow hinge and progressive forearm skin twist (2026-10-17)
 
 Corrects the active skinned rig, not just wrist contact. Anatomical hinge frames
