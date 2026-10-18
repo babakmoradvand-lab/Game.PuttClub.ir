@@ -34,28 +34,24 @@
     return new T.Quaternion().setFromRotationMatrix(new T.Matrix4().makeBasis(x,y,z)).multiply(new T.Quaternion().setFromAxisAngle(Y,roll));
   }
   class GolfMotion {
-    // Shorter woods use the accepted driver shaft reach at setup, preventing
-    // strained wrists when their ball-to-foot spacing matches the driver.
-    // Native length, lie, loft, club geometry and shot physics remain unchanged.
-    static club(club={}) {const s=CLUBS[club.id]||CLUBS[club.isPutter?'PT':'7I'];return {...s,size:s.size.slice(),addressAngle:club.id==='1W'?47.5:(club.id==='3W'||club.id==='5W')?T.MathUtils.radToDeg(Math.acos(clamp((CLUBS['1W'].length-.12)*Math.cos(rad(47.5))/(s.length-.12),0,1))):club.isPutter||club.id==='PT'?70:club.cat==='wedge'?60:s.lie-5,loft:Number.isFinite(club.loft)?club.loft:s.loft};}
+    // Geometry first: each grounded, unscaled club defines its grip. The body
+    // adapter solves a separate stance for every native club from that grip.
+    static club(club={}) {const s=CLUBS[club.id]||CLUBS[club.isPutter?'PT':'7I'];return {...s,size:s.size.slice(),addressAngle:s.lie,loft:Number.isFinite(club.loft)?club.loft:s.loft};}
+    static geometry(club={}) {const s=GolfMotion.club(club),wood=s.head==='DriverHead',putt=s.head==='PutterHead',height=wood?(club.id==='1W'?.058:club.id==='3W'?.044:.041):putt?.026:.052*s.size[1];return {headFloor:height/2,shaftLength:s.length-height/2,heelOffset:wood?.041:putt?.032:.033};}
     static address(club={},mode='full') {
-      const s=GolfMotion.club(club),putt=!!club.isPutter||mode==='putt';
-      const driverDistance=(CLUBS['1W'].length-.12)*Math.cos(rad(47.5))+.25+.18;
-      // Same lateral ball-to-foot-line spacing as the accepted driver. Keep
-      // native wood length/lie, lead-ball position and stance width unchanged.
-      const baseDistance=(s.length-.12)*Math.cos(rad(s.addressAngle))+(putt?.23:.25);
-      const distance=putt?baseDistance:club.cat==='wood'||['1W','3W','5W'].includes(club.id)?driverDistance:baseDistance+(club.cat==='iron'?.06:0);
+      const s=GolfMotion.club(club),g=GolfMotion.geometry(club),putt=!!club.isPutter||mode==='putt',fit=GolfMotion.setups?.[club.id];
+      const distance=fit?.distance??((g.shaftLength-.055)*Math.cos(rad(s.addressAngle))+g.heelOffset+.28);
       return {distance,lead:putt?0:club.id==='1W'?.10:club.cat==='wood'?.055:club.cat==='wedge'?-.018:0,width:putt?.29:mode==='chip'?.29:club.cat==='wood'?.46:.39};
     }
     static time(phase,p){p=clamp(p||0,0,1);return phase==='backswing'?.4*p:phase==='downswing'?.4+.1*p:phase==='followthrough'?.5+.5*p:phase==='fade'?1:0;}
     static keys(mode,h,d,impactH,impactD) {
       const k=(t,pos,dir,hip,chest,shift=0,heel=0,roll=0)=>({t,hx:pos[0],hy:pos[1],hz:pos[2],dx:dir[0],dy:dir[1],dz:dir[2],hip,chest,shift,heel,roll});
       const a=h.toArray(),di=d.toArray(),ih=impactH.toArray(),id=impactD.toArray();
-      if(mode==='putt')return [k(0,a,di,0,0),k(.4,[a[0]-.075,a[1]+.006,a[2]],[-.10,di[1],di[2]],0,0),k(.5,a,di,0,0),k(1,[a[0]+.09,a[1]+.009,a[2]],[.12,di[1],di[2]],0,0)];
+      if(mode==='putt')return [k(0,a,di,0,0),k(.4,[a[0]-.075,a[1]+.006,a[2]],[-.10,di[1],di[2]],0,0),k(.5,ih,id,0,0),k(1,[a[0]+.09,a[1]+.009,a[2]],[.12,di[1],di[2]],0,0)];
       if(mode==='chip')return [k(0,a,di,.04,.04,.015),k(.4,[a[0]-.15,a[1]+.07,a[2]-.015],[-.38,-.82,.42],-.12,-.22,0),k(.5,ih,id,.16,.12,.035),k(.72,[a[0]+.16,a[1]+.075,a[2]-.015],[.38,-.83,.40],.24,.30,.045),k(1,[a[0]+.24,a[1]+.12,a[2]-.025],[.52,-.73,.43],.28,.40,.05)];
       if(mode==='half'||mode==='punch')return [k(0,a,di,0,0),k(.22,[-.24,a[1]+.10,a[2]-.03],[-.88,-.30,.36],-.18,-.40,-.012),k(.4,mode==='punch'?[-.37,1.13,.15]:[-.36,1.07,.17],mode==='punch'?[-.30,.94,.18]:[-.58,.79,.20],-.32,-.78,-.025),k(.45,[-.28,1.01,.19],[-.86,.38,.34],-.05,-.55,0),k(.5,ih,id,.34,.15,.04),k(.68,[.29,1.03,.18],[.81,.44,.39],.54,.65,.055,.12,-.15),k(1,mode==='punch'?[.40,1.08,.16]:[.37,1.18,.10],mode==='punch'?[.78,.56,.27]:[.10,.98,-.12],.68,.88,.065,.24,-.30)];
       const three=mode==='three-quarter';
-      return [k(0,a,di,0,0),k(.07,[a[0]-.10,a[1]+.055,a[2]-.012],[-.65,-.65,.35],-.06,-.20,-.006),k(.13,[-.20,Math.max(.94,a[1]+.13),a[2]-.035],[-.94,-.09,.32],-.10,-.30,-.012),k(.28,[-.35,1.22,-.06],[-.30,.92,.25],-.38,-.96,-.028),k(.365,three?[-.35,1.48,-.15]:[-.38,1.64,-.22],three?[.28,.94,-.18]:[.91,.28,-.30],-.60,three?-1.16:-1.40,-.032),k(.4,three?[-.35,1.50,-.16]:[-.37,1.66,-.23],three?[.35,.92,-.18]:[.94,.16,-.30],-.55,three?-1.20:-1.45,-.025),k(.445,[-.34,1.24,-.10],[.12,.97,-.20],-.12,three?-.95:-1.10,.006),k(.477,[-.24,.98,.20],[-.91,.14,.39],.25,-.48,.035),k(.5,ih,id,.55,.20,.055,.025),k(.60,[.30,1.03,.20],[.93,.10,.35],.82,.72,.07,.30,-.18),k(.73,[.42,1.29,.055],[.30,.94,-.16],1,1.21,.08,.64,-.55),k(.87,three?[.28,1.38,-.025]:[.23,1.47,-.04],three?[-.44,.83,-.34]:[-.80,.32,-.50],1.10,three?1.40:1.52,.085,.90,-.90),k(1,three?[.25,1.40,-.035]:[.20,1.48,-.065],three?[-.55,.72,-.42]:[-.90,-.12,-.42],1.12,three?1.43:1.56,.085,1,-1.05)];
+      return [k(0,a,di,0,0),k(.07,[a[0]-.10,a[1]+.015,a[2]-.012],[-.35,di[1]*.95,di[2]*.95],-.06,-.20,-.006),k(.13,[-.20,Math.max(.94,a[1]+.13),a[2]-.035],[-.94,-.09,.32],-.10,-.30,-.012),k(.28,[-.35,1.22,-.06],[-.30,.92,.25],-.38,-.96,-.028),k(.365,three?[-.35,1.48,-.15]:[-.38,1.64,-.22],three?[.28,.94,-.18]:[.91,.28,-.30],-.60,three?-1.16:-1.40,-.032),k(.4,three?[-.35,1.50,-.16]:[-.37,1.66,-.23],three?[.35,.92,-.18]:[.94,.16,-.30],-.55,three?-1.20:-1.45,-.025),k(.445,[-.34,1.24,-.10],[.12,.97,-.20],-.12,three?-.95:-1.10,.006),k(.477,[-.24,.98,.20],[-.91,.14,.39],.25,-.48,.035),k(.5,ih,id,.55,.20,.055,.025),k(.60,[.30,1.03,.20],[.93,.10,.35],.82,.72,.07,.30,-.18),k(.73,[.42,1.29,.055],[.30,.94,-.16],1,1.21,.08,.64,-.55),k(.87,three?[.28,1.38,-.025]:[.23,1.47,-.04],three?[-.44,.83,-.34]:[-.80,.32,-.50],1.10,three?1.40:1.52,.085,.90,-.90),k(1,three?[.25,1.40,-.035]:[.20,1.48,-.065],three?[-.55,.72,-.42]:[-.90,-.12,-.42],1.12,three?1.43:1.56,.085,1,-1.05)];
     }
     static sample(keys,t) {
       const o={};for(const f of ['hx','hy','hz','dx','dy','dz','hip','chest','shift','heel','roll'])o[f]=hermite(keys,t,f);
@@ -63,7 +59,7 @@
       o.hand=V(o.hx,o.hy,o.hz);o.direction=V(o.dx,o.dy,o.dz).normalize();
       // The face turns with the forearms, rather than holding a world-Z frame
       // throughout the backswing. Address and impact remain exactly calibrated.
-      const rollKeys=[[0,0],[.07,35],[.13,115],[.28,105],[.4,85],[.445,60],[.46,75],[.477,113],[.5,0],[.6,-65],[.73,-65],[.87,-35],[1,-20]].map(([t,roll])=>({t,roll}));
+      const rollKeys=[[0,0],[.07,35],[.13,115],[.28,105],[.4,85],[.445,75],[.46,65],[.477,50],[.5,0],[.6,-65],[.73,-65],[.87,-35],[1,-20]].map(([t,roll])=>({t,roll}));
       const amplitude=keys.length===4?0:keys.length===5?.20:keys.length===7?.72:1;
       const halfRelease=keys.length===7?hermite([[0,0],[.4,0],[.44,45],[.5,0],[.60,-35],[.68,-60],[.80,-35],[1,0]].map(([t,roll])=>({t,roll})),t,'roll'):0;o.rotation=orientation(o.direction,o.roll+rad(hermite(rollKeys,t,'roll'))*amplitude+rad(halfRelease));return o;
     }
@@ -138,8 +134,9 @@
       for(let i=0;i<p.count;i++)p.setY(i,.16+(p.getY(i)-.09999962896108627)/(1.0232194662094116-.09999962896108627)*(shaftLength-.16));p.needsUpdate=true;shaftGeo.computeVertexNormals();add('LengthCalibratedShaft',shaftGeo,this.clubSources.ClubShaft.material);
       const head=new T.Group();head.name='Rigid'+spec.head;head.position.y=shaftLength;head.rotation.x=rad(spec.lie)-Math.PI/2;root.add(head);
       this.buildHead(head,spec,id,dimensions,heelOffset);
+      const sole=[];head.traverse(o=>{if(!o.isMesh)return;const p=o.geometry.attributes.position;for(let i=0;i<p.count;i++)sole.push(V().fromBufferAttribute(p,i).add(o.position));});root.userData.solePoints=sole;
       const hosel=add('Hosel',new T.CylinderGeometry(.0065,.007,.034,12),this.clubSources.ClubShaft.material);hosel.position.y=shaftLength-.014;
-      root.userData={shaftLength,headFloor,heelOffset,length:spec.length,lie:spec.lie,loft:spec.loft};return root;
+      root.userData={...root.userData,shaftLength,headFloor,heelOffset,length:spec.length,lie:spec.lie,loft:spec.loft};return root;
     }
     buildHead(parent,spec,id,dimensions,heelOffset) {
       const [depth,height,width]=dimensions,wood=spec.head==='DriverHead',putt=spec.head==='PutterHead',tan=Math.tan(rad(spec.loft));
@@ -241,7 +238,7 @@
       } else if(side==='L')q.premultiply(new T.Quaternion().setFromAxisAngle(Y,rad(10)*smooth(0,.8,Math.max(0,chestYaw))));
       const world=this.model.localToWorld(f),base=this.model.localToWorld(V(f.x,0,f.z));
       if(this.groundHeight)world.y+=this.groundHeight(world.x,world.z)-base.y;
-      if(this.groundNormal){const n=this.groundNormal(world.x,world.z).normalize();q.premultiply(new T.Quaternion().setFromUnitVectors(Y,n));}
+      if(this.groundNormal){const n=this.groundNormal(world.x,world.z).normalize().applyQuaternion(this.model.getWorldQuaternion(new T.Quaternion()).invert());q.premultiply(new T.Quaternion().setFromUnitVectors(Y,n));}
       return {position:world,rotation:this.model.getWorldQuaternion(new T.Quaternion()).multiply(q)};
     }
     gripHands() {
@@ -294,12 +291,33 @@
         const origin=V(this.ball.x-(this.radius-normal.y*(this.ball.y-headY)-normal.z*(this.ball.z-z))/normal.x,headY,z);
         return {q,normal,contact,origin};
       };
-      const addressFit=fit(d),impactFit=fit(impactD),origin=addressFit.origin,butt=origin.clone().addScaledVector(d,-this.shaftLength),hand=butt.clone().addScaledVector(d,.055),impactH=impactFit.origin.clone().addScaledVector(impactD,-(this.shaftLength-.055));
+      const addressFit=fit(d),impactFit=fit(impactD);
+      // Rest the actual rigid sole on the sampled terrain, not on the ball's
+      // underside (a teed ball is higher). Cache this fixed address geometry.
+      const headQ=addressFit.q.clone().multiply(new T.Quaternion().setFromAxisAngle(V(1,0,0),lie-Math.PI/2)),sole=this.clubObject.userData.solePoints||[],worldBall=this.model.localToWorld(this.ball.clone());
+      const ground=this.groundHeight?this.groundHeight(worldBall.x,worldBall.z):worldBall.y-this.radius,norm=this.groundNormal?this.groundNormal(worldBall.x,worldBall.z):Y;
+      const soleKey=[this.clubKey,...this.ball.toArray(),...this.model.matrixWorld.elements,ground,...norm.toArray()].map(x=>typeof x==='number'?Math.round(x*1e6)/1e6:x).join(':');
+      if(this._soleFit49?.key===soleKey)addressFit.origin.copy(this._soleFit49.origin);
+      else if(sole.length){
+        const groundY=this.model.worldToLocal(V(worldBall.x,ground,worldBall.z)).y;let minY=Infinity;for(const v of sole)minY=Math.min(minY,v.clone().applyQuaternion(headQ).y);
+        addressFit.origin.y=groundY-minY+.001;
+        for(let pass=0;pass<2;pass++){
+          const n=addressFit.normal;addressFit.origin.x=this.ball.x-(this.radius-n.y*(this.ball.y-addressFit.origin.y)-n.z*(this.ball.z-addressFit.origin.z))/n.x;
+          if(this.groundHeight){let lift=0;for(const v of sole){const w=this.model.localToWorld(v.clone().applyQuaternion(headQ).add(addressFit.origin));lift=Math.max(lift,this.groundHeight(w.x,w.z)+.001-w.y);}addressFit.origin.y+=lift/this.model.getWorldScale(V()).y;}
+        }
+        const n=addressFit.normal;addressFit.origin.x=this.ball.x-(this.radius-n.y*(this.ball.y-addressFit.origin.y)-n.z*(this.ball.z-addressFit.origin.z))/n.x;
+        this._soleFit49={key:soleKey,origin:addressFit.origin.clone()};
+      }
+      const origin=addressFit.origin,butt=origin.clone().addScaledVector(d,-this.shaftLength),hand=butt.clone().addScaledVector(d,.055),impactH=impactFit.origin.clone().addScaledVector(impactD,-(this.shaftLength-.055));
       this.contactTarget.copy(impactFit.contact);this.impactNormal=impactFit.normal;
       const keys=GolfMotion.keys(mode,hand,d,impactH,impactD),m=GolfMotion.sample(keys,t),release=smooth(.65,1,t)*(mode==='putt'?0:mode==='chip'?.08:(mode==='half'||mode==='punch')?.55:1),address=GolfMotion.address(this.club,mode);
-      const terrainDrop=clamp((this.radius-this.ball.y)*1.05,0,.14)*(1-smooth(hand.y+.16,hand.y+.46,m.hand.y));
+      const terrainDrop=clamp((this.radius-this.ball.y)*1.05,0,.14)*(this.isMPFB?1-release:1-smooth(hand.y+.16,hand.y+.46,m.hand.y));
       const stanceDrop=(this.club.cat==='wood'?.035:this.club.cat==='wedge'?.075:.062)+(mode==='chip'?.006:mode==='punch'?.004:0);
-      const hip=this.bones.Hips,r=this.rest[hip.uuid];hip.position.copy(r.p);if(this.isMPFB)this.shiftHips(V(m.shift,-(this.club.cat==='wood'?.055:this.club.isPutter?.060:.055)-((this.club.id==='3W'||this.club.id==='5W')?.008:0)+release*(this.club.cat==='wood'?.050:this.club.isPutter?.055:.050)-terrainDrop,-.012+release*.012));else hip.position.add(V(m.shift,-stanceDrop+release*(stanceDrop-.005)-terrainDrop,-.018+release*.018));if(this.isMPFB)this.shiftHips(V(0,0,-(this.club.isPutter?.13:this.club.cat==='wood'?.080:.045)*(1-release*.65))); 
+      const hip=this.bones.Hips,r=this.rest[hip.uuid];hip.position.copy(r.p);
+      const setup49=GolfMotion.setups?.[this.club.id],setupDrop=(setup49?.drop||0)*(1-release),setupX=(setup49?.hipX||0)*(1-release);
+      if(this.isMPFB)this.shiftHips(V(m.shift+setupX,-.055+release*.050-terrainDrop-setupDrop,-(mode==='putt'?.142:.072)*(1-release*.65)));
+      else hip.position.add(V(m.shift,-stanceDrop+release*(stanceDrop-.005)-terrainDrop,-.018+release*.018));
+
       const baseHinge=clamp((mode==='putt'?.60:clamp(.40+(1.1557-this.spec.length)*.35,.40,.57))+(this.radius-this.ball.y)*.80,.45,.88);
       const hinge=baseHinge-release*(baseHinge-.13);
       this.bodyRotation('Hips',m.hip,.15-release*.10);this.bodyRotation('Spine',m.hip*.55+m.chest*.45,hinge*.67);this.bodyRotation('Chest',m.chest,hinge,((mode==='putt'?0:this.isMPFB?T.MathUtils.lerp(T.MathUtils.lerp(.29,-.24,smooth(.13,.39,t)),.28,smooth(.41,.5,t)):this.club.cat==='wood'?.10:.04)+(mode==='putt'?m.hand.x*1.1:0))*(1-release));
@@ -307,13 +325,14 @@
       const headLocal=this.model.worldToLocal(this.bones.Head.getWorldPosition(V())),gaze=this.ball.clone().sub(headLocal),gazeRelease=mode==='putt'||mode==='chip'?0:smooth(.57,.93,t),gazeYaw=Math.atan2(gaze.x,gaze.z),gazePitch=clamp(Math.atan2(-gaze.y,Math.hypot(gaze.x,gaze.z)),.65,1.15);
       this.bodyRotation('Head',T.MathUtils.lerp(gazeYaw,1.53,gazeRelease),T.MathUtils.lerp(gazePitch,.10,gazeRelease));
       this.model.updateMatrixWorld(true);
+      if(this.isMPFB&&this.applyBodyPlan49)this.applyBodyPlan49(t,release);
       this.groundDrop=0;
       for(const side of ['L','R']) {
         const ft=this.footTarget(side,address.width,m.heel,m.chest).position,thigh=this.bones['Thigh.'+side].getWorldPosition(V()),max=this.restLengths['leg'+side].reduce((a,b)=>a+b,0)-.002;
         const horizontal=(ft.x-thigh.x)**2+(ft.z-thigh.z)**2,allowed=Math.sqrt(Math.max(.01,max*max-horizontal));
         this.groundDrop=Math.max(this.groundDrop,thigh.y-ft.y-allowed);
       }
-      if(this.groundDrop>0){if(this.isMPFB)this.shiftHips(V(0,-clamp(this.groundDrop,0,.09),0));else hip.position.y-=clamp(this.groundDrop,0,.09);this.model.updateMatrixWorld(true);}
+      if(this.groundDrop>0&&!this._setupProbe49){if(this.isMPFB)this.shiftHips(V(0,-clamp(this.groundDrop,0,.09)*(this._bodyPlan49?smooth(.51,.65,t):1),0));else hip.position.y-=clamp(this.groundDrop,0,.09);this.model.updateMatrixWorld(true);}
       const buttPose=m.hand.clone().addScaledVector(m.direction,-.055);
       this.grip.position.copy(buttPose);this.grip.quaternion.copy(m.rotation);this.grip.scale.set(1,1,1);
       const headOffset=impactFit.contact.clone().sub(impactFit.origin).applyQuaternion(impactFit.q.clone().invert());this.anchor.position.copy(V(0,this.shaftLength,0).add(headOffset));this.anchor.scale.set(1,1,1);this.anchor.quaternion.identity();
@@ -321,7 +340,8 @@
       // Keep the rigid grip/contact fixed; flex the knees on a lower ball lie
       // instead of stretching the trail arm away from its hand target.
       let armDrop=0;for(const side of ['L','R']){const shoulder=this.bones['UpperArm.'+side].getWorldPosition(V()),target=this.handTargets[side],max=this.restLengths['arm'+side].reduce((a,b)=>a+b,0)-.004,horizontal=(shoulder.x-target.x)**2+(shoulder.z-target.z)**2;if(shoulder.y>target.y&&horizontal<max*max)armDrop=Math.max(armDrop,shoulder.y-target.y-Math.sqrt(max*max-horizontal));}
-      if(armDrop>0){if(this.isMPFB)this.shiftHips(V(0,-clamp(armDrop,0,.11),0));else hip.position.y-=clamp(armDrop,0,.11);this.model.updateMatrixWorld(true);}
+      if(armDrop>0&&!this.isMPFB){if(this.isMPFB)this.shiftHips(V(0,-clamp(armDrop,0,.11),0));else hip.position.y-=clamp(armDrop,0,.11);this.model.updateMatrixWorld(true);}
+      this.heelRelease=m.heel;this.bodyTurn={hips:m.hip,chest:m.chest};
       this.gripCorrection=0;this.constrainGrip(mode,t);
       const modelQ=this.model.getWorldQuaternion(new T.Quaternion());this.reachExcess=0;
       for(const [side,sign]of [['L',1],['R',-1]]) {
