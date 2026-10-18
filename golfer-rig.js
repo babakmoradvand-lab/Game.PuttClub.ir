@@ -34,10 +34,18 @@
     return new T.Quaternion().setFromRotationMatrix(new T.Matrix4().makeBasis(x,y,z)).multiply(new T.Quaternion().setFromAxisAngle(Y,roll));
   }
   class GolfMotion {
-    static club(club={}) {const s=CLUBS[club.id]||CLUBS[club.isPutter?'PT':'7I'];return {...s,size:s.size.slice(),addressAngle:club.id==='1W'?47.5:club.id==='3W'?52.5:club.id==='5W'?53.5:club.isPutter||club.id==='PT'?70:club.cat==='wedge'?60:s.lie-5,loft:Number.isFinite(club.loft)?club.loft:s.loft};}
+    // Shorter woods use the accepted driver shaft reach at setup, preventing
+    // strained wrists when their ball-to-foot spacing matches the driver.
+    // Native length, lie, loft, club geometry and shot physics remain unchanged.
+    static club(club={}) {const s=CLUBS[club.id]||CLUBS[club.isPutter?'PT':'7I'];return {...s,size:s.size.slice(),addressAngle:club.id==='1W'?47.5:(club.id==='3W'||club.id==='5W')?T.MathUtils.radToDeg(Math.acos(clamp((CLUBS['1W'].length-.12)*Math.cos(rad(47.5))/(s.length-.12),0,1))):club.isPutter||club.id==='PT'?70:club.cat==='wedge'?60:s.lie-5,loft:Number.isFinite(club.loft)?club.loft:s.loft};}
     static address(club={},mode='full') {
       const s=GolfMotion.club(club),putt=!!club.isPutter||mode==='putt';
-      return {distance:(s.length-.12)*Math.cos(rad(s.addressAngle))+(putt?.23:.25)+(putt?0:club.id==='1W'?.18:club.id==='3W'?.15:club.id==='5W'?.13:0),lead:putt?0:club.id==='1W'?.10:club.cat==='wood'?.055:club.cat==='wedge'?-.018:0,width:putt?.29:mode==='chip'?.29:club.cat==='wood'?.46:.39};
+      const driverDistance=(CLUBS['1W'].length-.12)*Math.cos(rad(47.5))+.25+.18;
+      // Same lateral ball-to-foot-line spacing as the accepted driver. Keep
+      // native wood length/lie, lead-ball position and stance width unchanged.
+      const baseDistance=(s.length-.12)*Math.cos(rad(s.addressAngle))+(putt?.23:.25);
+      const distance=putt?baseDistance:club.cat==='wood'||['1W','3W','5W'].includes(club.id)?driverDistance:baseDistance+(club.cat==='iron'?.06:0);
+      return {distance,lead:putt?0:club.id==='1W'?.10:club.cat==='wood'?.055:club.cat==='wedge'?-.018:0,width:putt?.29:mode==='chip'?.29:club.cat==='wood'?.46:.39};
     }
     static time(phase,p){p=clamp(p||0,0,1);return phase==='backswing'?.4*p:phase==='downswing'?.4+.1*p:phase==='followthrough'?.5+.5*p:phase==='fade'?1:0;}
     static keys(mode,h,d,impactH,impactD) {
@@ -291,7 +299,7 @@
       const keys=GolfMotion.keys(mode,hand,d,impactH,impactD),m=GolfMotion.sample(keys,t),release=smooth(.65,1,t)*(mode==='putt'?0:mode==='chip'?.08:(mode==='half'||mode==='punch')?.55:1),address=GolfMotion.address(this.club,mode);
       const terrainDrop=clamp((this.radius-this.ball.y)*1.05,0,.14)*(1-smooth(hand.y+.16,hand.y+.46,m.hand.y));
       const stanceDrop=(this.club.cat==='wood'?.035:this.club.cat==='wedge'?.075:.062)+(mode==='chip'?.006:mode==='punch'?.004:0);
-      const hip=this.bones.Hips,r=this.rest[hip.uuid];hip.position.copy(r.p);if(this.isMPFB)this.shiftHips(V(m.shift,-(this.club.cat==='wood'?.055:this.club.isPutter?.060:.055)+release*(this.club.cat==='wood'?.050:this.club.isPutter?.055:.050)-terrainDrop,-.012+release*.012));else hip.position.add(V(m.shift,-stanceDrop+release*(stanceDrop-.005)-terrainDrop,-.018+release*.018));if(this.isMPFB)this.shiftHips(V(0,0,-(this.club.isPutter?.13:this.club.cat==='wood'?.080:.045)*(1-release*.65))); 
+      const hip=this.bones.Hips,r=this.rest[hip.uuid];hip.position.copy(r.p);if(this.isMPFB)this.shiftHips(V(m.shift,-(this.club.cat==='wood'?.055:this.club.isPutter?.060:.055)-((this.club.id==='3W'||this.club.id==='5W')?.008:0)+release*(this.club.cat==='wood'?.050:this.club.isPutter?.055:.050)-terrainDrop,-.012+release*.012));else hip.position.add(V(m.shift,-stanceDrop+release*(stanceDrop-.005)-terrainDrop,-.018+release*.018));if(this.isMPFB)this.shiftHips(V(0,0,-(this.club.isPutter?.13:this.club.cat==='wood'?.080:.045)*(1-release*.65))); 
       const baseHinge=clamp((mode==='putt'?.60:clamp(.40+(1.1557-this.spec.length)*.35,.40,.57))+(this.radius-this.ball.y)*.80,.45,.88);
       const hinge=baseHinge-release*(baseHinge-.13);
       this.bodyRotation('Hips',m.hip,.15-release*.10);this.bodyRotation('Spine',m.hip*.55+m.chest*.45,hinge*.67);this.bodyRotation('Chest',m.chest,hinge,((mode==='putt'?0:this.isMPFB?T.MathUtils.lerp(T.MathUtils.lerp(.29,-.24,smooth(.13,.39,t)),.28,smooth(.41,.5,t)):this.club.cat==='wood'?.10:.04)+(mode==='putt'?m.hand.x*1.1:0))*(1-release));

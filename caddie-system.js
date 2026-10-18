@@ -155,9 +155,16 @@ function poseGolfer(dt){
  if(window.GolferLocomotion?.busy)return;
  if(state.phase==='read-green'){
   const a=proGolferAnimator,t=state.time;if(!readStart)readStart=a.behaviorSnapshot();
-  if(t<2.7){a.readGreenPose();if(t<1.0)a.blendRead(readStart,t);if(t>=1)readRise=a.behaviorSnapshot();}
-  else{resetGolferPosture();a.blendRead(readRise||readStart,(t-2.7)/.95);}
-  diagnostics.pose='read-first-putt';if(t>=3.65){readStart=readRise=null;phase('ready');window.PuttUI?.saveSession();}return;
+  if(!readFacing)readFacing=golferGroup.quaternion.clone();
+  // Authored anatomical front is +Z. Reading faces the actual cup from the
+  // athlete's position, independent of ball quadrant and adjusted shot aim.
+  const pin=holePins3D[currentHoleNumber],toward=pin?pin.clone().sub(golferGroup.position).setY(0):aimDirection.clone();
+  const cupQ=new T.Quaternion().setFromAxisAngle(Y,Math.atan2(toward.x,toward.z));
+  const addressQ=new T.Quaternion().setFromAxisAngle(Y,Math.atan2(aimDirection.x,aimDirection.z)-Math.PI/2);
+  if(t<2.7){golferGroup.quaternion.copy(readFacing).slerp(cupQ,GolferBehavior.ease(t/.8));golferGroup.updateMatrixWorld(true);a.readGreenPose();if(t<1.0)a.blendRead(readStart,t);if(pin){const h=a.bones.Head,q=h.getWorldQuaternion(new T.Quaternion());lookHuman(a,pin);a.rotateWorld(h,q.slerp(h.getWorldQuaternion(new T.Quaternion()),GolferBehavior.ease(t)));}if(t>=1)readRise=a.behaviorSnapshot();}
+  else{golferGroup.quaternion.copy(cupQ).slerp(addressQ,GolferBehavior.ease((t-2.7)/.95));golferGroup.updateMatrixWorld(true);resetGolferPosture();a.blendRead(readRise||readStart,(t-2.7)/.95);}
+  diagnostics.pose='read-first-putt';diagnostics.readFacingDot=new T.Vector3(0,0,1).applyQuaternion(golferGroup.quaternion).dot(toward.normalize());
+  if(t>=3.65){golferGroup.quaternion.copy(addressQ);golferGroup.updateMatrixWorld(true);readStart=readRise=readFacing=null;phase('ready');window.PuttUI?.saveSession();}return;
  }
  if(state.phase==='celebrate'){
   const a=proGolferAnimator;if(!joyStart)joyStart=a.behaviorSnapshot();a.celebratePose();const targetClubQ=a.grip.quaternion.clone();a.behaviorBlend(joyStart,Math.min(1,state.time/.95),false);a.grip.quaternion.copy(joyStart.q.clone().slerp(targetClubQ,GolferBehavior.ease(state.time/.95)));a.model.updateMatrixWorld(true);
@@ -210,8 +217,8 @@ function initialize(){
  for(const side of ['L','R']){const h=bones['Bip01_'+side+'_Hand'],mid=bones['Bip01_'+side+'_Finger2'],index=bones['Bip01_'+side+'_Finger1'],little=bones['Bip01_'+side+'_Finger4'],f=mid.position.clone().normalize(),right=index.position.clone().sub(little.position).normalize(),n=f.clone().cross(right).normalize();right.copy(n).cross(f).normalize();handAxes[side]=new T.Quaternion().setFromRotationMatrix(new T.Matrix4().makeBasis(f,right,n));footClearance[side]=Math.max(.045,bones['Bip01_'+side+'_Foot'].getWorldPosition(V()).y);}
  state.initialized=true;reset();if(savedEquipment)restore(savedEquipment);window.PuttUI?.updateShotState(true);event('initialized-13-physical-clubs');
 }
-let readStart=null,readRise=null,joyStart=null;const readHoles=new Set();
-function reset(){if(!state.initialized)return;readStart=readRise=joyStart=null;document.getElementById('celebration-overlay').style.visibility='';if(strokesCurrentHole===0)readHoles.delete((window.activeCourseId||'mis')+':'+currentHoleNumber);for(let i=0;i<clubs.length;i++)putInBag(i);Object.assign(state,{held:null,active:null,pending:null,purpose:null,struck:false,lowerTime:0,holeDone:false});finishPose=null;offerStart=null;addressStart=null;offerTime=0;studyBlend=0;maleLean=0;releaseStart=null;releaseTime=0;restCallback=null;path=[];pathGoal=null;poseRelease=1;holeKey=(window.activeCourseId||'mis')+':'+currentHoleNumber;lastBall.copy(ballPos);actor.position.copy(safePlace());actor.rotation.y=Math.atan2(golferGroup.position.x-actor.position.x,golferGroup.position.z-actor.position.z);phase('empty');syncClubs();}
+let readStart=null,readRise=null,readFacing=null,joyStart=null;const readHoles=new Set();
+function reset(){if(!state.initialized)return;readStart=readRise=readFacing=joyStart=null;document.getElementById('celebration-overlay').style.visibility='';if(strokesCurrentHole===0)readHoles.delete((window.activeCourseId||'mis')+':'+currentHoleNumber);for(let i=0;i<clubs.length;i++)putInBag(i);Object.assign(state,{held:null,active:null,pending:null,purpose:null,struck:false,lowerTime:0,holeDone:false});finishPose=null;offerStart=null;addressStart=null;offerTime=0;studyBlend=0;maleLean=0;releaseStart=null;releaseTime=0;restCallback=null;path=[];pathGoal=null;poseRelease=1;holeKey=(window.activeCourseId||'mis')+':'+currentHoleNumber;lastBall.copy(ballPos);actor.position.copy(safePlace());actor.rotation.y=Math.atan2(golferGroup.position.x-actor.position.x,golferGroup.position.z-actor.position.z);phase('empty');syncClubs();}
 
 function atBall(){if(!state.initialized)return;const key=(window.activeCourseId||'mis')+':'+currentHoleNumber;if(key!==holeKey){reset();return;}if(window.GolferLocomotion?.continuous){lastBall.copy(ballPos);return;}if(lastBall.distanceTo(ballPos)>.4&&!isBallFlying&&golferSwingPhase==='idle'){lastBall.copy(ballPos);actor.position.copy(safePlace());path=[];pathGoal=null;if(state.phase==='retire-empty')phase('empty');}}
 function request(index){
@@ -251,7 +258,7 @@ function tick(dt){
  actor.visible=document.body.dataset.view==='game'&&(!isCameraTransitioning||isBallFlying);if(document.body.dataset.view!=='game')return;
  const key=(window.activeCourseId||'mis')+':'+currentHoleNumber;
  if(needsRead()){
-  readHoles.add(key);readStart=proGolferAnimator.behaviorSnapshot();readRise=null;phase('read-green');window.PuttUI?.saveSession();
+  readHoles.add(key);readStart=proGolferAnimator.behaviorSnapshot();readRise=null;readFacing=golferGroup.quaternion.clone();phase('read-green');window.PuttUI?.saveSession();
  }
  state.time+=dt;walking=false;const name=state.phase;let crouch=0;
  if(name==='empty'||name==='ready'||name==='follow'||name==='retire-empty'){
