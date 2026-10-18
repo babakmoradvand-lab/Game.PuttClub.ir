@@ -572,7 +572,7 @@
   }
   function exportSession() {
     if(isBallFlying||golferSwingPhase!=="idle"||isCameraTransitioning)return null;
-    return {schema:1,started,view:document.body.dataset.view,step,skill,course,mode:gameMode,hole:currentHoleNumber,single:selectedSingleHole,strokes:strokesCurrentHole,tee:isWomenTee,courseTee:courseTeeColor,scores:[...holeScores],courseState:isPuttClub()?exportPuttClubState():null,wind:window.WindSystem?.exportState(),equipment:window.CaddieSystem?.exportState(),club:currentClubIndex,swing:currentSwingMode,power:swingPowerPercent,ball:ballPos.toArray(),aim:aimDirection.toArray(),camera:camera.position.toArray(),zoom:gameplayView.zoom,target:orbitControls.target.toArray(),putt:$("putter-backswing-slider").value,celebrating:$("celebration-overlay").style.display!=="none",telemetry:["tele-carry","tele-roll","tele-total"].map(id=>$(id).textContent)};
+    return {schema:1,started,view:document.body.dataset.view,hudSlide,step,skill,course,mode:gameMode,hole:currentHoleNumber,single:selectedSingleHole,strokes:strokesCurrentHole,tee:isWomenTee,courseTee:courseTeeColor,scores:[...holeScores],courseState:isPuttClub()?exportPuttClubState():null,wind:window.WindSystem?.exportState(),equipment:window.CaddieSystem?.exportState(),club:currentClubIndex,swing:currentSwingMode,power:swingPowerPercent,ball:ballPos.toArray(),aim:aimDirection.toArray(),camera:camera.position.toArray(),zoom:gameplayView.zoom,target:orbitControls.target.toArray(),putt:$("putter-backswing-slider").value,celebrating:$("celebration-overlay").style.display!=="none",telemetry:["tele-carry","tele-roll","tele-total"].map(id=>$(id).textContent)};
   }
   async function importSession(data) {
     if(data?.schema!==1||!data.started)return;
@@ -597,6 +597,7 @@
     if(strokesCurrentHole>0&&teePegGroup)teePegGroup.visible=false;
     $("putter-backswing-slider").value=data.putt;
     ["tele-carry","tele-roll","tele-total"].forEach((id,n)=>$(id).textContent=data.telemetry[n]);
+    showHudSlide(data.hudSlide);
     started=true;updateSelectedClubUI();updateHoleUI();positionGolferAtBall();sync();
     if(data.view==='game')showGame();else if(data.view==='setup')showStep(data.step);else showTitle();
     window.CaddieSystem?.restore(data.equipment);
@@ -604,14 +605,26 @@
     if(isPuttClub())restorePuttClubState(data.courseState);
     toast("Updated build loaded · round restored. An unfinished shot restarts from its pre-strike position.");
   }
-  listen("minimap-container",event=>{
-    // The frame is the control; wind disclosure remains independently usable.
-    if(event.target.closest("#wind-advice"))return;
-    const expanded=document.body.dataset.mapExpanded!=="true";
-    document.body.dataset.mapExpanded=String(expanded);
-    $("minimap-toggle").setAttribute("aria-expanded",String(expanded));
-    $("minimap-toggle").setAttribute("aria-label",expanded?"Collapse hole map":"Expand hole map");
-  });
+  // One native click per tap/Enter/Space. The whole fixed-size card advances;
+  // physics/tracking/weather never select a page or open a second disclosure.
+  const hudPages=["hud-info","minimap-container","hud-wind"],hudNames=["اطلاعات حفره و فاصله","نقشه","باد"],hudLabels=["HOLE","MAP","WIND"];
+  let hudSlide=0,hudPointer=null,hudDragged=false;
+  function showHudSlide(index){
+    hudSlide=Number.isInteger(index)&&index>=0&&index<3?index:0;
+    hudPages.forEach((id,n)=>{$(id).hidden=n!==hudSlide;});
+    $("top-hud-capsule").dataset.hudSlide=String(hudSlide);
+    $("hud-page-label").textContent=hudLabels[hudSlide];$("hud-page-count").textContent=`${hudSlide+1} / 3`;
+    $("hud-next").setAttribute("aria-label",`اسلاید ${hudSlide+1} از ۳: ${hudNames[hudSlide]}؛ لمس برای ${hudNames[(hudSlide+1)%3]}`);
+    $("hud-next").setAttribute("aria-describedby",hudPages[hudSlide]);
+    document.querySelectorAll(".hud-page-dots i").forEach((dot,n)=>dot.classList.toggle("is-current",n===hudSlide));
+    if(hudSlide===1)drawMinimap();
+    return hudSlide;
+  }
+  $("hud-next").addEventListener("pointerdown",e=>{hudDragged=!e.isPrimary||e.button!==0;hudPointer={x:e.clientX,y:e.clientY};});
+  $("hud-next").addEventListener("pointermove",e=>{if(hudPointer&&Math.hypot(e.clientX-hudPointer.x,e.clientY-hudPointer.y)>12)hudDragged=true;});
+  $("hud-next").addEventListener("pointercancel",()=>{hudDragged=true;hudPointer=null;});
+  listen("hud-next",e=>{e.stopPropagation();if(e.detail&&hudDragged)return;showHudSlide((hudSlide+1)%3);saveSession();});
+  showHudSlide(0);
   listen("btn-toggle-estimates",()=>{
     const expanded=document.body.dataset.estimates!=="true";
     document.body.dataset.estimates=String(expanded);
@@ -619,7 +632,8 @@
   });
   function saveSession(){try{const s=exportSession();if(s?.started)localStorage.setItem('puttclub-round-v1',JSON.stringify(s));}catch(error){console.info('Session storage unavailable');}}
   window.PuttUI = {
-    exportSession, importSession, refreshOffline, saveSession,
+    exportSession, importSession, refreshOffline, saveSession, showHudSlide,
+    get hudSlide(){return hudSlide;},
     sync,
     updateShotState,
     renderHoles,

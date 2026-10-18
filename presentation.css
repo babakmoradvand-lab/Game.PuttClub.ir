@@ -202,46 +202,6 @@ body[data-view="game"] :is(#top-hud-capsule,#bottom-game-dock,#shot-telemetry-hu
  color:#fff8e9;text-shadow:0 1px 2px #00120de6,0 0 7px #00120d80;
 }
 body[data-view="game"] :is(.primary-btn,.secondary-btn){background:linear-gradient(140deg,#fff2cc24,#08251a1a);border-color:#f3e6c56b;color:#fff8e9;text-shadow:0 1px 3px #00120de6}
-body[data-view="game"] #top-left-hud-column{
- left:max(12px,env(safe-area-inset-left));right:auto;top:calc(8px + var(--safe-top));
- width:min(280px,calc(100vw - 24px - env(safe-area-inset-left) - env(safe-area-inset-right)));
- max-height:calc(100dvh - 174px - var(--safe-top) - var(--safe-bottom));overflow-y:auto;overscroll-behavior:contain;border-radius:14px;
-}
-body[data-view="game"] #top-hud-capsule{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:3px 0;padding:10px 12px;border-radius:14px}
-body[data-view="game"] #top-hud-capsule .hud-course{grid-column:1/-1;grid-row:1;padding:0 0 3px;font-size:9px;line-height:1.5;letter-spacing:.4px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;color:#f3ecda;background:transparent;border:0}
-body[data-view="game"] #top-hud-capsule #hole-banner{grid-column:1/-1;grid-row:2;display:flex;justify-content:space-between;flex-wrap:nowrap;gap:5px;margin:0;min-width:0}
-body[data-view="game"] #top-hud-capsule #hud-hole-num{font-size:11px;white-space:nowrap}
-body[data-view="game"] #top-hud-capsule .hud-meta{font-size:9px;gap:4px;white-space:nowrap}
-body[data-view="game"] #top-hud-capsule .hud-meta b{font-size:11px}
-body[data-view="game"] #top-hud-capsule #target-hud{grid-column:1;grid-row:3;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;margin:5px 0 0;min-width:0}
-body[data-view="game"] #top-hud-capsule #target-hud .eyebrow{max-width:none;font-size:7px;letter-spacing:.5px;line-height:1.4;color:#eee8d7}
-body[data-view="game"] #top-hud-capsule #hud-dist-flag{font-size:25px;line-height:1.15;letter-spacing:-.6px;white-space:nowrap}
-body[data-view="game"] #top-hud-capsule .hud-bottom{grid-column:1;grid-row:4;margin:3px 0 0;padding:4px 7px 0 0;gap:3px 6px;flex-wrap:wrap;font-size:8px;color:#eee8d7}
-body[data-view="game"] #top-hud-capsule .lie-badge{font-size:10px}
-body[data-view="game"] #top-hud-capsule #minimap-container{
- position:relative;inset:auto;grid-column:2;grid-row:3/5;width:auto;max-width:none;min-width:0;min-height:0;max-height:none;
- margin:4px 0 0 8px;padding:0 0 0 8px;border:0;border-left:1px solid #fff8e930;border-radius:0;
- background:transparent;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;overflow:visible;
-}
-body[data-view="game"] #top-hud-capsule #minimap-toggle{padding:0;min-height:44px;min-width:44px;border-radius:7px;background:transparent}
-body[data-view="game"] #top-hud-capsule #minimap-toggle .minimap-label{gap:3px;min-height:44px}
-body[data-view="game"] #top-hud-capsule #minimap-toggle .wind-readout{gap:3px;font-size:10px;letter-spacing:0;color:#fff8e9}
-body[data-view="game"] #top-hud-capsule #wind-advice{border-top:1px solid #fff8e926}
-body[data-view="game"] #top-hud-capsule #wind-advice summary{min-height:44px;display:flex;align-items:center;gap:4px;padding:5px 0;font-size:10px;line-height:1.5}
-body[data-view="game"] #top-hud-capsule #wind-advice summary::marker{color:#dfc995}
-body[data-view="game"] #top-hud-capsule #wind-advice summary::after{content:'⌄';color:#dfc995;font-family:Inter,sans-serif}
-body[data-view="game"] #top-hud-capsule #wind-advice[open] summary::after{content:'⌃'}
-body[data-view="game"] #top-hud-capsule #wind-advice > div{padding:0 2px 7px;font-size:10px;line-height:1.8}
-body[data-view="game"] #top-hud-capsule #minimap-canvas{max-height:150px;object-fit:contain}
-body[data-view="game"][data-map-expanded="true"] #top-hud-capsule #minimap-container,
-body[data-view="game"][data-ball-tracking="true"] #top-hud-capsule #minimap-container,
-body[data-view="game"] #top-hud-capsule:has(#wind-advice[open]) #minimap-container{
- grid-column:1/-1;grid-row:5;margin:4px 0 0;padding:4px 0 0;border-left:0;border-top:1px solid #fff8e930;
-}
-body[data-view="game"][data-ball-tracking="true"]:not([data-map-expanded="true"]) #top-hud-capsule #minimap-canvas{max-height:110px}
-@media(max-height:520px) and (orientation:landscape){
- body[data-view="game"] #top-left-hud-column{width:250px}
-}
 @media(hover:hover){body[data-view="game"] :is(.primary-btn,.secondary-btn):not(:disabled):hover{background:linear-gradient(140deg,#fff2cc38,#08251a29)}}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
  body[data-view="game"]{--glass:rgba(10,28,18,.32)}
@@ -251,36 +211,56 @@ body[data-view="game"][data-ball-tracking="true"]:not([data-map-expanded="true"]
  body[data-view="game"] :is(#top-hud-capsule,#bottom-game-dock,#shot-telemetry-hud,.nav-buttons .icon-btn,#btn-map-detail,.game-panel,.toast,#shot-estimate-card,#green-read-toolbar,#green-read-legend,.course-relief-card){backdrop-filter:none;-webkit-backdrop-filter:none}
 }
 
-/* golfer48 — narrow stacked HUD, anchored at the usable top-left edge.
-   Keep both map and wind BELOW all hole/ball information in the same glass. */
+/* golfer50 — one compact card, exactly three user-controlled slides.
+   The sole native button covers the card: no nested controls, timers or
+   tracking-triggered expansion. Constant geometry keeps camera framing stable. */
 body[data-view="game"] #top-left-hud-column{
- left:max(4px,env(safe-area-inset-left));top:max(2px,var(--safe-top));
- width:min(224px,calc(100vw - 8px - env(safe-area-inset-left) - env(safe-area-inset-right)));
- max-height:calc(100dvh - 164px - max(2px,var(--safe-top)) - var(--safe-bottom));border-radius:12px;
+ left:max(4px,env(safe-area-inset-left));right:auto;top:max(2px,var(--safe-top));
+ width:min(200px,calc(100vw - 8px - env(safe-area-inset-left) - env(safe-area-inset-right)));
+ max-height:none;overflow:visible;border-radius:12px;
 }
-body[data-view="game"] #top-hud-capsule{grid-template-columns:minmax(0,1fr);gap:2px;padding:7px 9px;border-radius:12px}
-body[data-view="game"] #top-hud-capsule .hud-course{padding:0;font-size:8px;line-height:1.4}
-body[data-view="game"] #top-hud-capsule #hud-hole-num{font-size:10px}
-body[data-view="game"] #top-hud-capsule .hud-meta{font-size:8.5px;gap:3px}
+body[data-view="game"] #top-hud-capsule{
+ position:relative;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) 12px;gap:5px;
+ width:100%;height:132px;padding:8px 10px;border-radius:12px;isolation:isolate;pointer-events:auto;
+}
+body[data-view="game"] #top-hud-capsule .hud-slide{
+ grid-column:1;grid-row:1;min-width:0;min-height:0;margin:0;align-self:stretch;
+}
+body[data-view="game"] #top-hud-capsule .hud-slide[hidden]{display:none!important}
+body[data-view="game"] #top-hud-capsule #hud-info{display:grid;grid-template-rows:12px 17px minmax(25px,1fr) 19px;gap:2px}
+body[data-view="game"] #top-hud-capsule .hud-course{
+ padding:0;margin:0;border:0;background:transparent;font-size:8px;line-height:12px;letter-spacing:.3px;
+ color:#f3ecda;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;
+}
+body[data-view="game"] #top-hud-capsule #hole-banner{display:flex;justify-content:space-between;align-items:center;flex-wrap:nowrap;gap:4px;margin:0;min-width:0}
+body[data-view="game"] #top-hud-capsule #hud-hole-num{font-size:10px;white-space:nowrap}
+body[data-view="game"] #top-hud-capsule .hud-meta{font-size:8px;gap:3px;white-space:nowrap;color:#eee8d7}
 body[data-view="game"] #top-hud-capsule .hud-meta b{font-size:10px}
-body[data-view="game"] #top-hud-capsule #target-hud{
- grid-column:1;grid-row:3;flex-direction:row;align-items:center;justify-content:space-between;gap:7px;margin:3px 0 0;
-}
-body[data-view="game"] #top-hud-capsule #target-hud .eyebrow{flex:1;min-width:0;max-width:88px;font-size:7px;line-height:1.4}
-body[data-view="game"] #top-hud-capsule #hud-dist-flag{font-size:23px;line-height:1.15;flex-shrink:0}
-body[data-view="game"] #top-hud-capsule .hud-bottom{grid-column:1;grid-row:4;margin:2px 0 0;padding:4px 0 0;gap:3px 6px;justify-content:space-between}
-body[data-view="game"] #top-hud-capsule .lie-badge{font-size:9px}
+body[data-view="game"] #top-hud-capsule .meta-divider{margin:0 2px}
+body[data-view="game"] #top-hud-capsule #target-hud{display:flex;align-items:center;justify-content:space-between;gap:5px;min-width:0;margin:0}
+body[data-view="game"] #top-hud-capsule #target-hud .eyebrow{max-width:69px;font-size:6.5px;line-height:1.5;letter-spacing:.5px;color:#eee8d7}
+body[data-view="game"] #top-hud-capsule #hud-dist-flag{font-size:24px;line-height:1.15;letter-spacing:-.6px;white-space:nowrap;flex-shrink:0;margin:0}
+body[data-view="game"] #top-hud-capsule .hud-bottom{display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap;gap:5px;font-size:8px;margin:0;padding:3px 0 0;border-top:1px solid #fff8e930;color:#eee8d7}
+body[data-view="game"] #top-hud-capsule .lie-badge{font-size:9px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 body[data-view="game"] #top-hud-capsule #minimap-container{
- grid-column:1/-1;grid-row:5;margin:3px 0 0;padding:3px 0 0;
- border-left:0;border-top:1px solid #fff8e930;
+ position:relative;inset:auto;display:block;width:100%;max-width:none;max-height:none;padding:0;
+ border:0;border-radius:6px;background:transparent;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;overflow:hidden;pointer-events:none;
 }
-body[data-view="game"] #top-hud-capsule #minimap-toggle .wind-readout{font-size:9px}
-body[data-view="game"] #top-hud-capsule #wind-advice summary{font-size:9px;padding:4px 0}
-/* Both former right-hand instruments share one bottom row when collapsed.
-   Open advice/map/tracking uses the complete width, still inside the parent. */
-body[data-view="game"]:not([data-map-expanded="true"]):not([data-ball-tracking="true"]) #top-hud-capsule #minimap-container:not(:has(#wind-advice[open])){
- display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px;align-items:start;
-}
-body[data-view="game"]:not([data-map-expanded="true"]):not([data-ball-tracking="true"]) #top-hud-capsule #minimap-container:not(:has(#wind-advice[open])) #wind-advice{
- border-top:0;border-left:1px solid #fff8e926;padding-left:6px;min-width:0;
-}
+body[data-view="game"] #top-hud-capsule #minimap-canvas{display:block;width:100%;height:100%!important;max-height:none;margin:0;object-fit:contain;border-radius:6px}
+body[data-view="game"] #top-hud-capsule #hud-wind{display:flex;flex-direction:column;gap:2px;overflow:hidden}
+body[data-view="game"] #top-hud-capsule .hud-wind-speed{display:flex;align-items:center;gap:7px;min-height:21px;color:#fff8e9}
+body[data-view="game"] #top-hud-capsule .hud-wind-speed .icon{width:20px;height:20px;color:#dfc995;flex:none}
+body[data-view="game"] #top-hud-capsule .hud-wind-speed b{font-size:17px;line-height:21px;font-weight:500;letter-spacing:-.2px}
+body[data-view="game"] #top-hud-capsule #wind-advice{display:flex;flex-direction:column;gap:2px;min-height:0;border:0;background:transparent;font-family:Vazirmatn,Inter,sans-serif;line-height:1.35}
+body[data-view="game"] #top-hud-capsule #wind-advice-short{font-size:9px;line-height:12px;font-weight:500;color:#eee0bc}
+body[data-view="game"] #top-hud-capsule #wind-advice p{font-size:9px;line-height:1.4;margin:0;overflow-wrap:anywhere}
+body[data-view="game"] #top-hud-capsule #wind-advice small{font-size:8px;line-height:10px;color:#d4dccf}
+body[data-view="game"] #top-hud-capsule .hud-pagination{grid-row:2;grid-column:1;display:flex;align-items:center;justify-content:space-between;gap:8px;font:500 7px/12px Inter,sans-serif;letter-spacing:.8px;color:#e9e0c9;pointer-events:none}
+body[data-view="game"] #top-hud-capsule .hud-pagination b{font-size:8px;font-weight:400;letter-spacing:.5px}
+body[data-view="game"] #top-hud-capsule .hud-page-dots{display:flex;gap:5px;align-items:center}
+body[data-view="game"] #top-hud-capsule .hud-page-dots i{display:block;width:4px;height:4px;background:#f3e6c54d;border-radius:50%}
+body[data-view="game"] #top-hud-capsule .hud-page-dots i.is-current{width:12px;background:#e1ca96;border-radius:3px}
+body[data-view="game"] #top-hud-capsule .hud-next-mark{font-size:12px;margin-left:6px;color:#dfc995}
+body[data-view="game"] #top-hud-capsule #hud-next{position:absolute;inset:-1px;z-index:2;width:calc(100% + 2px);height:calc(100% + 2px);min-height:44px;padding:0;border:0;border-radius:inherit;background:transparent;box-shadow:none;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+body[data-view="game"] #top-hud-capsule #hud-next:focus-visible{outline:2px solid #e6d09d;outline-offset:2px}
+@media(hover:hover){body[data-view="game"] #top-hud-capsule:has(#hud-next:hover){border-color:#e5c78b99}}
