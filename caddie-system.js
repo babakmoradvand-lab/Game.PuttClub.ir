@@ -30,10 +30,12 @@ function clearGround(p,park=false){
  for(const i of pc.treeCandidates(p,p)){const t=pc.trees.instances[i];if(Math.hypot(t.position[0]-p.x,t.position[2]-p.z)<.68)return false;}
  return true;
 }
+// A wider wood stance can put the old parking point below a tee ledge.
+// Prefer the same walkable elevation; keep the original actor, gait and FSM.
 function safePlace(){const side=V(aimDirection.z,0,-aimDirection.x),base=golferGroup.position;
  const candidates=[[3.4,-1.2],[-3.4,-1.2],[3.0,-2.0],[-3.0,-2.0],[0,-3.6],[3.6,0],[-3.6,0],[3.4,2],[-3.4,2]];
- for(const[x,z]of candidates){const p=base.clone().addScaledVector(side,x).addScaledVector(aimDirection,z);if(clearGround(p,true)){p.y=getTerrainHeight(p.x,p.z);return p;}}
- for(let r=5;r<=12;r+=1)for(let k=0;k<16;k++){const p=base.clone().add(V(Math.sin(k*Math.PI/8)*r,0,Math.cos(k*Math.PI/8)*r));if(clearGround(p,true)){p.y=getTerrainHeight(p.x,p.z);return p;}}
+ for(const[x,z]of candidates){const p=base.clone().addScaledVector(side,x).addScaledVector(aimDirection,z);if(clearGround(p,true)&&Math.abs(getTerrainHeight(p.x,p.z)-getTerrainHeight(base.x,base.z))<.55){p.y=getTerrainHeight(p.x,p.z);return p;}}
+ for(const r of [3,2.4,1.8,5,6,7,8,9,10,11,12])for(let k=0;k<16;k++){const p=base.clone().add(V(Math.sin(k*Math.PI/8)*r,0,Math.cos(k*Math.PI/8)*r));if(clearGround(p,true)&&Math.abs(getTerrainHeight(p.x,p.z)-getTerrainHeight(base.x,base.z))<.55){p.y=getTerrainHeight(p.x,p.z);return p;}}
  return base.clone().addScaledVector(side,4.5);
 }
 function handoffPlace(staging=false){

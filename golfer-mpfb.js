@@ -19,6 +19,38 @@ constrainGrip(mode,t){if(!this.isMPFB)return;this.bodyTurn={chest:GolfMotion.sam
 const weight=Math.max(1-smooth(0,.075,t),1-smooth(0,.045,Math.abs(t-.5)));if(weight>0){const down=this.club.cat==='wood'?.035:this.club.isPutter?.025:0,y=T.MathUtils.lerp(result.y,grip.y+down,weight),r=Math.sqrt(Math.max(.000001,L*L-(y-cL.y)**2)),center=V(cL.x,y,cL.z),v=grip.clone().sub(center);v.y=0;v.z+=.06*weight;let angle=Math.atan2(v.z,v.x);const toward=cR.clone().sub(center);toward.y=0;const d=toward.length(),rr=R*R-(y-cR.y)**2;if(d>1e-6){const threshold=(r*r+d*d-rr)/(2*r*d),base=Math.atan2(toward.z,toward.x),allowed=Math.acos(clamp(threshold,-1,1)),diff=Math.atan2(Math.sin(angle-base),Math.cos(angle-base));angle=base+clamp(diff,-allowed,allowed);}result=center.add(V(r*Math.cos(angle),0,r*Math.sin(angle)));}const delta=grip.clone().sub(result).multiplyScalar(weight);if(weight>0)this.shiftHips(delta.clone().applyQuaternion(this.model.getWorldQuaternion(Q()).invert()));result.add(delta);this.grip.position.copy(this.grip.parent.worldToLocal(result));this.gripCorrection=result.distanceTo(grip);this.model.updateMatrixWorld(true);this.gripHands();}
 fitSoles(){if(!this.soleSamples)return;const shoes=this.model.getObjectByName('Cloth_shoes');if(!shoes)return;this.model.updateMatrixWorld(true);shoes.skeleton.update();for(const [s,sign]of [['L',1],['R',-1]]){let min=Infinity;for(const i of this.soleSamples[s]){const v=V().fromBufferAttribute(shoes.geometry.attributes.position,i);shoes.boneTransform(i,v);v.applyMatrix4(shoes.matrixWorld);min=Math.min(min,v.y)}const target=this.footTargets[s];if(!target||!Number.isFinite(min))continue;const floor=this.groundHeight?this.groundHeight(target.x,target.z):this.model.getWorldPosition(V()).y,dy=floor+.001-min;if(Math.abs(dy)>.0002&&Math.abs(dy)<.12){const q=this.bones['Foot.'+s].getWorldQuaternion(Q());target.y+=dy;this.ik('Thigh.'+s,'Shin.'+s,target,V(sign*.12,-.05,1).applyQuaternion(this.model.getWorldQuaternion(Q())),this.restLengths['leg'+s]);this.rotateWorld(this.bones['Foot.'+s],q);this.model.updateMatrixWorld(true);shoes.skeleton.update();}}}
 
+// Distance-synchronised retarget of the actual female caddie's Walk clip.
+// Offline data already compensates different rest poses, limb axes and stature;
+// the female actor, her mixer, model and playback are never touched here.
+walkPose(distance,speed,dt){
+ const data=window.GolferWalkData;if(!data)return super.walkPose(distance,speed,dt);
+ if(!this._walkFeet){this._walkFeet={};this._walkBlend=0;this._walkIdleTime=0;this._walkBones=data.bones.map(n=>this.model.getObjectByName(n));}
+ this._inSwing=false;this._walkIdleTime+=Math.max(0,dt);const desired=clamp(speed/.50,0,1);this._walkBlend+=(desired-this._walkBlend)*(1-Math.exp(-12*dt));const w=this._walkBlend;
+ const sample=(clip,phase)=>{const f=((phase%1+1)%1)*clip.count,i=Math.floor(f);return {a:clip.frames[i],b:clip.frames[i+1],u:f-i}};
+ const gait=sample(data.walk,distance/data.strideMeters),idle=sample(data.idle,this._walkIdleTime/data.idle.duration),quat=(s,field,index)=>Q().fromArray(s.a[field],index).normalize().slerp(Q().fromArray(s.b[field],index).normalize(),s.u),vec=(s,field)=>V().fromArray(s.a[field]).lerp(V().fromArray(s.b[field]),s.u);
+ this.model.traverse(o=>{const r=this.rest[o.uuid];if(r){o.position.copy(r.p);o.quaternion.copy(r.q);o.scale.copy(r.s)}});
+ for(const side of ['L','R'])for(const bone of this.forearmTwistChains[side])bone.quaternion.identity();
+ this._walkBones.forEach((b,i)=>b.quaternion.copy(quat(idle,'q',i*4).slerp(quat(gait,'q',i*4),w)));
+ this.bones.Hips.position.copy(vec(idle,'p').lerp(vec(gait,'p'),w));this.model.updateMatrixWorld(true);
+ const modelQ=this.model.getWorldQuaternion(Q()),rootY=this.model.getWorldPosition(V()).y,poses=[],phase=((distance/data.strideMeters)%1+1)%1,turning=this._walkLastQ?modelQ.angleTo(this._walkLastQ)>.02:false;this._walkLastQ=modelQ.clone();
+ for(const [s,index,sign]of [['L',0,1],['R',1,-1]]){
+  const foot=(sample)=>V().fromArray(sample.a.feet[index]).lerp(V().fromArray(sample.b.feet[index]),sample.u),fq=(sample)=>Q().fromArray(sample.a.footQ[index]).normalize().slerp(Q().fromArray(sample.b.footQ[index]).normalize(),sample.u);
+  const local=foot(idle).lerp(foot(gait),w),target=this.model.localToWorld(local),ground=this.groundHeight?this.groundHeight(target.x,target.z):rootY;target.y+=ground-rootY;
+  const rotation=modelQ.clone().multiply(fq(idle).slerp(fq(gait),w)),normal=this.groundNormal?this.groundNormal(target.x,target.z):Y.clone();rotation.premultiply(Q().setFromUnitVectors(Y,normal.clone().normalize()));
+  const footState=this._walkFeet[s]||{last:target.clone(),offset:V(),locked:false},contact=(s==='L'?phase>=.28&&phase<.68:phase>=.80||phase<.18)&&w>.85&&speed>.3&&!turning;
+  if(contact){if(!footState.locked)footState.plant=footState.last.clone();footState.offset.copy(footState.plant).sub(target).setY(0);target.x=footState.plant.x;target.z=footState.plant.z;}else{footState.offset.multiplyScalar(Math.exp(-16*dt));target.add(footState.offset);}footState.locked=contact;footState.last.copy(target);this._walkFeet[s]=footState;poses.push({s,sign,target,rotation});this.footTargets[s]=target.clone();
+ }
+ let drop=0;for(const {s,target}of poses){const p=this.bones['Thigh.'+s].getWorldPosition(V()),max=this.restLengths['leg'+s].reduce((a,b)=>a+b,0)-.002;drop=Math.max(drop,p.y-target.y-Math.sqrt(Math.max(.01,max*max-(p.x-target.x)**2-(p.z-target.z)**2)));}if(drop>0)this.shiftHips(V(0,-Math.min(.10,drop),0));
+ for(const {s,sign,target,rotation}of poses){this.ik('Thigh.'+s,'Shin.'+s,target,V(sign*.06,-.02,1).applyQuaternion(modelQ),this.restLengths['leg'+s]);this.rotateWorld(this.bones['Foot.'+s],rotation);
+ }
+ // Only the real occupied hand is constrained; the free arm keeps the clip's
+ // natural counter-swing. Keep the carried club above the turf.
+ const carrying=window.CaddieSystem?!!window.CaddieSystem.heldClub:!!this.club.isPutter;
+ if(carrying){this.grip.position.set(.26,Math.max(.94,this.shaftLength+.14),.13);this.grip.quaternion.copy(Q().setFromUnitVectors(Y,V(.06,-.98,.13).normalize()));this.model.updateMatrixWorld(true);this.gripHands();this._armState={};this.arm('L',this.handTargets.L,V(.35,-.4,.3).applyQuaternion(modelQ));this.fingers('L');}
+ for(const side of ['L','R'])if(!(carrying&&side==='L'))for(let finger=2;finger<=5;finger++)for(let k=1;k<=3;k++){const b=this.bones['Finger'+finger+'_'+k+'.'+side];b.quaternion.copy(this.rest[b.uuid].q).multiply(Q().setFromAxisAngle(V(1,0,0),k===1?.22:.35));}
+ this.model.updateMatrixWorld(true);for(const mesh of this.skinMeshes)mesh.skeleton.update();this.current='walk';this.walkDiagnostics={source:'caddie-Walk-retarget',phase:((distance/data.strideMeters)%1+1)%1,weight:w,strideMeters:data.strideMeters,speed};
+}
+
 _pose(mode,phase,p){this._inSwing=true;super._pose(mode,phase,p);this.fitSoles();this._inSwing=false;}
 }
 window.GolfAthlete=MPFBAthlete;window.MPFBAthlete=MPFBAthlete;
