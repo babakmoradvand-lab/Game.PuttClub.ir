@@ -2439,13 +2439,13 @@ group.name = name;
       const dir = direction.clone().setY(0).normalize();
       if (club.isPutter) {
         const speed = club.v0 * (parseInt(putterSlider.value) / 100) * lie.penalty;
-        return dir.multiplyScalar(speed);
+        return window.ShotTechnique?ShotTechnique.launch(dir.multiplyScalar(speed),club,'putt',direction):dir.multiplyScalar(speed);
       }
       const hLevel = window.currentHandicap || 'scratch';
       const hMult = (window.handicapMultipliers && window.handicapMultipliers[hLevel]) || 1.0;
       const speed = club.v0 * Math.sqrt(specs.carryMultiplier) * hMult * lie.penalty;
       const loft = THREE.MathUtils.degToRad(club.loft);
-      return new THREE.Vector3(dir.x * speed * Math.cos(loft), speed * Math.sin(loft), dir.z * speed * Math.cos(loft));
+      const base=new THREE.Vector3(dir.x * speed * Math.cos(loft), speed * Math.sin(loft), dir.z * speed * Math.cos(loft));return window.ShotTechnique?ShotTechnique.launch(base,club,currentSwingMode,dir):base;
     }
 
     function getAimGuidePoints() {
@@ -2453,11 +2453,12 @@ group.name = name;
       if (cap < 0.001) return [];
       const club = GOLF_BAG[currentClubIndex];
       if (club.isPutter) {
+        const puttDir=getShotLaunchVelocity(calculateShotSpecs(currentClubIndex,currentSwingMode,swingPowerPercent)).setY(0).normalize();
         const pts = [];
         for (let i = 0; i <= 48; i++) {
           const d = cap * i / 48;
-          const x = ballPos.x + aimDirection.x * d;
-          const z = ballPos.z + aimDirection.z * d;
+          const x = ballPos.x + puttDir.x * d;
+          const z = ballPos.z + puttDir.z * d;
           pts.push(new THREE.Vector3(x, getAimSurfaceHeight(x, z) + 0.03, z));
         }
         return pts;
@@ -2766,7 +2767,7 @@ group.name = name;
       tracerShotIsPutt = !!(club.isPutter || specs.isPutt);
       if (teePegGroup) teePegGroup.visible = false;
 
-      ballVel.copy(getShotLaunchVelocity(specs, shotDirection));
+      const launch=getShotLaunchVelocity(specs, shotDirection);ballVel.copy(launch);ballVel.shotImpact=launch.shotImpact||null;window.ShotTechnique?.recordImpact(ballVel.shotImpact);
       if(isPuttClub())courseBallPlugged=false;
 
       // Realistic audio trigger
@@ -2831,6 +2832,7 @@ group.name = name;
           }
         }
       }
+      if(applyLift)window.ShotTechnique?.air(velocity,air,dt,kLift);
       velocity.y -= gravity * dt;
       position.addScaledVector(velocity, dt);
 
@@ -2868,6 +2870,7 @@ group.name = name;
             const normal = getTerrainNormal(ballPos.x, ballPos.z);
             const vDotN = ballVel.dot(normal);
 
+            window.ShotTechnique?.terrain(ballVel,normal);
             const restitution = club.bounceRest !== undefined ? club.bounceRest : 0.22;
             const tangentLoss = club.tangentLoss !== undefined ? club.tangentLoss : 0.65;
 

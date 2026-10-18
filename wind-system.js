@@ -23,7 +23,7 @@ function restore(saved,hole=1){
 function physicsWind(){return shot||current;}
 function captureShot(){shot=Object.freeze({...current});generation++;short.textContent='باد ضربه ثبت شد';impact.textContent='شرایط باد این ضربه تا پایان آن ثابت است.';return {...shot};}
 function directionText(){const d=aimDirection,along=current.x*d.x+current.z*d.z,cross=-current.x*d.z+current.z*d.x;if(current.mph<.05)return'آرام · بدون باد';const words=[];if(Math.abs(along)>.15)words.push(along>0?'موافق ضربه':'مخالف ضربه');if(Math.abs(cross)>.15)words.push(cross>0?'از چپ به راست':'از راست به چپ');return words.join(' · ')||'باد بسیار ضعیف';}
-function signature(){return JSON.stringify([window.activeCourseId,currentHoleNumber,ballPos.toArray(),aimDirection.toArray(),currentClubIndex,currentSwingMode,swingPowerPercent,document.getElementById('putter-backswing-slider').value,current.x,current.z,courseBallPlugged]);}
+function signature(){return JSON.stringify([window.activeCourseId,currentHoleNumber,ballPos.toArray(),aimDirection.toArray(),currentClubIndex,currentSwingMode,swingPowerPercent,document.getElementById('putter-backswing-slider').value,current.x,current.z,courseBallPlugged,window.ShotTechnique?.signature(GOLF_BAG[currentClubIndex])]);}
 function makeTrace(wind){return{p:ballPos.clone().add(new T.Vector3(0,.05,0)),v:getShotLaunchVelocity(calculateShotSpecs(currentClubIndex,currentSwingMode,swingPowerPercent)),origin:ballPos.clone(),wind:{x:wind.x,z:wind.z},t:0,peak:ballPos.y,done:false,contact:null,wet:false};}
 function advance(trace,n=80){const dt=1/120;for(let j=0;j<n&&!trace.done;j++){
  const previous=trace.p.clone();stepBallFlight(trace.p,trace.v,dt,true,trace.wind);trace.t+=dt;trace.peak=Math.max(trace.peak,trace.p.y);

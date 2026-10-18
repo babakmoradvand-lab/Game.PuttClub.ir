@@ -80,7 +80,7 @@ walkPose(distance,speed,dt){
 }
 
 _pose(mode,phase,p){this._inSwing=true;
- if(!this._setupProbe49&&!this._planProbe49){const q=this.model.getWorldQuaternion(Q()),o=this.model.getWorldPosition(V()),g=this.groundHeight?[this.feet.L,this.feet.R,this.ball].map(v=>{const w=this.model.localToWorld(v.clone());return this.groundHeight(w.x,w.z)}):[],normal=this.groundNormal?this.groundNormal(o.x,o.z):Y,key=[this.clubKey,mode,...this.ball.toArray(),...o.toArray(),...q.toArray(),...g,...normal.toArray()].map(x=>typeof x==='number'?Math.round(x*10000)/10000:x).join(':');this._bodyPlans49=this._bodyPlans49||new Map();if(!this._bodyPlans49.has(key)){if(this._bodyPlans49.size>32)this._bodyPlans49.clear();this._bodyPlans49.set(key,this.makeBodyPlan49(mode));}this._bodyPlan49=this._bodyPlans49.get(key);}
+ if(!this._setupProbe49&&!this._planProbe49){const q=this.model.getWorldQuaternion(Q()),o=this.model.getWorldPosition(V()),g=this.groundHeight?[this.feet.L,this.feet.R,this.ball].map(v=>{const w=this.model.localToWorld(v.clone());return this.groundHeight(w.x,w.z)}):[],normal=this.groundNormal?this.groundNormal(o.x,o.z):Y,key=[this.clubKey,window.ShotTechnique?.signature(this.club),mode,...this.ball.toArray(),...o.toArray(),...q.toArray(),...g,...normal.toArray()].map(x=>typeof x==='number'?Math.round(x*10000)/10000:x).join(':');this._bodyPlans49=this._bodyPlans49||new Map();if(!this._bodyPlans49.has(key)){if(this._bodyPlans49.size>32)this._bodyPlans49.clear();this._bodyPlans49.set(key,this.makeBodyPlan49(mode));}this._bodyPlan49=this._bodyPlans49.get(key);}
  super._pose(mode,phase,p);this.fitSoles();this._inSwing=false;}
 
 }

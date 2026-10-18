@@ -41,7 +41,7 @@
     static address(club={},mode='full') {
       const s=GolfMotion.club(club),g=GolfMotion.geometry(club),putt=!!club.isPutter||mode==='putt',fit=GolfMotion.setups?.[club.id];
       const distance=fit?.distance??((g.shaftLength-.055)*Math.cos(rad(s.addressAngle))+g.heelOffset+.28);
-      return {distance,lead:putt?0:club.id==='1W'?.10:club.cat==='wood'?.055:club.cat==='wedge'?-.018:0,width:putt?.29:mode==='chip'?.29:club.cat==='wood'?.46:.39};
+      const technique=window.ShotTechnique?.get(club);return {distance,lead:(putt?0:club.id==='1W'?.10:club.cat==='wood'?.055:club.cat==='wedge'?-.018:0)+(technique?.ball||0),width:(putt?.29:mode==='chip'?.29:club.cat==='wood'?.46:.39)*(technique?.width||1)};
     }
     static time(phase,p){p=clamp(p||0,0,1);return phase==='backswing'?.4*p:phase==='downswing'?.4+.1*p:phase==='followthrough'?.5+.5*p:phase==='fade'?1:0;}
     static keys(mode,h,d,impactH,impactD) {
@@ -230,7 +230,7 @@
     }
     footTarget(side,width,heel,chestYaw) {
       const f=this.feet[side].clone();f.x=(side==='L'?1:-1)*width/2;
-      let q=this.footRotations[side].clone();
+      let q=this.footRotations[side].clone();window.ShotTechnique?.foot(this.club,side,f,q);
       if(side==='R'&&heel>0) {
         // Roll around the toe contact, not the ankle: heel lifts, toe stays grounded.
         const pivot=f.clone().add(V(0,-f.y+.006,.210)),roll=new T.Quaternion().setFromAxisAngle(V(1,0,0),rad(58)*heel),turn=new T.Quaternion().setFromAxisAngle(Y,Math.max(0,chestYaw)*.50*heel),rotation=turn.multiply(roll);
@@ -263,7 +263,7 @@
     pose(mode,phase,p) {
       mode=this.club.isPutter?'putt':styleNames[mode]?mode:'full';
       const t=GolfMotion.time(phase,p),q=this.model.getWorldQuaternion(new T.Quaternion()),o=this.model.getWorldPosition(V());
-      const key=[this.clubKey,mode,...this.ball.toArray(),...o.toArray(),...q.toArray()].map(v=>typeof v==='number'?Math.round(v*1e6)/1e6:v).join(':');
+      const key=[this.clubKey,window.ShotTechnique?.signature(this.club),mode,...this.ball.toArray(),...o.toArray(),...q.toArray()].map(v=>typeof v==='number'?Math.round(v*1e6)/1e6:v).join(':');
       if(this._poseCacheKey!==key){this._poseCacheKey=key;this._poseCache=[];}
       const clone=state=>Object.fromEntries(Object.entries(state||{}).map(([s,a])=>[s,{t:a.t,pole:a.pole.clone(),axis:a.axis.clone(),upperQ:a.upperQ.clone(),twist:a.twist}]));
       const frame=x=>x<=.4?['backswing',x/.4]:x<=.5?['downswing',(x-.4)/.1]:['followthrough',(x-.5)/.5];
@@ -311,6 +311,7 @@
       const origin=addressFit.origin,butt=origin.clone().addScaledVector(d,-this.shaftLength),hand=butt.clone().addScaledVector(d,.055),impactH=impactFit.origin.clone().addScaledVector(impactD,-(this.shaftLength-.055));
       this.contactTarget.copy(impactFit.contact);this.impactNormal=impactFit.normal;
       const keys=GolfMotion.keys(mode,hand,d,impactH,impactD),m=GolfMotion.sample(keys,t),release=smooth(.65,1,t)*(mode==='putt'?0:mode==='chip'?.08:(mode==='half'||mode==='punch')?.55:1),address=GolfMotion.address(this.club,mode);
+      const techniqueAnchor=V(0,this.shaftLength,0).add(impactFit.contact.clone().sub(impactFit.origin).applyQuaternion(impactFit.q.clone().invert()));window.ShotTechnique?.pose(this,m,t,techniqueAnchor);
       const terrainDrop=clamp((this.radius-this.ball.y)*1.05,0,.14)*(this.isMPFB?1-release:1-smooth(hand.y+.16,hand.y+.46,m.hand.y));
       const stanceDrop=(this.club.cat==='wood'?.035:this.club.cat==='wedge'?.075:.062)+(mode==='chip'?.006:mode==='punch'?.004:0);
       const hip=this.bones.Hips,r=this.rest[hip.uuid];hip.position.copy(r.p);

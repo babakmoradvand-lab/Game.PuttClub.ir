@@ -110,7 +110,7 @@
     window.gameMode = mode;
     window.selectedSingleHole = hole;
     window.GreenReader?.close(false);
-    window.WindSystem?.newRound();
+    window.WindSystem?.newRound();window.ShotTechnique?.reset();
     holeScores.fill(null);
     currentSwingMode = "full";
     buildClubButtons();
@@ -167,8 +167,7 @@
     if (!panelIds.includes(id)) return;
     if (id === "club-picker-modal" || id === "swing-picker-modal") {
       if (isBallFlying || golferSwingPhase !== "idle") return;
-      if (id === "swing-picker-modal" && GOLF_BAG[currentClubIndex].isPutter)
-        return;
+      if (id === "swing-picker-modal" && (courseRelief || window.GreenReader?.enabled || window.GolferLocomotion?.busy))return;
     }
     if (id === "menu-modal") renderScorecardTable();
     returnFocus = document.activeElement;
@@ -189,9 +188,11 @@
       "aria-expanded",
       String(id === "swing-picker-modal"),
     );
+    if(id==="swing-picker-modal")window.TechniqueUI?.open();
     focusFirst($(id));
   }
   function closePanel(restore = true) {
+    window.TechniqueUI?.close();
     panelIds.forEach((id) => {
       $(id).hidden = true;
       $(id).classList.remove("open");
@@ -251,7 +252,7 @@
       ? $("putter-backswing-slider").value + "%"
       : power + "%";
     $("swing-trigger-card").disabled =
-      isPutter || isBallFlying || golferSwingPhase !== "idle";
+      isBallFlying || golferSwingPhase !== "idle";
     $("power-readout").innerHTML = power + "<small>%</small>";
     $("swing-power-slider").value = power;
     $("swing-power-slider").setAttribute(
@@ -290,6 +291,7 @@
       ),
     );
     updateShotState(true);
+    window.TechniqueUI?.sync();
     syncAimControlsLayout();
   }
   function updateShotState(force = false) {
@@ -299,6 +301,8 @@
     const equipmentKey=(equipment?.phase||"none")+":"+(equipment?.canStrike||false);
     if (force || lastBusy !== busy || updateShotState.equipmentKey!==equipmentKey) {
       lastBusy = busy;updateShotState.equipmentKey=equipmentKey;
+      document.querySelectorAll("#quick-arcs button").forEach(e=>e.disabled=shotBusy||!!GOLF_BAG[currentClubIndex].isPutter);
+      if(shotBusy&&panel==="swing-picker-modal")closePanel(false);
       for (const id of [
         "club-trigger-card",
         "btn-launch-shot",
@@ -314,7 +318,7 @@
       ])
         $(id).disabled = busy;
       $("swing-trigger-card").disabled =
-        shotBusy || !!GOLF_BAG[currentClubIndex].isPutter;
+        shotBusy;
       $("swing-power-slider").disabled=shotBusy;
       $("putter-backswing-slider").disabled=shotBusy;
       $("btn-launch-shot").disabled=busy||!!equipment&&!equipment.canStrike;
@@ -404,7 +408,7 @@
   listen("btn-open-settings", () => openPanel("settings-panel"));
   document
     .querySelectorAll("[data-mode]")
-    .forEach((e) => e.addEventListener("click", () => { setMode(e.dataset.mode); closePanel(); saveSession(); }));
+    .forEach((e) => e.addEventListener("click", () => { setMode(e.dataset.mode); if(!e.closest("#quick-arcs"))closePanel(); saveSession(); }));
   $("swing-power-slider").addEventListener("input", (e) =>
     setPower(e.target.value),
   );
@@ -572,13 +576,14 @@
   }
   function exportSession() {
     if(isBallFlying||golferSwingPhase!=="idle"||isCameraTransitioning)return null;
-    return {schema:1,started,view:document.body.dataset.view,hudSlide,step,skill,course,mode:gameMode,hole:currentHoleNumber,single:selectedSingleHole,strokes:strokesCurrentHole,tee:isWomenTee,courseTee:courseTeeColor,scores:[...holeScores],courseState:isPuttClub()?exportPuttClubState():null,wind:window.WindSystem?.exportState(),equipment:window.CaddieSystem?.exportState(),club:currentClubIndex,swing:currentSwingMode,power:swingPowerPercent,ball:ballPos.toArray(),aim:aimDirection.toArray(),camera:camera.position.toArray(),zoom:gameplayView.zoom,target:orbitControls.target.toArray(),putt:$("putter-backswing-slider").value,celebrating:$("celebration-overlay").style.display!=="none",telemetry:["tele-carry","tele-roll","tele-total"].map(id=>$(id).textContent)};
+    return {schema:1,started,view:document.body.dataset.view,hudSlide,technique:window.ShotTechnique?.exportState(),step,skill,course,mode:gameMode,hole:currentHoleNumber,single:selectedSingleHole,strokes:strokesCurrentHole,tee:isWomenTee,courseTee:courseTeeColor,scores:[...holeScores],courseState:isPuttClub()?exportPuttClubState():null,wind:window.WindSystem?.exportState(),equipment:window.CaddieSystem?.exportState(),club:currentClubIndex,swing:currentSwingMode,power:swingPowerPercent,ball:ballPos.toArray(),aim:aimDirection.toArray(),camera:camera.position.toArray(),zoom:gameplayView.zoom,target:orbitControls.target.toArray(),putt:$("putter-backswing-slider").value,celebrating:$("celebration-overlay").style.display!=="none",telemetry:["tele-carry","tele-roll","tele-total"].map(id=>$(id).textContent)};
   }
   async function importSession(data) {
     if(data?.schema!==1||!data.started)return;
     selectSkill(data.skill);selectCourse(data.course);window.currentHandicap=skill;
     if(window.activeCourseId!==course)await switchActiveCourse(course);
     gameMode=data.mode;selectedSingleHole=data.single;window.gameMode=gameMode;window.selectedSingleHole=selectedSingleHole;
+    window.ShotTechnique?.restore(data.technique);
     window.WindSystem?.restore(data.wind,data.hole);
     courseTeeColor=["blue","white","red"].includes(data.courseTee)?data.courseTee:"blue";isWomenTee=data.tee;setupHole(data.hole);strokesCurrentHole=data.strokes;
     data.scores.forEach((score,n)=>holeScores[n]=score);

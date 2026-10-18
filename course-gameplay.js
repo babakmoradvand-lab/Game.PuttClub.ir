@@ -73,6 +73,7 @@ function stepPuttClubPhysics(dt){
     let lo=0,hi=1;if(previous.y>courseSupport(previous.x,previous.z)+BALL_RADIUS)for(let i=0;i<12;i++){const m=(lo+hi)/2,p=previous.clone().lerp(ballPos,m);if(p.y>courseSupport(p.x,p.z)+BALL_RADIUS)lo=m;else hi=m;}else hi=1;
     ballPos.copy(previous.clone().lerp(ballPos,hi));ballPos.y=courseSupport(ballPos.x,ballPos.z)+BALL_RADIUS;
     const lie=pc.surface(ballPos.x,ballPos.z),sand=lie.type==='bunker',normal=getTerrainNormal(ballPos.x,ballPos.z),vn=ballVel.dot(normal);if(!hasImpacted){hasImpacted=true;firstImpactPos.copy(ballPos);AudioEngine.playBallLand(sand);}
+    window.ShotTechnique?.terrain(ballVel,normal);
     const retention=sand?Math.sqrt(1-(lie.physicsBehavior?.energyAbsorptionOnLanding??.78)):1,restitution=(club.bounceRest??.22)*retention,tangent=(club.tangentLoss??.65)*retention;
     if(sand&&vn<-4){courseBallPlugged=true;courseEvents.push({type:'plugged-lie',normalSpeed:-vn});}
     if(vn<0){const norm=normal.clone().multiplyScalar(vn),tan=ballVel.clone().sub(norm).multiplyScalar(tangent);ballVel.copy(norm.multiplyScalar(-restitution)).add(tan);}
