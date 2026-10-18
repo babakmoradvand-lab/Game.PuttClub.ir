@@ -2783,6 +2783,7 @@ group.name = name;
       }
 
       isBallFlying = true;
+      window.PuttBroadcast?.start();
       aimLine.visible = false;
       ballMarker.visible = false;
       landingRing.visible = false;
@@ -2897,6 +2898,7 @@ group.name = name;
           // ===================================================================
           // REAL 3D GROUND ROLLING & SLOPE DYNAMICS (MASJED SOLEYMAN TERRAIN)
           // ===================================================================
+          const rollPrevious=ballPos.clone();
           ballPos.y = groundH;
 
           const normal = getTerrainNormal(ballPos.x, ballPos.z);
@@ -2955,7 +2957,9 @@ group.name = name;
 
           // Cup Capture Detection
           const pinPos = holePins3D[currentHoleNumber];
-          if (pinPos) {
+          if((club.isPutter||tracerShotIsPutt)&&pinPos){
+            if(checkPuttClubCup(rollPrevious,ballPos,sdt))return;
+          } else if (pinPos) {
             const dToHole = new THREE.Vector2(ballPos.x - pinPos.x, ballPos.z - pinPos.z).length();
             if (dToHole < 1.15 && ballVel.length() < 2.2) {
               ballVel.set(0, 0, 0);
@@ -3021,7 +3025,8 @@ group.name = name;
     }
 
     function handleHoleCompleted() {
-      window.CaddieSystem?.finishInterruptedShot();
+      const athleteCelebration=!!window.CaddieSystem?.onHole?.();
+      if(!athleteCelebration)window.CaddieSystem?.finishInterruptedShot();
       hideToptracerYardageTag();
       holeScores[currentHoleNumber] = strokesCurrentHole;
       const holeData = courseHoles[currentHoleNumber] || {};
@@ -3046,6 +3051,7 @@ group.name = name;
       document.getElementById('celeb-strokes').textContent = strokesCurrentHole;
       document.getElementById('celeb-par').textContent = par;
       overlay.style.display = 'flex';
+      overlay.style.visibility=athleteCelebration?'hidden':'';
       if (window.PuttUI) window.PuttUI.showCelebration();
 
       const btnNext = document.getElementById('btn-celeb-next');
@@ -3118,6 +3124,7 @@ group.name = name;
 
     window.setupHole = setupHole;
     function setupHole(hNum) {
+      window.PuttBroadcast?.reset();
       window.GolferLocomotion?.reset();
       window.GreenReader?.close(false);
       window.WindSystem?.enterHole(hNum);
@@ -3199,6 +3206,7 @@ group.name = name;
     }
 
     function updateBroadcastCamera(dt) {
+        if(tracerShotIsPutt){window.PuttBroadcast?.tick(dt);return;}
         // Dynamic Broadcast Director: 100% Smooth Continuous Interpolation (Zero Jump at Impact)
         if (!hasImpacted) {
           if (flightElapsedTime < 1.4) {

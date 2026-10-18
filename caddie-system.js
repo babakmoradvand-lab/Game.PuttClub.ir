@@ -153,6 +153,18 @@ function desiredAddressPosition(){
 }
 function poseGolfer(dt){
  if(window.GolferLocomotion?.busy)return;
+ if(state.phase==='read-green'){
+  const a=proGolferAnimator,t=state.time;if(!readStart)readStart=a.behaviorSnapshot();
+  if(t<2.7){a.readGreenPose();if(t<1.0)a.blendRead(readStart,t);if(t>=1)readRise=a.behaviorSnapshot();}
+  else{resetGolferPosture();a.blendRead(readRise||readStart,(t-2.7)/.95);}
+  diagnostics.pose='read-first-putt';if(t>=3.65){readStart=readRise=null;phase('ready');window.PuttUI?.saveSession();}return;
+ }
+ if(state.phase==='celebrate'){
+  const a=proGolferAnimator;if(!joyStart)joyStart=a.behaviorSnapshot();a.celebratePose();const targetClubQ=a.grip.quaternion.clone();a.behaviorBlend(joyStart,Math.min(1,state.time/.95),false);a.grip.quaternion.copy(joyStart.q.clone().slerp(targetClubQ,GolferBehavior.ease(state.time/.95)));a.model.updateMatrixWorld(true);
+  // Keep the real grip in the raised left hand through the blend.
+  const h=a.bones['Hand.L'],q=a.grip.getWorldQuaternion(new T.Quaternion()),p=h.localToWorld(V(.01957656,.09546318,-.00045376)).sub(V(0,.025,0).applyQuaternion(q));a.grip.position.copy(a.grip.parent.worldToLocal(p));a.model.updateMatrixWorld(true);for(const mesh of a.skinMeshes)mesh.skeleton.update();
+  diagnostics.pose='cup-celebration';if(state.time>=3.8){joyStart=null;document.getElementById('celebration-overlay').style.visibility='';golferSwingPhase='idle';golferSwingProgress=0;golferFinishHold=0;offerStart=null;offerTime=0;pathGoal=null;phase('return-approach');}return;
+ }
  const a=proGolferAnimator;if(!state.initialized||!a)return;
  if(golferSwingPhase==='followthrough'||golferSwingPhase==='fade'&&golferFinishHold>0){lookHuman(a,ballPos);diagnostics.pose='watch-finish';return;}
  if(!controlsPose())return;
@@ -198,7 +210,8 @@ function initialize(){
  for(const side of ['L','R']){const h=bones['Bip01_'+side+'_Hand'],mid=bones['Bip01_'+side+'_Finger2'],index=bones['Bip01_'+side+'_Finger1'],little=bones['Bip01_'+side+'_Finger4'],f=mid.position.clone().normalize(),right=index.position.clone().sub(little.position).normalize(),n=f.clone().cross(right).normalize();right.copy(n).cross(f).normalize();handAxes[side]=new T.Quaternion().setFromRotationMatrix(new T.Matrix4().makeBasis(f,right,n));footClearance[side]=Math.max(.045,bones['Bip01_'+side+'_Foot'].getWorldPosition(V()).y);}
  state.initialized=true;reset();if(savedEquipment)restore(savedEquipment);window.PuttUI?.updateShotState(true);event('initialized-13-physical-clubs');
 }
-function reset(){if(!state.initialized)return;for(let i=0;i<clubs.length;i++)putInBag(i);Object.assign(state,{held:null,active:null,pending:null,purpose:null,struck:false,lowerTime:0,holeDone:false});finishPose=null;offerStart=null;addressStart=null;offerTime=0;studyBlend=0;maleLean=0;releaseStart=null;releaseTime=0;restCallback=null;path=[];pathGoal=null;poseRelease=1;holeKey=(window.activeCourseId||'mis')+':'+currentHoleNumber;lastBall.copy(ballPos);actor.position.copy(safePlace());actor.rotation.y=Math.atan2(golferGroup.position.x-actor.position.x,golferGroup.position.z-actor.position.z);phase('empty');syncClubs();}
+let readStart=null,readRise=null,joyStart=null;const readHoles=new Set();
+function reset(){if(!state.initialized)return;readStart=readRise=joyStart=null;document.getElementById('celebration-overlay').style.visibility='';if(strokesCurrentHole===0)readHoles.delete((window.activeCourseId||'mis')+':'+currentHoleNumber);for(let i=0;i<clubs.length;i++)putInBag(i);Object.assign(state,{held:null,active:null,pending:null,purpose:null,struck:false,lowerTime:0,holeDone:false});finishPose=null;offerStart=null;addressStart=null;offerTime=0;studyBlend=0;maleLean=0;releaseStart=null;releaseTime=0;restCallback=null;path=[];pathGoal=null;poseRelease=1;holeKey=(window.activeCourseId||'mis')+':'+currentHoleNumber;lastBall.copy(ballPos);actor.position.copy(safePlace());actor.rotation.y=Math.atan2(golferGroup.position.x-actor.position.x,golferGroup.position.z-actor.position.z);phase('empty');syncClubs();}
 
 function atBall(){if(!state.initialized)return;const key=(window.activeCourseId||'mis')+':'+currentHoleNumber;if(key!==holeKey){reset();return;}if(window.GolferLocomotion?.continuous){lastBall.copy(ballPos);return;}if(lastBall.distanceTo(ballPos)>.4&&!isBallFlying&&golferSwingPhase==='idle'){lastBall.copy(ballPos);actor.position.copy(safePlace());path=[];pathGoal=null;if(state.phase==='retire-empty')phase('empty');}}
 function request(index){
@@ -230,11 +243,16 @@ function finishStored(){
  else{state.struck=false;state.active=null;state.pending=null;if(state.holeDone&&!isBallFlying&&golferSwingPhase==='fade'&&golferFinishHold<=0){golferSwingPhase='idle';golferSwingProgress=0;}phase('retire-empty');const callback=restCallback;restCallback=null;if(callback)callback();window.PuttUI?.saveSession();}
 }
 function busy(){return !state.initialized||!['empty','ready','follow','shot','retire-empty'].includes(state.phase);}
-function canStrike(){const d=actor.position.clone().sub(ballPos),inShot=d.dot(aimDirection)>0&&Math.abs(d.x*aimDirection.z-d.z*aimDirection.x)<3;return !window.GolferLocomotion?.busy&&!inShot&&state.initialized&&state.phase==='ready'&&state.held===currentClubIndex&&owners[currentClubIndex]==='golfer'&&distance()>=PARK_CLEARANCE&&!isBallFlying&&golferSwingPhase==='idle';}
-function restore(data){savedEquipment=data;if(!state.initialized)return;reset();if(data?.schema===1&&Number.isInteger(data.heldClub)&&data.heldClub===currentClubIndex&&data.heldClub>=0&&data.heldClub<clubs.length){giveGolfer(data.heldClub);state.active=data.heldClub;phase('ready');}savedEquipment=null;syncClubs();}
+function needsRead(){return state.initialized&&state.phase==='ready'&&state.held!==null&&GOLF_BAG[state.held].isPutter&&!state.struck&&!isBallFlying&&golferSwingPhase==='idle'&&!window.GolferLocomotion?.busy&&window.GolferLocomotion?.near(ballPos)&&!readHoles.has((window.activeCourseId||'mis')+':'+currentHoleNumber);}
+function canStrike(){const d=actor.position.clone().sub(ballPos),inShot=d.dot(aimDirection)>0&&Math.abs(d.x*aimDirection.z-d.z*aimDirection.x)<3;return !needsRead()&&!window.GolferLocomotion?.busy&&!inShot&&state.initialized&&state.phase==='ready'&&state.held===currentClubIndex&&owners[currentClubIndex]==='golfer'&&distance()>=PARK_CLEARANCE&&!isBallFlying&&golferSwingPhase==='idle';}
+function restore(data){if(Array.isArray(data?.readHoles))for(const key of data.readHoles)if(typeof key==='string')readHoles.add(key);savedEquipment=data;if(!state.initialized)return;reset();if(Array.isArray(data?.readHoles))for(const key of data.readHoles)if(typeof key==='string')readHoles.add(key);if(data?.schema===1&&Number.isInteger(data.heldClub)&&data.heldClub===currentClubIndex&&data.heldClub>=0&&data.heldClub<clubs.length){giveGolfer(data.heldClub);state.active=data.heldClub;phase('ready');}savedEquipment=null;syncClubs();}
 function tick(dt){
  initialize();if(!state.initialized)return;atBall();if(window.GreenReader?.enabled){syncClubs();return;}
  actor.visible=document.body.dataset.view==='game'&&(!isCameraTransitioning||isBallFlying);if(document.body.dataset.view!=='game')return;
+ const key=(window.activeCourseId||'mis')+':'+currentHoleNumber;
+ if(needsRead()){
+  readHoles.add(key);readStart=proGolferAnimator.behaviorSnapshot();readRise=null;phase('read-green');window.PuttUI?.saveSession();
+ }
  state.time+=dt;walking=false;const name=state.phase;let crouch=0;
  if(name==='empty'||name==='ready'||name==='follow'||name==='retire-empty'){
   const delta=actor.position.clone().sub(golferGroup.position),forward=delta.dot(aimDirection),cross=Math.abs(delta.x*aimDirection.z-delta.z*aimDirection.x);
@@ -275,6 +293,7 @@ function tick(dt){
  }else if(state.phase==='take'&&state.held!==null){const club=clubs[state.held];handTarget('R',club.localToWorld(V(0,.16,0)),Y.clone().applyQuaternion(club.getWorldQuaternion(tempQ)));}
  syncClubs();actor.updateMatrixWorld(true);diagnostics.bodyRootGap=distance();diagnostics.phase=state.phase;diagnostics.owners=[...owners];diagnostics.safeDistance=distance();diagnostics.ready=canStrike();diagnostics.finite=actor.position.toArray().every(Number.isFinite)&&clubs.every(o=>o.position.toArray().every(Number.isFinite));
 }
-const api={actor,diagnostics,get controlsPose(){return controlsPose();},get retainPutter(){return retainedPutter();},get heldIndex(){return state.held;},request,onShot,finishInterruptedShot,tick,reset,atBall,deferRest,restore,exportState:()=>({schema:1,heldClub:!state.initialized&&savedEquipment?.schema===1?savedEquipment.heldClub:state.phase==='ready'?state.held:null}),get loaded(){return state.loaded;},get initialized(){return state.initialized;},get busy(){return busy();},get canStrike(){return canStrike();},get phase(){return state.phase;},get heldClub(){return state.held===null?null:GOLF_BAG[state.held];},get empty(){return state.held===null;},get state(){return{...state,owners:[...owners]};}};window.CaddieSystem=api;
+function onHole(){if(!state.initialized||state.held===null||!proGolferAnimator.celebratePose)return false;state.holeDone=true;state.purpose='post-shot';state.pending=null;state.active=state.held;state.struck=true;joyStart=proGolferAnimator.behaviorSnapshot();phase('celebrate');return true;}
+const api={actor,diagnostics,onHole,get controlsPose(){return controlsPose();},get retainPutter(){return retainedPutter();},get heldIndex(){return state.held;},request,onShot,finishInterruptedShot,tick,reset,atBall,deferRest,restore,exportState:()=>({schema:1,heldClub:!state.initialized&&savedEquipment?.schema===1?savedEquipment.heldClub:['ready','read-green'].includes(state.phase)?state.held:null,readHoles:[...readHoles]}),get loaded(){return state.loaded;},get initialized(){return state.initialized;},get busy(){return busy();},get canStrike(){return canStrike();},get phase(){return state.phase;},get heldClub(){return state.held===null?null:GOLF_BAG[state.held];},get empty(){return state.held===null;},get state(){return{...state,owners:[...owners]};}};window.CaddieSystem=api;
 window.CaddieReady=new T.GLTFLoader().loadAsync('./characters/caddie.glb').then(gltf=>{model=gltf.scene;actor.add(model);mixer=new T.AnimationMixer(model);idle=mixer.clipAction(T.AnimationClip.findByName(gltf.animations,'Idle'));walk=mixer.clipAction(T.AnimationClip.findByName(gltf.animations,'Walk'));idle.play();walk.play();state.loaded=true;return true;});
 })();

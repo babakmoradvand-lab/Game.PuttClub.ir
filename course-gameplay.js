@@ -23,9 +23,10 @@ async function activatePuttClubCourse(enabled){
 function resetPuttClubHole(){courseRelief=null;courseBallPlugged=false;courseLastEntries={};courseShotOrigin=null;window.PuttClubCourse.canopies.clear();document.getElementById('course-relief')?.setAttribute('hidden','');}
 function beginPuttClubShot(){courseShotOrigin={position:ballPos.toArray(),fromTee:teePegGroup.visible};window.PuttClubCourse.canopies.clear();}
 function courseSupport(x,z){const pin=holePins3D[currentHoleNumber];if(pin&&Math.hypot(x-pin.x,z-pin.z)<.085)return pin.y-.001;return getTerrainHeight(x,z);}
-function checkPuttClubCup(from,to){
+function checkPuttClubCup(from,to,stepDt=1/360){
  const pin=holePins3D[currentHoleNumber];if(!pin)return false;const dx=to.x-from.x,dz=to.z-from.z,den=dx*dx+dz*dz,t=den?THREE.MathUtils.clamp(((pin.x-from.x)*dx+(pin.z-from.z)*dz)/den,0,1):0,x=from.x+t*dx,z=from.z+t*dz;
- if(Math.hypot(x-pin.x,z-pin.z)<=.054-BALL_RADIUS&&Math.hypot(ballVel.x,ballVel.z)<1.8&&to.y<=pin.y+BALL_RADIUS+.06){ballPos.set(pin.x,pin.y-.085,pin.z);ballMesh.position.copy(ballPos);ballVel.set(0,0,0);isBallFlying=false;isBallSettled=false;golferSwingPhase='idle';golferImpactCallback=null;courseEvents.push({type:'cup',hole:currentHoleNumber,strokes:strokesCurrentHole});handleHoleCompleted();return true;}return false;
+ const putt=tracerShotIsPutt||GOLF_BAG[currentClubIndex]?.isPutter;const capture=putt&&window.PuttCapture?PuttCapture.check(from,to,pin,stepDt):(Math.hypot(x-pin.x,z-pin.z)<=.054-BALL_RADIUS&&Math.hypot(ballVel.x,ballVel.z)<1.8&&to.y<=pin.y+BALL_RADIUS+.06);
+ if(capture){ballPos.set(pin.x,pin.y-.085,pin.z);ballMesh.position.copy(ballPos);ballVel.set(0,0,0);isBallFlying=false;isBallSettled=false;golferSwingPhase='idle';golferImpactCallback=null;courseEvents.push({type:'cup',hole:currentHoleNumber,strokes:strokesCurrentHole});handleHoleCompleted();return true;}return false;
 }
 function pendingPuttClubRelief(kind,hazard=null){
  window.CaddieSystem?.finishInterruptedShot();
@@ -84,7 +85,7 @@ function stepPuttClubPhysics(dt){
    if(speed>loss){ballVel.x*=1-loss/speed;ballVel.z*=1-loss/speed;}else if(Math.hypot(ax,az)<decel){ballVel.set(0,0,0);}
    ballPos.x+=ballVel.x*sdt;ballPos.z+=ballVel.z*sdt;ballPos.y=courseSupport(ballPos.x,ballPos.z)+BALL_RADIUS;
    pc.collideTrees(previous,ballPos,ballVel,BALL_RADIUS);
-   if(checkPuttClubCup(previous,ballPos))return;
+   if(checkPuttClubCup(previous,ballPos,sdt))return;
    const moved=Math.hypot(ballPos.x-previous.x,ballPos.z-previous.z);ballMesh.rotation.x+=(ballPos.z-previous.z)/BALL_RADIUS;ballMesh.rotation.z-=(ballPos.x-previous.x)/BALL_RADIUS;
   }
   pc.crossings(previous,ballPos,courseLastEntries);

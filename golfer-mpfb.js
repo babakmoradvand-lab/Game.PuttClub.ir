@@ -46,7 +46,7 @@ walkPose(distance,speed,dt){
  // Only the real occupied hand is constrained; the free arm keeps the clip's
  // natural counter-swing. Keep the carried club above the turf.
  const carrying=window.CaddieSystem?!!window.CaddieSystem.heldClub:!!this.club.isPutter;
- if(carrying){this.grip.position.set(.26,Math.max(.94,this.shaftLength+.14),.13);this.grip.quaternion.copy(Q().setFromUnitVectors(Y,V(.06,-.98,.13).normalize()));this.model.updateMatrixWorld(true);this.gripHands();this._armState={};this.arm('L',this.handTargets.L,V(.35,-.4,.3).applyQuaternion(modelQ));this.fingers('L');}
+ if(carrying&&this.carryClubByHead)this.carryClubByHead();
  for(const side of ['L','R'])if(!(carrying&&side==='L'))for(let finger=2;finger<=5;finger++)for(let k=1;k<=3;k++){const b=this.bones['Finger'+finger+'_'+k+'.'+side];b.quaternion.copy(this.rest[b.uuid].q).multiply(Q().setFromAxisAngle(V(1,0,0),k===1?.22:.35));}
  this.model.updateMatrixWorld(true);for(const mesh of this.skinMeshes)mesh.skeleton.update();this.current='walk';this.walkDiagnostics={source:'caddie-Walk-retarget',phase:((distance/data.strideMeters)%1+1)%1,weight:w,strideMeters:data.strideMeters,speed};
 }
