@@ -147,3 +147,47 @@ body[data-green-read="true"] :is(#top-left-hud-column,#minimap-container,#shot-c
 @media(max-width:360px){#hud-dist-flag{font-size:18px}#bottom-game-dock #club-trigger-badge{display:none}#bottom-game-dock .dock-select{padding:5px 7px}#bottom-game-dock .dock-copy strong{font-size:10px}}
 @media(max-height:460px) and (min-width:601px){#top-left-hud-column{top:calc(8px + var(--safe-top));width:156px}#minimap-container{top:calc(8px + var(--safe-top))}#minimap-toggle #minimap-canvas{max-height:80px;object-fit:contain}#green-read-toolbar{top:calc(6px + var(--safe-top));padding:5px}#read-help-dialog{max-height:calc(100dvh - 20px);padding:10px 16px}}
 @media(prefers-reduced-transparency:reduce){#green-read-toolbar,#read-help-dialog,#read-origin-tag{background:#14271e;backdrop-filter:none;-webkit-backdrop-filter:none}}
+
+/* golfer46: clear glass for the hole-complete dialog only.
+   Keep text opaque; reduce surface tint rather than fading the whole panel.
+   Blur is bounded to the card, never the full game/canvas. */
+body[data-view="game"] #celebration-overlay {
+ background:rgba(3,12,7,.08);
+ backdrop-filter:none;-webkit-backdrop-filter:none;
+}
+body[data-view="game"] #celebration-overlay .celebration-card {
+ background:linear-gradient(140deg,rgba(244,242,223,.10),rgba(10,28,18,.22));
+ border-color:rgba(243,230,197,.42);
+ box-shadow:0 16px 48px #04100926,inset 0 1px 0 #fff8e947,inset 0 -1px 0 #e5d8b714;
+ backdrop-filter:blur(3px) saturate(112%);-webkit-backdrop-filter:blur(3px) saturate(112%);
+ color:#fff8e9;text-shadow:0 1px 2px #00120de6,0 0 8px #00120d99;
+ max-height:calc(100dvh - 48px - env(safe-area-inset-top) - env(safe-area-inset-bottom));overflow-y:auto;
+}
+body[data-view="game"] #celebration-overlay :is(.eyebrow,#celeb-icon,#celeb-title,#celeb-sub,.celebration-actions) {
+ background:transparent;
+}
+body[data-view="game"] #celebration-overlay #celeb-sub {color:#f2ecdc}
+body[data-view="game"] #celebration-overlay .celebration-stats {
+ background:linear-gradient(135deg,#ffffff0a,#061c120f);
+ border:1px solid #f3e6c54a;box-shadow:inset 0 1px 0 #ffffff1f;
+ backdrop-filter:none;-webkit-backdrop-filter:none;
+}
+body[data-view="game"] #celebration-overlay .celebration-stats > div {background:transparent}
+body[data-view="game"] #celebration-overlay .celebration-stats span {color:#f2ecdc}
+body[data-view="game"] #celebration-overlay .celebration-actions button {
+ background:linear-gradient(140deg,#fff8e91c,#061c121a);
+ border:1px solid #f3e6c56b;color:#fff8e9;
+ box-shadow:inset 0 1px 0 #ffffff38,0 3px 12px #0410091a;
+ text-shadow:0 1px 3px #00120de6;
+ backdrop-filter:none;-webkit-backdrop-filter:none;
+}
+body[data-view="game"] #celebration-overlay .celebration-actions button:disabled {opacity:.62;cursor:not-allowed}
+body[data-view="game"] #celebration-overlay .celebration-actions button:focus-visible {outline:2px solid #e5c78b;outline-offset:3px}
+@media(hover:hover){body[data-view="game"] #celebration-overlay .celebration-actions button:not(:disabled):hover {background:linear-gradient(140deg,#fff8e933,#061c1224);border-color:#e5c78bcc}}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) {
+ body[data-view="game"] #celebration-overlay .celebration-card {background:rgba(10,28,18,.28)}
+}
+@media(prefers-reduced-transparency:reduce){
+ body[data-view="game"] #celebration-overlay .celebration-card {background:rgba(10,28,18,.88);backdrop-filter:none;-webkit-backdrop-filter:none}
+ body[data-view="game"] #celebration-overlay .celebration-actions button {background:rgba(20,42,30,.78)}
+}
