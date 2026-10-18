@@ -1,12 +1,27 @@
 /* Item4: native controls + actual skinned golfer/club preview and the same
    launch/air/terrain functions used by gameplay. No external dependencies. */
 (()=>{'use strict';
-const T=THREE,$=id=>document.getElementById(id);let opened=false,timer=0,forecastTimer=0,phase='address',clock=0,previewRenderer,previewScene,previewCamera,clone,pairs=[],patch,lastForecast=null,previewError=false;
+const T=THREE,$=id=>document.getElementById(id);
+const HELP={
+ swingLength:{title:'طول سویینگ',html:'<p>Full، سه‌ربع و نیمه، دامنهٔ قوس و حرکت سویینگ را انتخاب می‌کنند. این گزینه با قدرت مطلق ۱–۱۰۰٪ جداست؛ انتخاب قوس نباید دوباره قدرت را در همان ضریب ضرب کند.</p><p>Chip گزینهٔ قدیمیِ نوع ضربه است، نه طول چهارمِ سویینگ. برای پاتر، کنترل‌های قوس غیرفعال‌اند و توان ضربهٔ زمینی از اسلایدر پاتر تنظیم می‌شود.</p>'},
+ power:{title:'قدرت ضربه',html:'<p>قدرت، سطح کلی انرژیِ ضربه را از ۱ تا ۱۰۰ درصد تعیین می‌کند. این مقدار مطلق است؛ Full، سه‌ربع و نیمه شکل قوس سویینگ‌اند و دوباره در قدرت ضرب نمی‌شوند.</p><p>برای مقایسهٔ منصفانه، فقط قدرت را عوض کن و سایر تنظیم‌ها را ثابت نگه دار.</p>'},
+ face:{title:'زاویهٔ فیس کلاب',html:'<p>این مقدار زاویهٔ فیس در آدرس نسبت به خط هدف است. در قرارداد این مدل، مقدار مثبت به سمت راست و منفی به سمت چپ خط هدف است.</p><p>ریلیز می‌تواند زاویهٔ فیس لحظهٔ برخورد را از فیس آدرس جدا کند؛ بعد از جداشدن توپ، فیس دیگر مسیر همان ضربه را تغییر نمی‌دهد.</p>'},
+ width:{title:'عرض استنس',html:'<p>عرض پاها، فاصلهٔ دو پا را نسبت به عرض پایهٔ همان نوع ضربه کم یا زیاد می‌کند. اثر این کنترل محدود است و به‌تنهایی ادعای شبیه‌سازی تعادل یا نیروی واقعی بدن نیست.</p>'},
+ leadStep:{title:'موقعیت پای جلو',html:'<p>جای پای جلو را مستقل از پای عقب در چند سانتی‌متر جابه‌جا می‌کند. مدل، محور بدن را از محل واقعی دو پا دوباره محاسبه می‌کند؛ توپ جابه‌جا نمی‌شود.</p>'},
+ trailStep:{title:'موقعیت پای عقب',html:'<p>جای پای عقب را مستقل از پای جلو در چند سانتی‌متر جابه‌جا می‌کند. تغییر این مقدار روی هندسهٔ استنس و چرخش بدن اثر می‌گذارد، نه روی محل توپ یا مقصد.</p>'},
+ leadFlare:{title:'زاویهٔ پنجهٔ جلو',html:'<p>چرخش پنجهٔ پای جلو را نسبت به وضعیت خنثی تغییر می‌دهد. دامنه محدود است؛ جهت هر پا نسبت به دیگری آینه‌ای اعمال می‌شود.</p>'},
+ trailFlare:{title:'زاویهٔ پنجهٔ عقب',html:'<p>چرخش پنجهٔ پای عقب را جدا از پای جلو تنظیم می‌کند. این کنترل وضعیت پا را تغییر می‌دهد و به‌تنهایی مسیر توپ را پس از برخورد هدایت نمی‌کند.</p>'},
+ pressure:{title:'انتقال فشار',html:'<p>زمان‌بندی نسبی منحنی فشار در سویینگ را زودتر یا دیرتر می‌کند و در مدل به نقطهٔ پایین قوس و سرعت تحویلی اثر محدود دارد.</p><p>این نمودار اندازه‌گیری وزن، نیروی زمین یا دادهٔ صفحهٔ نیرو نیست.</p>'},
+ release:{title:'زمان‌بندی ریلیز',html:'<p>ریلیز بسته‌شدن فیس را تا لحظهٔ برخورد زودتر یا دیرتر می‌کند. مقدار منفی حالت نگه‌داشتن فیس و مقدار مثبت بسته‌شدن زودتر را تقریب می‌زند.</p><p>ریلیز بعد از جداشدن توپ، مسیر همان ضربه را تغییر نمی‌دهد.</p>'},
+ ball:{title:'موقعیت توپ',html:'<p>در این کنترل، توپ در جای خود می‌ماند و وضعیت بدن/استنس نسبت به آن جلو یا عقب می‌رود. مدل از این اختلاف برای تخمین نقطهٔ پایین قوس و زاویهٔ حمله استفاده می‌کند.</p>'},
+ path:{title:'مسیر سویینگ',html:'<p>جهت مسیر سویینگ را نسبت به خط هدف تنظیم می‌کند. مقدار مثبت داخل به خارج و منفی خارج به داخل است؛ نتیجهٔ شروع توپ به نسبت مسیر و فیس برخورد وابسته است.</p><p>این کنترل، خط ثابت مقصد از توپ تا حفره را جابه‌جا نمی‌کند.</p>'}
+};
+let opened=false,timer=0,forecastTimer=0,phase='address',clock=0,previewRenderer,previewScene,previewCamera,clone,pairs=[],patch,lastForecast=null,previewError=false;
 function club(){return GOLF_BAG[currentClubIndex]}
 function busy(){return isBallFlying||golferSwingPhase!=='idle'||!!courseRelief||!!window.GreenReader?.enabled||!!window.GolferLocomotion?.busy}
 function format(k,v){if(['ball','leadStep','trailStep'].includes(k))return (v*100).toFixed(1)+' cm';if(k==='width')return v.toFixed(2)+'×';if(['face','path','leadFlare','trailFlare'].includes(k))return (v>0?'+':'')+v.toFixed(1)+'°';return v===0?(k==='release'?'Natural':'Balanced'):(v>0?'Early ':'Late ')+Math.abs(v).toFixed(1)}
 function sync(){const c=club();if(!c)return;const s=ShotTechnique.get(c),d=ShotTechnique.delivery(c,currentSwingMode),target=$(c.isPutter?'putter-meter-panel':'swing-mode-panel'),button=$('swing-trigger-card');if(button.parentElement!==target)target.prepend(button);if(c.isPutter)target.style.gridTemplateColumns='48px 44px minmax(0,1fr)';
- document.querySelectorAll('#quick-arcs button').forEach(e=>{e.disabled=c.isPutter||busy();e.title=c.isPutter?'پاتر از اسلایدر ضربهٔ زمینی استفاده می‌کند':e.getAttribute('aria-label')});
+ document.querySelectorAll('#quick-arcs .quick-arc').forEach(e=>{e.disabled=c.isPutter||busy();e.title=c.isPutter?'پاتر از اسلایدر ضربهٔ زمینی استفاده می‌کند':e.getAttribute('aria-label')});
  $('tech-club-label').textContent=c.name+' · '+(c.isPutter?'Putting':currentSwingMode==='chip'?'Chip':currentSwingMode)+' · '+(swingPowerPercent??({full:100,'three-quarter':75,half:50,chip:25}[currentSwingMode]||100))+'%';
  $('tech-shot-type').textContent=c.isPutter?'Putt · Ground stroke':currentSwingMode==='chip'?'Chip · Legacy':'Standard';$('tech-putt-note').hidden=!c.isPutter;$('swing-power-slider').disabled=!!c.isPutter||busy();
  for(const [k,v]of Object.entries(s)){const e=$('tech-'+k);e.value=v;e.disabled=busy()||!!c.isPutter&&['pressure','release','path'].includes(k);if(k==='face'){e.min=c.isPutter?-3:-8;e.max=c.isPutter?3:8}$('tech-value-'+k).textContent=format(k,v);e.setAttribute('aria-valuetext',format(k,v))}
@@ -15,7 +30,7 @@ function sync(){const c=club();if(!c)return;const s=ShotTechnique.get(c),d=ShotT
  $('tech-pressure-line').setAttribute('d',Array.from({length:51},(_,i)=>`${i?'L':'M'}${5+i*5},${48-ShotTechnique.pressureAt(i/50,s)*44}`).join(' '));
  const metrics=[['Face @ impact · approx.',d.faceImpact.toFixed(1)+'°'],['Path · approx.',d.path.toFixed(1)+'°'],['Attack · approx.',d.attack.toFixed(1)+'°'],['Dynamic loft · approx.',d.dynamicLoft.toFixed(1)+'°'],['Spin axis · approx.',(d.spinAxis*180/Math.PI).toFixed(1)+'°'],['Model contact',Math.round(d.quality*100)+'%']];$('tech-impact-metrics').innerHTML=metrics.map(([k,v])=>'<span>'+k+'<b>'+v+'</b></span>').join('');if(opened)requestForecast();
 }
-function apply(k,v){if(busy())return false;ShotTechnique.set(club(),{[k]:Number(v)});updateSelectedClubUI();window.PuttUI?.saveSession();window.WindSystem?.refresh(true);sync();if(opened)drawPreview();return true}
+function apply(k,v){if(busy())return false;window.PuttUI?.markPreRoundConfigured?.();ShotTechnique.set(club(),{[k]:Number(v)});updateSelectedClubUI();window.PuttUI?.saveSession();window.WindSystem?.refresh(true);sync();if(opened)drawPreview();return true}
 function initializePreview(){if(previewRenderer||previewError)return;try{previewRenderer=new T.WebGLRenderer({canvas:$('tech-player-preview'),alpha:true,antialias:true,powerPreference:'low-power'});previewRenderer.setPixelRatio(1);previewRenderer.setSize(640,360,false);previewRenderer.outputEncoding=T.sRGBEncoding;previewRenderer.setClearColor(0x15281e,0);previewScene=new T.Scene();previewScene.add(new T.HemisphereLight(0xfff4df,0x314332,1.3));const key=new T.DirectionalLight(0xfff4df,1.25);key.position.set(-2,5,3);previewScene.add(key);previewCamera=new T.PerspectiveCamera(32,640/360,.03,30);
  // Clone transform hierarchy, sharing the real source skeleton/geometry/materials.
  // The snapshot is rendered before restoring the main actor to address. Neither
@@ -41,11 +56,15 @@ function drawForecast(){if(!opened||busy())return;lastForecast=predict();const f
 function requestForecast(){clearTimeout(forecastTimer);forecastTimer=setTimeout(drawForecast,160)}
 function tick(){if(!opened)return;if(!document.hidden){if(phase==='replay'&&(matchMedia('(prefers-reduced-motion: reduce)').matches||document.body.dataset.reducedMotion==='true'))phase='impact';drawPreview()}timer=setTimeout(tick,160)}
 function open(){opened=true;sync();clock=performance.now();clearTimeout(timer);tick();requestForecast()}
-function close(){opened=false;clearTimeout(timer);clearTimeout(forecastTimer);phase='address';document.querySelectorAll('[data-tech-phase]').forEach(e=>e.setAttribute('aria-pressed',String(e.dataset.techPhase==='address')))}
+function close(){if(helpDialog?.open)helpDialog.close();opened=false;clearTimeout(timer);clearTimeout(forecastTimer);phase='address';document.querySelectorAll('[data-tech-phase]').forEach(e=>e.setAttribute('aria-pressed',String(e.dataset.techPhase==='address')))}
+const helpDialog=$('tech-help-dialog');
+for(const button of document.querySelectorAll('[data-tech-help]'))button.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();const item=HELP[button.dataset.techHelp];if(!item)return;$('tech-help-title').textContent=item.title;$('tech-help-content').innerHTML=item.html;if(!helpDialog.open)helpDialog.showModal()});
+$('tech-help-close').addEventListener('click',()=>helpDialog.close());
+helpDialog.addEventListener('click',event=>{if(event.target===helpDialog)helpDialog.close()});
 for(const e of document.querySelectorAll('[data-tech]'))e.addEventListener('input',()=>apply(e.dataset.tech,e.value));
 for(const e of document.querySelectorAll('[data-tech-preset]'))e.addEventListener('click',()=>{const[k,v]=e.dataset.techPreset.split(':');apply(k,v)});
 for(const e of document.querySelectorAll('[data-tech-phase]'))e.addEventListener('click',()=>{phase=e.dataset.techPhase;clock=performance.now();document.querySelectorAll('[data-tech-phase]').forEach(b=>b.setAttribute('aria-pressed',String(b===e)));drawPreview()});
-$('tech-reset').addEventListener('click',()=>{if(busy())return;ShotTechnique.reset(club());updateSelectedClubUI();sync();PuttUI.saveSession();WindSystem.refresh(true);drawPreview()});
+$('tech-reset').addEventListener('click',()=>{if(busy())return;window.PuttUI?.markPreRoundConfigured?.();ShotTechnique.reset(club());updateSelectedClubUI();sync();PuttUI.saveSession();WindSystem.refresh(true);drawPreview()});
 for(const e of document.querySelectorAll('.tech-control'))e.addEventListener('toggle',()=>{if(e.open)for(const b of document.querySelectorAll('.tech-control'))if(b!==e)b.open=false});
 window.TechniqueUI={open,close,sync,apply,predict,drawPreview,get opened(){return opened},get forecast(){return lastForecast},get previewDiagnostics(){return {error:previewError,objects:pairs.length,renderer:!!previewRenderer,phase}}};
 })();

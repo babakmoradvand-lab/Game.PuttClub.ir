@@ -264,3 +264,21 @@ body[data-view="game"] #top-hud-capsule .hud-next-mark{font-size:12px;margin-lef
 body[data-view="game"] #top-hud-capsule #hud-next{position:absolute;inset:-1px;z-index:2;width:calc(100% + 2px);height:calc(100% + 2px);min-height:44px;padding:0;border:0;border-radius:inherit;background:transparent;box-shadow:none;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 body[data-view="game"] #top-hud-capsule #hud-next:focus-visible{outline:2px solid #e6d09d;outline-offset:2px}
 @media(hover:hover){body[data-view="game"] #top-hud-capsule:has(#hud-next:hover){border-color:#e5c78b99}}
+
+/* golfer52 — map slide keeps the parent glass material and adds the real
+   terrain profile directly below the transparent radar canvas. */
+body[data-view="game"] #top-hud-capsule[data-hud-slide="1"]{height:min(210px,calc(100dvh - 16px - var(--safe-top) - var(--safe-bottom)))}
+body[data-view="game"] #top-hud-capsule #minimap-container{display:grid;grid-template-rows:minmax(0,1fr) auto;align-content:stretch;gap:4px;min-height:0;height:100%;overflow:hidden;background:transparent;border:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+body[data-view="game"] #top-hud-capsule #minimap-canvas{display:block;width:100%;height:100%!important;min-height:54px;max-height:none;margin:0;aspect-ratio:8/5;object-fit:contain;border-radius:6px;background:transparent}
+#minimap-profile-wrap{display:block;min-width:0;padding-top:3px;border-top:1px solid #fff8e92b;background:transparent;color:#f4ecda;font-family:Vazirmatn,Inter,sans-serif}
+.minimap-profile-head{display:flex;align-items:center;justify-content:space-between;gap:4px;font-size:7px;line-height:1.3;color:#f3e8cb}
+#minimap-profile-summary{direction:rtl;text-align:left;white-space:nowrap;font-size:6.5px;color:#e4d29f;font-variant-numeric:tabular-nums}
+#minimap-elevation-chart{display:block;width:100%;height:42px;overflow:visible}
+.minimap-profile-grid{fill:none;stroke:#ffffff24;stroke-width:.7;stroke-dasharray:2 3}
+.minimap-profile-area{fill:#d9c18a20;stroke:none}
+.minimap-profile-line{fill:none;stroke:#e4ce95;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 2px #e4ce9580)}
+.minimap-profile-point{fill:#fff2c5;stroke:#94794b;stroke-width:1}
+.minimap-profile-label{fill:#ece4d1;font:6px Vazirmatn,Inter,sans-serif}
+@media(max-height:520px){body[data-view="game"] #top-hud-capsule[data-hud-slide="1"]{height:min(176px,calc(100dvh - 12px - var(--safe-top) - var(--safe-bottom)))}#minimap-elevation-chart{height:34px}body[data-view="game"] #top-hud-capsule #minimap-canvas{min-height:46px}}
+@media(prefers-reduced-transparency:reduce){#minimap-profile-wrap{background:transparent}}
+#btn-pre-round-technique{display:flex;align-items:center;justify-content:center;width:min(100%,420px);margin:0 auto 16px;border-color:#b59d6d80;color:#f3e7c8;text-align:center}

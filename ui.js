@@ -22,7 +22,7 @@
   let step = "handicap",
     panel = null,
     returnFocus = null,
-    started = false, starting = false;
+    started = false, starting = false, preRoundConfigured = false;
   let toastTimer,
     lastBusy,
     offlineReady = false;
@@ -110,9 +110,16 @@
     window.gameMode = mode;
     window.selectedSingleHole = hole;
     window.GreenReader?.close(false);
-    window.WindSystem?.newRound();window.ShotTechnique?.reset();
+    window.WindSystem?.newRound();
+    // A new round resets stale club settings, then reapplies the deliberately
+    // selected pre-round club state and preserves its chosen mode/power.
+    const preserveClub=preRoundConfigured?GOLF_BAG[currentClubIndex]:null;
+    const preserveTechnique=preserveClub?window.ShotTechnique?.get(preserveClub):null;
+    window.ShotTechnique?.reset();
+    if(preserveClub&&preserveTechnique)window.ShotTechnique?.set(preserveClub,preserveTechnique);
+    if(!preRoundConfigured){currentSwingMode="full";swingPowerPercent=null;}
+    preRoundConfigured=false;
     holeScores.fill(null);
-    currentSwingMode = "full";
     buildClubButtons();
     // Course switch completed before resetting the new round.
     window.activeCourseId = course;
@@ -179,7 +186,10 @@
     });
     $("panel-scrim").hidden = false;
     $("game-ui").inert = true;
+    const openingBeforeRound=id==="swing-picker-modal"&&document.body.dataset.view!=="game";
+    $("setup-shell").inert=openingBeforeRound&&!$("setup-shell").hidden;
     $("putt-club-splash").inert = true;
+    $("btn-pre-round-technique")?.setAttribute("aria-expanded",String(id==="swing-picker-modal"&&openingBeforeRound));
     $("club-trigger-card").setAttribute(
       "aria-expanded",
       String(id === "club-picker-modal"),
@@ -200,15 +210,19 @@
     panel = null;
     $("panel-scrim").hidden = true;
     $("game-ui").inert = false;
+    $("setup-shell").inert = false;
     $("putt-club-splash").inert = false;
+    $("btn-pre-round-technique")?.setAttribute("aria-expanded", "false");
     $("club-trigger-card").setAttribute("aria-expanded", "false");
     $("swing-trigger-card").setAttribute("aria-expanded", "false");
     if (restore && returnFocus?.isConnected && !returnFocus.closest("[hidden]"))
       returnFocus.focus({ preventScroll: true });
   }
+  function markPreRoundConfigured(){if(document.body.dataset.view==="setup"&&panel==="swing-picker-modal")preRoundConfigured=true;}
   function setMode(value) {
     if (!modes.includes(value) || isBallFlying || golferSwingPhase !== "idle")
       return;
+    markPreRoundConfigured();
     currentSwingMode = value;
     swingPowerPercent = null;
     updateSelectedClubUI();
@@ -216,6 +230,7 @@
   }
   function setPower(value) {
     if (isBallFlying || golferSwingPhase !== "idle" || courseRelief) return;
+    markPreRoundConfigured();
     swingPowerPercent = Math.max(1, Math.min(100, Math.round(Number(value)) || 1));
     currentSwingMode = swingPowerPercent <= 25 ? "chip" : swingPowerPercent <= 50 ? "half" : swingPowerPercent <= 75 ? "three-quarter" : "full";
     updateSelectedClubUI();
@@ -395,6 +410,7 @@
   listen("course-continue", () => showStep("mode"));
   listen("btn-mode-18holes", () => startRound("18holes"));
   listen("btn-mode-custom-hole", () => showStep("holes"));
+  listen("btn-pre-round-technique", () => openPanel("swing-picker-modal"));
   listen("btn-close-custom-hole", () => showStep("mode"));
   listen("club-trigger-card", () => openPanel("club-picker-modal"));
   listen("swing-trigger-card", () => openPanel("swing-picker-modal"));
@@ -511,6 +527,8 @@
     const celebration =
       getComputedStyle($("celebration-overlay")).display !== "none";
     if (e.key === "Escape") {
+      // Let a native help dialog consume Escape before closing its parent panel.
+      if (document.querySelector('dialog[open]')) return;
       if (panel) {
         e.preventDefault();
         closePanel();
@@ -646,6 +664,7 @@
     closePanel,
     showCelebration,
     updateScoreSummary,
+    markPreRoundConfigured,
     toast,
   };
   // Compatibility wrapper for existing course-switch call paths.

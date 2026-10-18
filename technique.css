@@ -41,3 +41,22 @@ body[data-view=game] #swing-picker-modal :is(button,input):focus-visible{outline
 .tech-model-note summary{min-height:40px;cursor:pointer;color:#ebdfbd}
 .tech-model-note p{font-size:10px;line-height:1.85;text-align:right;color:#d5ddcd;margin:6px 0}
 .tech-model-note strong{color:#f3dca9}
+
+/* golfer52: setting rows stay concise; every explanation is opened on demand. */
+.tech-field-head{display:flex;align-items:center;gap:7px;min-width:0;margin-top:7px}
+.tech-control .tech-field-head label,.tech-power .tech-field-head label{flex:1;min-width:0;margin:0}
+.tech-help-btn{display:grid;place-items:center;flex:none;width:27px;height:27px;padding:0;border:1px solid #dfc99599;border-radius:50%;background:#dfc9951c;color:#f1d8a4;font:800 14px/1 Inter,Vazirmatn,sans-serif;cursor:pointer;touch-action:manipulation}
+.tech-help-btn:focus-visible,#tech-help-close:focus-visible{outline:2px solid #f1d8a4;outline-offset:2px}
+.tech-power .tech-field-head{margin:0 0 4px}.tech-power .tech-field-head label{display:flex;align-items:center;justify-content:space-between;font-size:11px}
+.tech-power .tech-field-head #power-readout{font-size:15px}
+#tech-help-dialog{position:fixed;inset:0;margin:auto;width:min(480px,calc(100vw - 28px));max-height:min(76dvh,560px);overflow:auto;padding:0;border:1px solid #e5d4a66b;border-radius:18px;background:linear-gradient(145deg,#1c3328f7,#102118f8);color:#f7f2e7;box-shadow:0 24px 80px #0009;font-family:Vazirmatn,Inter,sans-serif}
+#tech-help-dialog::backdrop{background:#06120db8;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+#tech-help-dialog[open]{display:block}
+.tech-help-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 17px;border-bottom:1px solid #ffffff24}
+.tech-help-header h2{margin:3px 0 0;font-size:17px}.tech-help-content{padding:14px 18px 19px;font-size:13px;line-height:2;text-align:right}
+.tech-help-content p{margin:0 0 11px}.tech-help-content p:last-child{margin-bottom:0}.tech-help-content strong{color:#f2d89c}
+@media(prefers-reduced-motion:reduce){#tech-help-dialog{scroll-behavior:auto}}
+
+#quick-arcs .quick-arc-help{width:25px;height:25px;align-self:center;margin:0 2px;padding:0;flex:none;font-size:12px}
+.tech-power #power-readout small{display:inline;font-size:9px;line-height:inherit;text-align:initial;opacity:1}
+.tech-legacy-row{display:flex;align-items:center;gap:8px}.tech-legacy-row .secondary-btn{flex:1}

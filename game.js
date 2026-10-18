@@ -1093,6 +1093,7 @@ group.name = name;
     const aimGuideMesh = new THREE.Mesh(aimRibbonGeo, aimLineMat);
     aimGuideMesh.frustumCulled = false;
     const aimLine = new THREE.Group();
+    let cachedAimKey='',cachedAimPoints=[];
     aimLine.geometry = aimLineGeo;
     aimLine.add(aimGuideMesh);
     aimLine.visible = false;
@@ -1980,17 +1981,44 @@ group.name = name;
       radarWasMoving=moving;
     }
 
+    function drawElevationProfile(targetPin) {
+      const line = document.getElementById('minimap-profile-line');
+      const area = document.getElementById('minimap-profile-area');
+      const startDot = document.getElementById('minimap-profile-start');
+      const endDot = document.getElementById('minimap-profile-end');
+      const summary = document.getElementById('minimap-profile-summary');
+      if (!targetPin || !ballPos) { line.setAttribute('d',''); area.setAttribute('d',''); summary.textContent='ارتفاع در دسترس نیست'; return; }
+      const count=48, samples=[], dx=targetPin.x-ballPos.x, dz=targetPin.z-ballPos.z;
+      const origin=getAimSurfaceHeight(ballPos.x,ballPos.z);
+      let low=Infinity,high=-Infinity;
+      for(let i=0;i<=count;i++){
+        const t=i/count;
+        const value=getAimSurfaceHeight(ballPos.x+dx*t,ballPos.z+dz*t)-origin;
+        samples.push(value);low=Math.min(low,value);high=Math.max(high,value);
+      }
+      // Adaptive but bounded vertical scale keeps real terrain undulations legible.
+      const half=Math.max(.08,(high-low)*.58),mid=(high+low)/2;
+      const points=samples.map((value,i)=>[28+i*(206/count),29-THREE.MathUtils.clamp((value-mid)/half,-1,1)*17]);
+      const d=points.map((q,i)=>`${i?'L':'M'}${q[0].toFixed(1)} ${q[1].toFixed(1)}`).join(' ');
+      line.setAttribute('d',d);area.setAttribute('d',`${d} L234 48 L28 48 Z`);
+      startDot.setAttribute('cy',points[0][1].toFixed(1));endDot.setAttribute('cy',points[points.length-1][1].toFixed(1));
+      const fmt=n=>`${n>0?'+':n<0?'−':''}${Math.abs(n*100).toLocaleString('fa-IR',{maximumFractionDigits:0})}`;
+      const rise=getAimSurfaceHeight(targetPin.x,targetPin.z)-origin;
+      summary.textContent=`حفره ${fmt(rise)}cm · اوج ${fmt(high)}cm · افت ${fmt(low)}cm`;
+      summary.setAttribute('aria-label',`اختلاف ارتفاع حفره ${fmt(rise)} سانتی‌متر، بیشترین فراز ${fmt(high)} و بیشترین افت ${fmt(low)} سانتی‌متر`);
+      document.getElementById('minimap-elevation-chart').setAttribute('aria-label',`پروفایل واقعی ارتفاع در ۴۹ نقطه از توپ تا حفره؛ اختلاف حفره ${fmt(rise)} سانتی‌متر`);
+    }
+
     function drawMinimap() {
       const w = minimapCanvas.width;
       const h = minimapCanvas.height;
       minimapCtx.clearRect(0, 0, w, h);
 
-      // Transparent gelatin blue tint background so the 3D game shines through!
-      minimapCtx.fillStyle = '#1c2921';
-      minimapCtx.fillRect(0, 0, w, h);
-
+      // Clear to alpha: the map remains inside the parent glass HUD instead of
+      // painting an opaque dark rectangle over the course.
       const targetPin = holePins3D[currentHoleNumber];
-      if (!targetPin) return;
+      if (!targetPin) { drawElevationProfile(null); return; }
+      drawElevationProfile(targetPin);
 
       const track=radarTrack && radarTrack.hole===currentHoleNumber && radarTrack.course===window.activeCourseId ? radarTrack : null;
       const origin=track ? track.origin : ballPos;
@@ -2043,9 +2071,7 @@ group.name = name;
       minimapCtx.beginPath();
       minimapCtx.setLineDash([3, 3]);
       minimapCtx.moveTo(bM.mx, bM.my);
-      const headingLength = Math.min(span * 0.18, new THREE.Vector2(ballPos.x - targetPin.x, ballPos.z - targetPin.z).length() * 0.65);
-      const aM = mapToMinimap(ballPos.x + aimDirection.x * headingLength, ballPos.z + aimDirection.z * headingLength);
-      minimapCtx.lineTo(aM.mx, aM.my);
+      minimapCtx.lineTo(pM.mx, pM.my);
       minimapCtx.strokeStyle = '#d4bd88';
       minimapCtx.lineWidth = 1.5;
       minimapCtx.stroke();
@@ -2418,11 +2444,8 @@ group.name = name;
     }
 
     function getAimGuideLength() {
-      const pin = holePins3D[currentHoleNumber];
-      const distance = pin ? Math.hypot(pin.x - ballPos.x, pin.z - ballPos.z) : 100;
-      const cap = (GOLF_BAG[currentClubIndex] || {}).isPutter ? 2 * 0.9144 : 30 * 0.9144;
-      // Near the pin keep the previous promise: never draw a full guide into the cup.
-      return Math.min(cap, distance * 0.65);
+      const pin=holePins3D[currentHoleNumber];
+      return pin?Math.hypot(pin.x-ballPos.x,pin.z-ballPos.z):0;
     }
 
     function getAimSurfaceHeight(x, z) {
@@ -2449,51 +2472,14 @@ group.name = name;
     }
 
     function getAimGuidePoints() {
-      const cap = getAimGuideLength();
-      if (cap < 0.001) return [];
-      const club = GOLF_BAG[currentClubIndex];
-      if (club.isPutter) {
-        const puttDir=getShotLaunchVelocity(calculateShotSpecs(currentClubIndex,currentSwingMode,swingPowerPercent)).setY(0).normalize();
-        const pts = [];
-        for (let i = 0; i <= 48; i++) {
-          const d = cap * i / 48;
-          const x = ballPos.x + puttDir.x * d;
-          const z = ballPos.z + puttDir.z * d;
-          pts.push(new THREE.Vector3(x, getAimSurfaceHeight(x, z) + 0.03, z));
-        }
-        return pts;
+      const pin=holePins3D[currentHoleNumber],distance=getAimGuideLength();
+      if(!pin||distance<0.02)return [];
+      const points=[];
+      for(let i=0;i<=48;i++){
+        const t=i/48,x=THREE.MathUtils.lerp(ballPos.x,pin.x,t),z=THREE.MathUtils.lerp(ballPos.z,pin.z,t);
+        points.push(new THREE.Vector3(x,getAimSurfaceHeight(x,z)+0.03,z));
       }
-      // Integrate the same launch speed, loft, drag, lift and wind as the real shot.
-      // Stop at first impact or 30 horizontal yards; do not invent a full landing path.
-      const pts = [ballPos.clone()];
-      const pos = ballPos.clone();
-      pos.y += 0.05; // same launch clearance as executeGolfShot
-      const velocity = getShotLaunchVelocity(calculateShotSpecs(currentClubIndex, currentSwingMode, swingPowerPercent));
-      const dt = 1 / 120;
-      for (let step = 0; step < 1440; step++) {
-        const previous = pos.clone();
-        stepBallFlight(pos, velocity, dt, true);
-        const distance = Math.hypot(pos.x - ballPos.x, pos.z - ballPos.z);
-        const ground = getTerrainHeight(pos.x, pos.z) + BALL_RADIUS;
-        if (distance >= cap) {
-          const before = Math.hypot(previous.x - ballPos.x, previous.z - ballPos.z);
-          const fraction = THREE.MathUtils.clamp((cap - before) / Math.max(1e-8, distance - before), 0, 1);
-          pts.push(previous.lerp(pos, fraction));
-          break;
-        }
-        if (pos.y <= ground) {
-          // Interpolate the final descent rather than drawing a segment underground.
-          const beforeGround = getTerrainHeight(previous.x, previous.z) + BALL_RADIUS;
-          const h0 = previous.y - beforeGround, h1 = pos.y - ground;
-          const fraction = THREE.MathUtils.clamp(h0 / Math.max(1e-8, h0 - h1), 0, 1);
-          const contact = previous.lerp(pos, fraction);
-          contact.y = getTerrainHeight(contact.x, contact.z) + BALL_RADIUS + 0.008;
-          pts.push(contact);
-          break;
-        }
-        if (step % 4 === 3) pts.push(pos.clone());
-      }
-      return pts;
+      return points;
     }
 
     function updateAimRibbon(pts) {
@@ -2513,11 +2499,10 @@ group.name = name;
       for (const attribute of Object.values(aimRibbonGeo.attributes)) attribute.needsUpdate = true;
       aimRibbonGeo.setDrawRange(0, Math.max(0, count - 1) * 6);
       aimLineMat.uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
-      const isPutter = GOLF_BAG[currentClubIndex].isPutter === true;
-      // The pre-shot aim guide is unchanged; the putt-only hairline is its moving trail.
+      // Fixed style: changing club, power or technique never changes this target line.
       aimLineMat.uniforms.width.value = 2;
-      aimLineMat.uniforms.dash.value = isPutter ? 0.18 : 1.1;
-      aimLineMat.uniforms.gap.value = isPutter ? 0.10 : 0.45;
+      aimLineMat.uniforms.dash.value = 1.1;
+      aimLineMat.uniforms.gap.value = 0.45;
     }
 
     function syncAimControlsLayout() {
@@ -2528,11 +2513,21 @@ group.name = name;
     }
 
     function updateAimTracer() {
-      const pts = getAimGuidePoints();
-      aimLine.geometry.setFromPoints(pts);
-      if (pts.length) aimLine.geometry.computeBoundingSphere();
-      updateAimRibbon(pts);
-      aimLine.visible = canAdjustAim() && pts.length > 1;
+      const pin=holePins3D[currentHoleNumber];
+      const key=pin?[window.activeCourseId,currentHoleNumber,ballPos.x,ballPos.y,ballPos.z,pin.x,pin.y,pin.z].join('|'):'none';
+      if(key!==cachedAimKey){
+        cachedAimPoints=getAimGuidePoints();
+        aimLine.geometry.setFromPoints(cachedAimPoints);
+        if(cachedAimPoints.length)aimLine.geometry.computeBoundingSphere();
+        updateAimRibbon(cachedAimPoints);
+        cachedAimKey=key;
+      } else {
+        aimLineMat.uniforms.resolution.value.set(window.innerWidth,window.innerHeight);
+        aimLineMat.uniforms.width.value=2;
+        aimLineMat.uniforms.dash.value=1.1;
+        aimLineMat.uniforms.gap.value=.45;
+      }
+      aimLine.visible=canAdjustAim()&&cachedAimPoints.length>1;
       landingRing.visible = false;
       ballMarker.position.set(ballPos.x, getAimSurfaceHeight(ballPos.x, ballPos.z) + 0.007, ballPos.z);
       ballMarker.visible = canAdjustAim();

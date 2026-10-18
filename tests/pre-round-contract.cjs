@@ -1,0 +1,10 @@
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const ui=fs.readFileSync('ui.js','utf8'),tech=fs.readFileSync('technique-ui.js','utf8'),html=fs.readFileSync('index.html','utf8');
+assert.match(html,/<button id="btn-pre-round-technique"[^>]*aria-haspopup="dialog"[^>]*aria-expanded="false"[^>]*aria-controls="swing-picker-modal"/);
+assert.match(ui,/listen\("btn-pre-round-technique",\s*\(\)\s*=>\s*openPanel\("swing-picker-modal"\)\)/);
+assert.match(ui,/function markPreRoundConfigured\(\)\{if\(document\.body\.dataset\.view==="setup"&&panel==="swing-picker-modal"\)preRoundConfigured=true;\}/);
+assert.match(ui,/const preserveClub=preRoundConfigured\?GOLF_BAG\[currentClubIndex\]:null;\s*const preserveTechnique=preserveClub\?window\.ShotTechnique\?\.get\(preserveClub\):null;\s*window\.ShotTechnique\?\.reset\(\);\s*if\(preserveClub&&preserveTechnique\)window\.ShotTechnique\?\.set\(preserveClub,preserveTechnique\);\s*if\(!preRoundConfigured\)\{currentSwingMode="full";swingPowerPercent=null;\}\s*preRoundConfigured=false;/);
+assert.match(tech,/window\.PuttUI\?\.markPreRoundConfigured\?\.\(\);ShotTechnique\.set/);
+assert.match(tech,/window\.PuttUI\?\.markPreRoundConfigured\?\.\(\);ShotTechnique\.reset/);
+console.log('PASS: deliberate pre-round technique and power selections survive starting the round; untouched starts keep defaults.');
