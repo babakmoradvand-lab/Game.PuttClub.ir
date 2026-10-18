@@ -250,3 +250,37 @@ body[data-view="game"][data-ball-tracking="true"]:not([data-map-expanded="true"]
  body[data-view="game"]{--glass:rgba(10,28,18,.92)}
  body[data-view="game"] :is(#top-hud-capsule,#bottom-game-dock,#shot-telemetry-hud,.nav-buttons .icon-btn,#btn-map-detail,.game-panel,.toast,#shot-estimate-card,#green-read-toolbar,#green-read-legend,.course-relief-card){backdrop-filter:none;-webkit-backdrop-filter:none}
 }
+
+/* golfer48 — narrow stacked HUD, anchored at the usable top-left edge.
+   Keep both map and wind BELOW all hole/ball information in the same glass. */
+body[data-view="game"] #top-left-hud-column{
+ left:max(4px,env(safe-area-inset-left));top:max(2px,var(--safe-top));
+ width:min(224px,calc(100vw - 8px - env(safe-area-inset-left) - env(safe-area-inset-right)));
+ max-height:calc(100dvh - 164px - max(2px,var(--safe-top)) - var(--safe-bottom));border-radius:12px;
+}
+body[data-view="game"] #top-hud-capsule{grid-template-columns:minmax(0,1fr);gap:2px;padding:7px 9px;border-radius:12px}
+body[data-view="game"] #top-hud-capsule .hud-course{padding:0;font-size:8px;line-height:1.4}
+body[data-view="game"] #top-hud-capsule #hud-hole-num{font-size:10px}
+body[data-view="game"] #top-hud-capsule .hud-meta{font-size:8.5px;gap:3px}
+body[data-view="game"] #top-hud-capsule .hud-meta b{font-size:10px}
+body[data-view="game"] #top-hud-capsule #target-hud{
+ grid-column:1;grid-row:3;flex-direction:row;align-items:center;justify-content:space-between;gap:7px;margin:3px 0 0;
+}
+body[data-view="game"] #top-hud-capsule #target-hud .eyebrow{flex:1;min-width:0;max-width:88px;font-size:7px;line-height:1.4}
+body[data-view="game"] #top-hud-capsule #hud-dist-flag{font-size:23px;line-height:1.15;flex-shrink:0}
+body[data-view="game"] #top-hud-capsule .hud-bottom{grid-column:1;grid-row:4;margin:2px 0 0;padding:4px 0 0;gap:3px 6px;justify-content:space-between}
+body[data-view="game"] #top-hud-capsule .lie-badge{font-size:9px}
+body[data-view="game"] #top-hud-capsule #minimap-container{
+ grid-column:1/-1;grid-row:5;margin:3px 0 0;padding:3px 0 0;
+ border-left:0;border-top:1px solid #fff8e930;
+}
+body[data-view="game"] #top-hud-capsule #minimap-toggle .wind-readout{font-size:9px}
+body[data-view="game"] #top-hud-capsule #wind-advice summary{font-size:9px;padding:4px 0}
+/* Both former right-hand instruments share one bottom row when collapsed.
+   Open advice/map/tracking uses the complete width, still inside the parent. */
+body[data-view="game"]:not([data-map-expanded="true"]):not([data-ball-tracking="true"]) #top-hud-capsule #minimap-container:not(:has(#wind-advice[open])){
+ display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px;align-items:start;
+}
+body[data-view="game"]:not([data-map-expanded="true"]):not([data-ball-tracking="true"]) #top-hud-capsule #minimap-container:not(:has(#wind-advice[open])) #wind-advice{
+ border-top:0;border-left:1px solid #fff8e926;padding-left:6px;min-width:0;
+}
