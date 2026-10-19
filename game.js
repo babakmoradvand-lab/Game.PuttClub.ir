@@ -1085,7 +1085,7 @@ group.name = name;
           if (mod(vDistance, dash + gap) > dash) discard;
           float edge = abs(vSide);
           float alpha = 1.0 - smoothstep(0.8, 1.0, edge);
-          vec3 colour = mix(vec3(0.02, 0.96, 1.0), vec3(0.0, 0.18, 0.28), smoothstep(0.55, 0.8, edge));
+          vec3 colour = mix(vec3(0.18, 0.62, 1.0), vec3(0.02, 0.12, 0.34), smoothstep(0.55, 0.8, edge));
           gl_FragColor = vec4(colour, alpha * 0.98);
         }`,
       transparent: true, depthWrite: false, depthTest: true, side: THREE.DoubleSide
@@ -2532,6 +2532,23 @@ group.name = name;
       return points;
     }
 
+    // The player's blue aiming line represents only the direction selected by
+    // pointer/touch. Technique settings affect the separate predicted flight,
+    // never this directional reference line.
+    function getAimDirectionPoints() {
+      const cap = getAimGuideLength();
+      if (cap < 0.001) return [];
+      const direction = aimDirection.clone().setY(0).normalize();
+      const points = [];
+      for (let i = 0; i <= 48; i++) {
+        const d = cap * i / 48;
+        const x = ballPos.x + direction.x * d;
+        const z = ballPos.z + direction.z * d;
+        points.push(new THREE.Vector3(x, getAimSurfaceHeight(x, z) + 0.03, z));
+      }
+      return points;
+    }
+
     function updateAimRibbon(pts) {
       const count = Math.min(pts.length, MAX_AIM_POINTS);
       let distance = 0;
@@ -2564,12 +2581,16 @@ group.name = name;
     }
 
     function updateAimTracer() {
-      const points = getAimGuidePoints();
-      aimPreviewPoints = points;
-      aimLine.geometry.setFromPoints(points);
-      if (points.length) aimLine.geometry.computeBoundingSphere();
-      updateAimRibbon(points);
-      aimLine.visible = canAdjustAim() && points.length > 1;
+      // Keep the blue pointer/touch aim line independent from shot technique.
+      // The predicted, settings-sensitive flight remains available to the radar
+      // and the dedicated forecast inside Advanced Settings.
+      const predictedPoints = getAimGuidePoints();
+      aimPreviewPoints = predictedPoints;
+      const aimPoints = getAimDirectionPoints();
+      aimLine.geometry.setFromPoints(aimPoints);
+      if (aimPoints.length) aimLine.geometry.computeBoundingSphere();
+      updateAimRibbon(aimPoints);
+      aimLine.visible = canAdjustAim() && aimPoints.length > 1;
       landingRing.visible = false;
       ballMarker.position.set(ballPos.x, getAimSurfaceHeight(ballPos.x, ballPos.z) + 0.007, ballPos.z);
       ballMarker.visible = canAdjustAim();
