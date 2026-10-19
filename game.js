@@ -1093,6 +1093,7 @@ group.name = name;
     const aimGuideMesh = new THREE.Mesh(aimRibbonGeo, aimLineMat);
     aimGuideMesh.frustumCulled = false;
     const aimLine = new THREE.Group();
+    let aimPreviewPoints = [];
     aimLine.geometry = aimLineGeo;
     aimLine.add(aimGuideMesh);
     aimLine.visible = false;
@@ -2026,6 +2027,8 @@ group.name = name;
       const minimum=track?.putt ? 25 : 100;
       let halfX=Math.max(minimum/2,Math.abs(origin.x-targetPin.x)*.7),halfZ=Math.max(minimum/2,Math.abs(origin.z-targetPin.z)*.7);
       for (const q of track?.points || []) {halfX=Math.max(halfX,Math.abs(q[0]-midX)*1.15);halfZ=Math.max(halfZ,Math.abs(q[1]-midZ)*1.15);}
+      // Keep the rotated predicted shot visible even when it points away from the cup.
+      if(!isBallFlying)for(const q of aimPreviewPoints){halfX=Math.max(halfX,Math.abs(q.x-midX)*1.15);halfZ=Math.max(halfZ,Math.abs(q.z-midZ)*1.15);}
       halfX=Math.max(halfX,Math.abs(ballPos.x-midX)*1.15);halfZ=Math.max(halfZ,Math.abs(ballPos.z-midZ)*1.15);
       const span=Math.max(halfX,halfZ)*2,scale=Math.min((w-28)/(2*halfX),(h-24)/(2*halfZ));
 
@@ -2067,14 +2070,24 @@ group.name = name;
       const pM = mapToMinimap(targetPin.x, targetPin.z);
 
       if (!isBallFlying) {
-      minimapCtx.beginPath();
-      minimapCtx.setLineDash([3, 3]);
-      minimapCtx.moveTo(bM.mx, bM.my);
-      minimapCtx.lineTo(pM.mx, pM.my);
-      minimapCtx.strokeStyle = '#d4bd88';
-      minimapCtx.lineWidth = 1.5;
-      minimapCtx.stroke();
-      minimapCtx.setLineDash([]);
+        // Thin gold reference remains the direct lie-to-cup target.
+        minimapCtx.beginPath();
+        minimapCtx.setLineDash([3, 3]);
+        minimapCtx.moveTo(bM.mx, bM.my);
+        minimapCtx.lineTo(pM.mx, pM.my);
+        minimapCtx.strokeStyle = '#d4bd88';
+        minimapCtx.lineWidth = 1;
+        minimapCtx.stroke();
+        minimapCtx.setLineDash([]);
+
+        // Mint path is the same predicted shot polyline shown in the 3D guide.
+        if(aimPreviewPoints.length>1){
+          minimapCtx.beginPath();
+          aimPreviewPoints.forEach((q,i)=>{const p=mapToMinimap(q.x,q.z);if(i)minimapCtx.lineTo(p.mx,p.my);else minimapCtx.moveTo(p.mx,p.my);});
+          minimapCtx.strokeStyle='#8ee6cc';minimapCtx.lineWidth=2;minimapCtx.stroke();
+          const end=aimPreviewPoints[aimPreviewPoints.length-1],tip=mapToMinimap(end.x,end.z);
+          minimapCtx.beginPath();minimapCtx.arc(tip.mx,tip.my,2.4,0,Math.PI*2);minimapCtx.fillStyle='#a3f2d9';minimapCtx.fill();
+        }
       }
 
       // Hole Pin
@@ -2552,6 +2565,7 @@ group.name = name;
 
     function updateAimTracer() {
       const points = getAimGuidePoints();
+      aimPreviewPoints = points;
       aimLine.geometry.setFromPoints(points);
       if (points.length) aimLine.geometry.computeBoundingSphere();
       updateAimRibbon(points);
@@ -3160,6 +3174,7 @@ group.name = name;
       currentHoleNumber = hNum;
       window.CaddieSystem?.reset();
       resetRadarTrack(false);
+      aimPreviewPoints = [];
       strokesCurrentHole = 0;
       isBallFlying = false;
       isBallSettled = false;
