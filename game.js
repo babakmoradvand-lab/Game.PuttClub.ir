@@ -2455,11 +2455,20 @@ group.name = name;
       }
     }
 
-    function getAimGuideLength() {
+    function getAimPredictionLength() {
+      const pin = holePins3D[currentHoleNumber];
+      const distance = pin ? Math.hypot(pin.x - ballPos.x, pin.z - ballPos.z) : 100;
+      const isPutter = (GOLF_BAG[currentClubIndex] || {}).isPutter;
+      // A longer radar preview makes the predicted shot visibly distinct from
+      // the full, straight ball-to-cup reference; retain a short putt preview.
+      const cap = isPutter ? 2 * 0.9144 : 90 * 0.9144;
+      return Math.min(cap, distance * 0.9);
+    }
+
+    function getAimDirectionLength() {
       const pin = holePins3D[currentHoleNumber];
       const distance = pin ? Math.hypot(pin.x - ballPos.x, pin.z - ballPos.z) : 100;
       const cap = (GOLF_BAG[currentClubIndex] || {}).isPutter ? 2 * 0.9144 : 30 * 0.9144;
-      // Keep the pre-shot trajectory preview short enough to read near the cup.
       return Math.min(cap, distance * 0.65);
     }
 
@@ -2487,7 +2496,7 @@ group.name = name;
     }
 
     function getAimGuidePoints() {
-      const cap = getAimGuideLength();
+      const cap = getAimPredictionLength();
       if (cap < 0.001) return [];
       const club = GOLF_BAG[currentClubIndex];
       if (club.isPutter) {
@@ -2536,7 +2545,7 @@ group.name = name;
     // pointer/touch. Technique settings affect the separate predicted flight,
     // never this directional reference line.
     function getAimDirectionPoints() {
-      const cap = getAimGuideLength();
+      const cap = getAimDirectionLength();
       if (cap < 0.001) return [];
       const direction = aimDirection.clone().setY(0).normalize();
       const points = [];
