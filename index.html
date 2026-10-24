@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
-<meta name="putt-release" content="practice1-20261024.2">
+<meta name="putt-release" content="practice-trails1-20261024.1">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#153b2f">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="./icon-192.png">
 <link rel="stylesheet" href="./fonts/Inter.css">
 <link rel="stylesheet" href="./fonts/Vazirmatn.css">
-<link rel="stylesheet" href="./ui.css?v=practice1-20261024.2">
+<link rel="stylesheet" href="./ui.css?v=practice-trails1-20261024.1">
 <link rel="stylesheet" href="./presentation.css?v=golfer56-20261019.1">
 <link rel="stylesheet" href="./technique.css?v=golfer56-20261019.1">
 <style>
@@ -90,7 +90,7 @@
 </div>
 
 <div id="game-ui" hidden>
-<aside id="practice-toolbar" hidden lang="fa" dir="rtl" aria-label="کنترل‌های تمرین آزاد"><div class="practice-toolbar-heading"><span class="eyebrow" id="practice-toolbar-mode">FREE PRACTICE</span><strong id="practice-toolbar-hole">—</strong><span id="practice-toolbar-shots">ضربه‌ها: ۰</span></div><div id="practice-range-controls" hidden><label class="practice-reset-option"><input id="practice-reset-to-tee" type="checkbox" checked><span>پس از هر ضربه توپ به تی‌باکس برگردد</span></label><button id="btn-practice-reset" class="secondary-btn" type="button">بازگشت توپ به تی‌باکس</button></div><div id="practice-putting-controls" hidden><button id="btn-practice-place" class="secondary-btn" type="button" aria-pressed="false">جای‌گذاری توپ روی گرین</button><button id="btn-practice-reset-putting" class="secondary-btn" type="button">بازگشت به نقطهٔ شروع</button><small id="practice-placement-hint">برای تمرین از نقطه‌ای دیگر، جای‌گذاری را بزن و روی گرین لمس/کلیک کن.</small></div><button id="btn-practice-exit" class="text-btn" type="button">پایان تمرین</button></aside>
+<div id="practice-quick-controls" hidden lang="fa" dir="rtl" aria-label="کنترل‌های سریع تمرین"><div id="practice-range-controls" hidden><button id="btn-practice-range-reset-mode" class="practice-quick-btn" type="button" aria-pressed="true" title="تکرار از تی‌باکس یا ادامه از محل توقف">تکرار از تی‌باکس</button><button id="btn-practice-reset" class="practice-quick-btn practice-quick-icon" type="button" aria-label="بازگشت توپ به تی‌باکس" title="بازگشت توپ به تی‌باکس">↺</button></div><div id="practice-putting-controls" hidden><button id="btn-practice-place" class="practice-quick-btn" type="button" aria-pressed="false">جای توپ</button><button id="btn-practice-reset-putting" class="practice-quick-btn" type="button" title="بازگشت به نقطهٔ شروع">شروع</button></div><button id="btn-clear-practice-trajectories" class="practice-quick-btn" type="button" hidden>پاک‌کردن مسیرها</button></div>
 <section id="green-read-toolbar" hidden lang="fa" dir="rtl" aria-label="کنترل‌های بررسی گرین"><button id="btn-read-return" type="button" aria-label="بازگشت به ضربه" title="بازگشت به ضربه"><svg class="icon" aria-hidden="true"><use href="#i-back"/></svg></button><button id="btn-read-fit" type="button" aria-label="نمای کامل گرین" title="نمای کامل گرین"><svg class="icon" aria-hidden="true"><use href="#i-fit"/></svg></button><button id="btn-read-player" type="button" aria-label="بازیکن و گرین" title="بازیکن و گرین"><svg class="icon" aria-hidden="true"><use href="#i-player"/></svg></button><button id="btn-read-whole" type="button" aria-label="نمای کل زمین" title="نمای کل زمین"><svg class="icon" aria-hidden="true"><use href="#i-map"/></svg></button><button id="btn-read-help" type="button" aria-label="راهنما و اطلاعات نقطهٔ بررسی" title="راهنما و اطلاعات نقطهٔ بررسی" aria-haspopup="dialog" aria-controls="read-help-dialog" aria-expanded="false"><svg class="icon" aria-hidden="true"><use href="#i-help"/></svg></button></section>
 <div id="read-origin-tag" hidden lang="fa" dir="rtl"><span id="read-origin-arrow" aria-hidden="true">↑</span><span id="read-origin-copy"></span></div><dialog id="read-help-dialog" lang="fa" dir="rtl" aria-labelledby="read-help-title"><header><h2 id="read-help-title">راهنمای بررسی گرین</h2><button id="btn-read-help-close" class="icon-btn" type="button" aria-label="بستن راهنمای گرین"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></header><p class="read-help-intro">این نما فقط برای بررسی سطح است؛ کلاب، قدرت، نشانه‌گیری و دوربین ضربه تغییر نمی‌کنند.</p><p class="read-help-gestures">لمس: بررسی نقطه · کشیدن: چرخش · دو انگشت: زوم و جابه‌جایی · Q/E: چرخش · W/S: ارتفاع دید · پیکان‌های صفحه‌کلید: بررسی نقطه</p><aside id="green-read-legend" hidden lang="fa" dir="rtl" aria-label="اطلاعات شیب گرین"><strong id="green-read-local"></strong><span id="green-read-rise"></span><small id="green-read-key"></small><small id="green-read-orientation"></small><div id="green-landing" role="status" aria-live="polite"></div><svg id="green-profile" viewBox="0 0 240 48" role="img" aria-label="پروفایل واقعی سطح از نقطهٔ بررسی تا حفره"></svg><small id="green-profile-label"></small><small>پیکان‌ها جهت سرازیری‌اند، نه مسیر پیشنهادی توپ. توقف توپ در نقطهٔ انتخابی تضمین نمی‌شود.</small></aside></dialog>
  <div id="top-left-hud-column"><section id="top-hud-capsule" role="group" aria-roledescription="carousel" aria-label="اطلاعات بازی؛ سه اسلاید دستی" data-hud-slide="0">
@@ -1693,7 +1693,7 @@ window.MIS_LEAF_TEX = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAY
 <script type="application/x-putt-runtime" data-runtime-src="./RGBELoader.js?v=quality22"></script>
 <script type="application/x-putt-runtime" data-runtime-src="./course-native.js?v=quality22"></script>
 <script type="application/x-putt-runtime" data-runtime-src="./course-runtime.js?v=quality22"></script>
-<script type="application/x-putt-runtime" data-runtime-src="./game.js?v=practice1-20261024.2"></script>
+<script type="application/x-putt-runtime" data-runtime-src="./game.js?v=practice-trails1-20261024.1"></script>
 <script type="application/x-putt-runtime" data-runtime-src="./course-gameplay.js?v=course19"></script>
 <script type="application/x-putt-runtime" data-runtime-src="./putt-capture.js?v=golfer44"></script>
 <script type="application/x-putt-runtime" data-runtime-src="./putt-broadcast.js?v=golfer44"></script>
@@ -1702,6 +1702,6 @@ window.MIS_LEAF_TEX = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAY
 <script type="application/x-putt-runtime" data-runtime-src="./caddie-system.js?v=golfer56-20261019.1"></script>
 <script type="application/x-putt-runtime" data-runtime-src="./golfer-locomotion.js?v=golfer56-20261019.1"></script>
 <script type="application/x-putt-runtime" data-runtime-src="./technique-ui.js?v=golfer56-20261019.1"></script>
-<script type="application/x-putt-runtime" data-runtime-src="./ui.js?v=practice1-20261024.2"></script>
+<script type="application/x-putt-runtime" data-runtime-src="./ui.js?v=practice-trails1-20261024.1"></script>
 <script src="./boot.js?v=golfer56-20261019.1"></script>
 </body></html>

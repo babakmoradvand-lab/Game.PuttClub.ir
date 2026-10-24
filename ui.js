@@ -216,18 +216,20 @@
   }
   function syncPracticeToolbar(){
     const state=window.PuttPractice?.state,active=!!state;
-    const toolbar=$("practice-toolbar");if(!toolbar)return;
-    toolbar.hidden=!active;
+    const controls=$("practice-quick-controls");if(!controls)return;
+    controls.hidden=!active;
     if(!active){document.body.classList.remove("practice-placement");return;}
     const range=state.type==='range';
     $("practice-range-controls").hidden=!range;
     $("practice-putting-controls").hidden=range;
-    $("practice-toolbar-mode").textContent=range?'RANGE PRACTICE':'PUTTING PRACTICE';
-    $("practice-toolbar-hole").textContent=`${course==='puttclub'?'PuttClub':course==='tehran'?'Tehran':'MIS'} · ${range?'tee':'green'} ${state.hole}`;
-    $("practice-toolbar-shots").textContent=`ضربه‌ها: ${state.shots||0}`;
-    $("practice-reset-to-tee").checked=state.resetToTee!==false;
+    const resetMode=$("btn-practice-range-reset-mode");
+    resetMode.setAttribute("aria-pressed",String(state.resetToTee!==false));
+    resetMode.textContent=state.resetToTee!==false?'تکرار از تی‌باکس':'ادامه از محل توقف';
     $("btn-practice-place").setAttribute("aria-pressed",String(!!state.placing));
-    $("btn-practice-place").textContent=state.placing?'روی نقطهٔ دلخواه گرین کلیک کن…':'جای‌گذاری توپ روی گرین';
+    $("btn-practice-place").textContent=state.placing?'روی گرین انتخاب کن…':'جای توپ';
+    const clear=$("btn-clear-practice-trajectories");
+    clear.hidden=!((window.PuttPractice?.trailCount||0)>0);
+    clear.textContent=`پاک‌کردن مسیرها${window.PuttPractice?.trailCount>1?` · ${window.PuttPractice.trailCount}`:''}`;
     document.body.classList.toggle("practice-placement",!!state.placing);
   }
   async function exitPractice(){
@@ -396,6 +398,11 @@
         "btn-tee-men",
         "btn-tee-women",
         "btn-tee-white",
+        "btn-practice-range-reset-mode",
+        "btn-practice-reset",
+        "btn-practice-place",
+        "btn-practice-reset-putting",
+        "btn-clear-practice-trajectories",
       ])
         $(id).disabled = busy;
       $("swing-trigger-card").disabled =
@@ -482,8 +489,8 @@
   listen("btn-practice-reset",()=>window.PuttPractice?.reset?.());
   listen("btn-practice-reset-putting",()=>window.PuttPractice?.reset?.());
   listen("btn-practice-place",()=>window.PuttPractice?.togglePlacement?.());
-  $("practice-reset-to-tee").addEventListener("change",e=>window.PuttPractice?.setRangeReset?.(e.target.checked));
-  listen("btn-practice-exit",exitPractice);
+  listen("btn-practice-range-reset-mode",()=>window.PuttPractice?.toggleRangeReset?.());
+  listen("btn-clear-practice-trajectories",()=>window.PuttPractice?.clearTrails?.());
   listen("btn-pre-round-technique", () => openPanel("swing-picker-modal"));
   listen("btn-close-custom-hole", () => showStep("mode"));
   listen("btn-close-practice-holes", () => showStep("practiceType"));
@@ -597,7 +604,7 @@
       renderer.setSize(innerWidth, innerHeight);
     }
   });
-  listen("return-title", () => showTitle());
+  listen("return-title", () => window.PuttPractice?.state ? exitPractice() : showTitle());
   document.addEventListener("keydown", (e) => {
     const celebration =
       getComputedStyle($("celebration-overlay")).display !== "none";

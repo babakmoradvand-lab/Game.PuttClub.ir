@@ -1198,6 +1198,49 @@ group.name = name;
     shadowRibbon.frustumCulled = false;
     scene.add(shadowRibbon);
 
+    // Practice trajectories are kept as independently colored 3D tubes until
+    // the player explicitly clears them or leaves the practice session.
+    const practiceTrailPaths=[];
+    const practiceTrailMaterial=new THREE.MeshBasicMaterial({vertexColors:true,transparent:true,opacity:.88,depthTest:false,depthWrite:false,toneMapped:false});
+    const practiceTrailMesh=new THREE.Mesh(new THREE.BufferGeometry(),practiceTrailMaterial);
+    practiceTrailMesh.name='PersistentPracticeShotTrajectories';
+    practiceTrailMesh.renderOrder=9997;practiceTrailMesh.frustumCulled=false;scene.add(practiceTrailMesh);
+    function rebuildPracticeTrails(){
+      const positions=[],colors=[],indices=[];let vertexOffset=0;
+      for(const path of practiceTrailPaths){
+        const points=path.points.map(a=>new THREE.Vector3().fromArray(a));
+        if(points.length<2)continue;
+        const curve=new THREE.CatmullRomCurve3(points,false,'centripetal');
+        const segments=Math.max(10,Math.min(384,(points.length-1)*2));
+        const tube=new THREE.TubeGeometry(curve,segments,path.putt?.03:.075,5,false);
+        const pa=tube.attributes.position.array,ia=tube.index.array;
+        positions.push(...pa);
+        for(let i=0;i<pa.length/3;i++)colors.push(path.color[0],path.color[1],path.color[2]);
+        for(const index of ia)indices.push(index+vertexOffset);
+        vertexOffset+=pa.length/3;tube.dispose();
+      }
+      const geometry=new THREE.BufferGeometry();
+      if(positions.length){
+        geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
+        geometry.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
+        geometry.setIndex(new THREE.BufferAttribute(new Uint32Array(indices),1));
+        geometry.computeBoundingSphere();
+      }
+      const old=practiceTrailMesh.geometry;practiceTrailMesh.geometry=geometry;old.dispose();
+      window.PuttUI?.syncPracticeToolbar?.();
+    }
+    function clearPracticeTrails(){practiceTrailPaths.length=0;rebuildPracticeTrails();}
+    function preservePracticeTrajectory(){
+      if(!practiceSession||!practiceSession.shots||practiceSession.savedShots>=practiceSession.shots)return false;
+      const points=[shotStartPos.clone(),...ribbonHistory.map(p=>p.clone())];
+      if(!points.length||points[points.length-1].distanceTo(ballPos)>.015)points.push(ballPos.clone());
+      const compact=[];for(const p of points)if(!compact.length||compact[compact.length-1].distanceTo(p)>.025)compact.push(p);
+      if(compact.length<2){practiceSession.savedShots=practiceSession.shots;return false;}
+      const color=new THREE.Color().setHSL(((practiceTrailPaths.length*.61803398875)%1),.94,.60);
+      practiceTrailPaths.push({points:compact.map(p=>p.toArray()),putt:!!tracerShotIsPutt,color:[color.r,color.g,color.b]});
+      practiceSession.savedShots=practiceSession.shots;rebuildPracticeTrails();return true;
+    }
+
     let ribbonHistory = [];
     let tracerShotIsPutt = false;
 
@@ -3068,6 +3111,7 @@ group.name = name;
 
     function handleBallCameToRest() {
       if(window.CaddieSystem?.deferRest(handleBallCameToRest))return;
+      if(practiceSession)preservePracticeTrajectory();
       hideToptracerYardageTag();
       aimLine.visible = false;
 
@@ -3317,6 +3361,7 @@ group.name = name;
     }
     function updatePracticeAfterHole(){
       if(!practiceSession)return;
+      preservePracticeTrajectory();
       window.CaddieSystem?.finishInterruptedShot();
       AudioEngine.playCupDrop();
       window.PuttUI?.toast(practiceSession.type==='putting'?'پات وارد حفره شد؛ تمرین ادامه دارد.':'توپ وارد حفره شد؛ تمرین ادامه دارد.');
@@ -3326,7 +3371,8 @@ group.name = name;
     window.PuttPractice={
       start({type,hole,tee='blue',returnState=null}={}){
         if(!['range','putting'].includes(type)||!Number.isInteger(hole)||hole<1||hole>18)throw new Error('Invalid practice selection');
-        practiceSession={type,hole,tee,resetToTee:true,placing:false,anchorBall:null,shots:0,returnState};
+        clearPracticeTrails();
+        practiceSession={type,hole,tee,resetToTee:true,placing:false,anchorBall:null,shots:0,savedShots:0,returnState};
         gameMode=type==='range'?'practice_range':'practice_putting';selectedSingleHole=hole;window.gameMode=gameMode;window.selectedSingleHole=hole;
         if(type==='range'){
           if(isPuttClub()){courseTeeColor=['blue','white','red'].includes(tee)?tee:'blue';isWomenTee=false;}
@@ -3343,10 +3389,13 @@ group.name = name;
       },
       reset:()=>resetPracticeBall(),
       setRangeReset(value){if(practiceSession?.type==='range')practiceSession.resetToTee=!!value;window.PuttUI?.syncPracticeToolbar?.();},
+      toggleRangeReset(){if(practiceSession?.type==='range')practiceSession.resetToTee=practiceSession.resetToTee===false;window.PuttUI?.syncPracticeToolbar?.();},
+      clearTrails(){if(!practiceSession)return false;clearPracticeTrails();window.PuttUI?.toast('مسیرهای ضربه پاک شدند.');return true;},
       togglePlacement(){if(practiceSession?.type!=='putting'||isBallFlying||golferSwingPhase!=='idle'||window.GolferLocomotion?.busy)return false;practiceSession.placing=!practiceSession.placing;window.PuttUI?.syncPracticeToolbar?.();return practiceSession.placing;},
       placeAt(x,z){if(practiceSession?.type!=='putting'||!practiceSession.placing||!practicePointOnGreen(x,z))return false;const point=new THREE.Vector3(x,getTerrainHeight(x,z)+BALL_RADIUS,z);practiceSession.placing=false;setPracticeBall(point,{anchor:true,walk:true});window.PuttUI?.toast('توپ روی گرین جای‌گذاری شد؛ بازیکن به سمت آن قدم می‌زند.');return true;},
-      end(){const previous=practiceSession?.returnState||null;practiceSession=null;window.GolferLocomotion?.reset();document.body.classList.remove('practice-placement');gameMode='18holes';selectedSingleHole=1;window.gameMode=gameMode;window.selectedSingleHole=selectedSingleHole;window.PuttUI?.syncPracticeToolbar?.();return previous;},
-      get state(){return practiceSession;}
+      end(){const previous=practiceSession?.returnState||null;practiceSession=null;clearPracticeTrails();window.GolferLocomotion?.reset();document.body.classList.remove('practice-placement');gameMode='18holes';selectedSingleHole=1;window.gameMode=gameMode;window.selectedSingleHole=selectedSingleHole;window.PuttUI?.syncPracticeToolbar?.();return previous;},
+      get state(){return practiceSession;},
+      get trailCount(){return practiceTrailPaths.length;}
     };
     const practiceRaycaster=new THREE.Raycaster(),practiceNdc=new THREE.Vector2(),practicePlane=new THREE.Plane(new THREE.Vector3(0,1,0),0),practiceHit=new THREE.Vector3();
     renderer.domElement.addEventListener('pointerdown',e=>{
