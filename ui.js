@@ -378,9 +378,13 @@
     syncAimControlsLayout();
   }
   function updateShotState(force = false) {
-    const equipment=window.CaddieSystem;
-    const shotBusy = isBallFlying || golferSwingPhase !== "idle" || starting || !!courseRelief || !!window.GolferLocomotion?.blocksAim;
-    const busy = shotBusy || !!equipment?.busy;
+    const equipment=window.CaddieSystem,practice=window.PuttPractice?.state;
+    const multiPutt=practice?.type==='putting'&&practice.multiBallEnabled;
+    const rapidControls=!!(multiPutt&&practice.multiShotReady);
+    const practiceControlsReady=!!(multiPutt&&(rapidControls||(!isBallFlying&&golferSwingPhase==='idle')));
+    const rapidReady=!!(rapidControls&&!practice.placing);
+    const shotBusy = ((isBallFlying || golferSwingPhase !== "idle" || !!window.GolferLocomotion?.blocksAim) && !rapidReady) || !!(multiPutt&&practice.placing) || starting || !!courseRelief;
+    const busy = shotBusy || (!!equipment?.busy&&!rapidReady);
     const equipmentKey=(equipment?.phase||"none")+":"+(equipment?.canStrike||false);
     if (force || lastBusy !== busy || updateShotState.equipmentKey!==equipmentKey) {
       lastBusy = busy;updateShotState.equipmentKey=equipmentKey;
@@ -405,12 +409,16 @@
         "btn-clear-practice-trajectories",
       ])
         $(id).disabled = busy;
+      if(multiPutt){
+        const practiceControlsBusy=!practiceControlsReady||!!courseRelief;
+        for(const id of ["btn-practice-reset","btn-practice-place","btn-practice-reset-putting","btn-clear-practice-trajectories"])$(id).disabled=practiceControlsBusy;
+      }
       $("swing-trigger-card").disabled =
         shotBusy;
       $("swing-power-slider").disabled=shotBusy;
       $("putter-backswing-slider").disabled=shotBusy;
       $("btn-launch-shot").disabled=busy||!!equipment&&!equipment.canStrike;
-      $("btn-putt-action").disabled=busy||!!equipment&&!equipment.canStrike;
+      $("btn-putt-action").disabled=busy||!!equipment&&!equipment.canStrike&&!rapidReady;
       $("btn-launch-shot").setAttribute("aria-busy", String(busy));
       $("btn-launch-shot").innerHTML = "Strike ball" + icon("arrow");
       $("shot-status").textContent="";

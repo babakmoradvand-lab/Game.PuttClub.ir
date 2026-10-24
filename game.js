@@ -1201,11 +1201,13 @@ group.name = name;
     // Practice trajectories are kept as independently colored 3D tubes until
     // the player explicitly clears them or leaves the practice session.
     const practiceTrailPaths=[];
+    const practiceMovingPuttBalls=[];
+    let practiceTrailRebuildTimer=0;
     const practiceTrailMaterial=new THREE.MeshBasicMaterial({vertexColors:true,transparent:true,opacity:.88,depthTest:false,depthWrite:false,toneMapped:false});
     const practiceTrailMesh=new THREE.Mesh(new THREE.BufferGeometry(),practiceTrailMaterial);
     practiceTrailMesh.name='PersistentPracticeShotTrajectories';
     practiceTrailMesh.renderOrder=9997;practiceTrailMesh.frustumCulled=false;scene.add(practiceTrailMesh);
-    function rebuildPracticeTrails(){
+    function rebuildPracticeTrails(syncUI=true){
       const positions=[],colors=[],indices=[];let vertexOffset=0;
       for(const path of practiceTrailPaths){
         const points=path.points.map(a=>new THREE.Vector3().fromArray(a));
@@ -1227,9 +1229,17 @@ group.name = name;
         geometry.computeBoundingSphere();
       }
       const old=practiceTrailMesh.geometry;practiceTrailMesh.geometry=geometry;old.dispose();
-      window.PuttUI?.syncPracticeToolbar?.();
+      if(syncUI)window.PuttUI?.syncPracticeToolbar?.();
     }
-    function clearPracticeTrails(){practiceTrailPaths.length=0;rebuildPracticeTrails();}
+    function clearPracticeTrails(){
+      practiceTrailPaths.length=0;
+      for(const ball of practiceMovingPuttBalls)ball.trailPath=null;
+      rebuildPracticeTrails();
+    }
+    function clearPracticeMovingPuttBalls(){
+      for(const ball of practiceMovingPuttBalls)scene.remove(ball.mesh);
+      practiceMovingPuttBalls.length=0;
+    }
     function preservePracticeTrajectory(){
       if(!practiceSession||!practiceSession.shots||practiceSession.savedShots>=practiceSession.shots)return false;
       const points=[shotStartPos.clone(),...ribbonHistory.map(p=>p.clone())];
@@ -1240,6 +1250,63 @@ group.name = name;
       practiceTrailPaths.push({points:compact.map(p=>p.toArray()),putt:!!tracerShotIsPutt,color:[color.r,color.g,color.b]});
       practiceSession.savedShots=practiceSession.shots;rebuildPracticeTrails();return true;
     }
+    function isRapidPracticePutt(){return practiceSession?.type==='putting'&&practiceSession.multiBallEnabled===true;}
+    function launchPracticeMovingPutt(club){
+      if(!isRapidPracticePutt())return false;
+      const mesh=ballMesh.clone();mesh.position.copy(ballPos);scene.add(mesh);
+      const color=new THREE.Color().setHSL(((practiceTrailPaths.length*.61803398875)%1),.94,.60);
+      const path={points:[shotStartPos.toArray()],putt:true,color:[color.r,color.g,color.b]};
+      if(path.points[0].some((v,i)=>Math.abs(v-ballPos.toArray()[i])>.025))path.points.push(ballPos.toArray());
+      const state={mesh,position:ballPos.clone(),velocity:ballVel.clone(),club:{...club},path,lastTrailPoint:ballPos.clone(),active:true,restTimer:0};
+      practiceMovingPuttBalls.push(state);practiceTrailPaths.push(path);
+      const restart=practiceSession.anchorBall||shotStartPos.toArray();
+      ballPos.fromArray(restart);ballPos.y=getTerrainHeight(ballPos.x,ballPos.z)+BALL_RADIUS;
+      ballMesh.position.copy(ballPos);ballMesh.rotation.set(0,0,0);ballVel.set(0,0,0);
+      isBallFlying=false;isBallGrounded=false;isBallSettled=false;ballRestTimer=0;
+      practiceSession.multiShotReady=true;
+      window.GolferLocomotion?.reset();resetToptracer();resetAimToPin();
+      aimLine.visible=false;ballMarker.position.copy(ballPos);ballMarker.visible=false;
+      orbitControls.enabled=true;rebuildPracticeTrails();drawMinimap();
+      window.PuttUI?.sync?.();window.PuttUI?.updateShotState?.(true);return true;
+    }
+    function stepPracticeMovingPuttBalls(dt){
+      if(!practiceMovingPuttBalls.length)return;
+      const pc=isPuttClub()?window.PuttClubCourse:null,pin=holePins3D[currentHoleNumber],legacy=!pc;
+      let trailsDirty=false,anySettled=false;
+      for(const ball of practiceMovingPuttBalls){
+        if(!ball.active)continue;
+        const steps=Math.max(6,Math.min(96,Math.ceil(ball.velocity.length()*dt/.14))),sdt=dt/steps;
+        for(let i=0;i<steps;i++){
+          const from=ball.position.clone();let sample;
+          if(pc){const info=pc.height(ball.position.x,ball.position.z,true);sample={normal:info.normal,surface:pc.surface(ball.position.x,ball.position.z),hazard:!!pc.wetAt(new THREE.Vector3(ball.position.x,info.y+BALL_RADIUS,ball.position.z))};}
+          else sample={normal:getTerrainNormal(ball.position.x,ball.position.z),surface:detectLie(new THREE.Vector3(ball.position.x,getTerrainHeight(ball.position.x,ball.position.z)+BALL_RADIUS,ball.position.z))};
+          const roll=window.PuttCapture?.rollVelocity?.(ball.velocity,sdt,sample.normal,sample.surface,ball.club,legacy,'putt',gravity);
+          if(!roll){ball.active=false;anySettled=true;break;}
+          ball.position.x+=ball.velocity.x*sdt;ball.position.z+=ball.velocity.z*sdt;
+          ball.position.y=pc?pc.height(ball.position.x,ball.position.z)+BALL_RADIUS:getTerrainHeight(ball.position.x,ball.position.z)+BALL_RADIUS;
+          if(pc)pc.collideTrees(from,ball.position,ball.velocity,BALL_RADIUS);
+          const dMoved=Math.hypot(ball.position.x-from.x,ball.position.z-from.z);
+          if(dMoved>1e-5){ball.mesh.rotation.x+=(ball.position.z-from.z)/BALL_RADIUS;ball.mesh.rotation.z-=(ball.position.x-from.x)/BALL_RADIUS;}
+          if(pin&&window.PuttCapture?.evaluate&&Math.min(from.distanceTo(pin),ball.position.distanceTo(pin))<.30){
+            const field=(x,z)=>{if(pc){const h=pc.height(x,z,true),p=new THREE.Vector3(x,h.y+BALL_RADIUS,z);return {normal:h.normal,surface:pc.surface(x,z),hazard:!!pc.wetAt(p)};}return {normal:getTerrainNormal(x,z),surface:detectLie(new THREE.Vector3(x,getTerrainHeight(x,z)+BALL_RADIUS,z))};};
+            const cup=window.PuttCapture.evaluate(from,ball.position,pin,ball.velocity,BALL_RADIUS,field,sdt,ball.club,legacy,'putt',legacy?window.PuttCapture.config.legacyCupRadius:window.PuttCapture.config.cupRadius);
+            if(cup.capture){ball.position.set(pin.x,pin.y-.085,pin.z);ball.mesh.position.copy(ball.position);ball.mesh.visible=false;ball.active=false;ball.velocity.set(0,0,0);anySettled=true;window.PuttUI?.toast('توپ وارد حفره شد؛ ضربه‌های تمرین ادامه دارند.');break;}
+          }
+          if(sample.hazard||(pc&&!pc.inPlay(ball.position))){ball.active=false;ball.velocity.set(0,0,0);ball.mesh.visible=false;anySettled=true;break;}
+          if(ball.path&&ball.position.distanceTo(ball.lastTrailPoint)>=.11){ball.path.points.push(ball.position.toArray());ball.lastTrailPoint.copy(ball.position);trailsDirty=true;}
+          if(ball.velocity.length()<.035&&roll.slope<roll.decel){ball.restTimer+=sdt;if(ball.restTimer>.65){ball.active=false;ball.velocity.set(0,0,0);anySettled=true;break;}}
+          else ball.restTimer=0;
+        }
+        if(!ball.active&&ball.path&&!ball.pathFinalized){
+          if(ball.position.distanceTo(ball.lastTrailPoint)>.025)ball.path.points.push(ball.position.toArray());
+          ball.pathFinalized=true;trailsDirty=true;
+        }
+        ball.mesh.position.copy(ball.position);
+      }
+      practiceTrailRebuildTimer+=dt;
+      if(trailsDirty&&(practiceTrailRebuildTimer>.12||anySettled)){practiceTrailRebuildTimer=0;rebuildPracticeTrails(false);}
+    }
+    function stopPracticeMovingPuttBalls(){clearPracticeMovingPuttBalls();}
 
     let ribbonHistory = [];
     let tracerShotIsPutt = false;
@@ -1815,8 +1882,10 @@ group.name = name;
     }
 
     function triggerGolferSwing(specs, onImpactCallback) {
-      if(window.GolferLocomotion?.busy)return false;
-      if(window.CaddieSystem&&!window.CaddieSystem.onShot())return false;
+      const rapidPutt=isRapidPracticePutt()&&practiceSession.multiShotReady&&!practiceSession.placing;
+      if(window.GolferLocomotion?.busy&&!rapidPutt)return false;
+      if(window.CaddieSystem&&!rapidPutt&&!window.CaddieSystem.onShot())return false;
+      if(rapidPutt){practiceSession.multiShotReady=false;window.PuttUI?.updateShotState?.(true);}
       window.GolferLocomotion?.beginShot();
       window.GreenReader?.close();
       window.WindSystem?.captureShot();
@@ -2366,7 +2435,8 @@ group.name = name;
     });
 
     document.getElementById('btn-putt-action').addEventListener('click', () => {
-      if (isBallFlying || golferSwingPhase !== 'idle' || window.GreenReader?.enabled) return;
+      const rapidPutt=isRapidPracticePutt()&&practiceSession.multiShotReady&&!practiceSession.placing;
+      if ((isBallFlying || golferSwingPhase !== 'idle')&&!rapidPutt || practiceSession?.placing || window.GreenReader?.enabled) return;
       const backswingFraction = parseInt(putterSlider.value) / 100;
       const specs = { carryMultiplier: 0, rollMultiplier: backswingFraction, isPutt: true };
       const shotDirection = aimDirection.clone();
@@ -2895,10 +2965,11 @@ group.name = name;
       }
 
       isBallFlying = true;
-      window.PuttBroadcast?.start();
       aimLine.visible = false;
       ballMarker.visible = false;
       landingRing.visible = false;
+      if(isRapidPracticePutt()){launchPracticeMovingPutt(club);return;}
+      window.PuttBroadcast?.start();
       orbitControls.enabled = false; // Disable orbit control during flight to prevent fight/jerk!
     }
 
@@ -3371,8 +3442,8 @@ group.name = name;
     window.PuttPractice={
       start({type,hole,tee='blue',returnState=null}={}){
         if(!['range','putting'].includes(type)||!Number.isInteger(hole)||hole<1||hole>18)throw new Error('Invalid practice selection');
-        clearPracticeTrails();
-        practiceSession={type,hole,tee,resetToTee:true,placing:false,anchorBall:null,shots:0,savedShots:0,returnState};
+        clearPracticeTrails();stopPracticeMovingPuttBalls();
+        practiceSession={type,hole,tee,resetToTee:true,placing:false,anchorBall:null,shots:0,savedShots:0,returnState,multiBallEnabled:type==='putting',multiShotReady:false};
         gameMode=type==='range'?'practice_range':'practice_putting';selectedSingleHole=hole;window.gameMode=gameMode;window.selectedSingleHole=hole;
         if(type==='range'){
           if(isPuttClub()){courseTeeColor=['blue','white','red'].includes(tee)?tee:'blue';isWomenTee=false;}
@@ -3391,15 +3462,16 @@ group.name = name;
       setRangeReset(value){if(practiceSession?.type==='range')practiceSession.resetToTee=!!value;window.PuttUI?.syncPracticeToolbar?.();},
       toggleRangeReset(){if(practiceSession?.type==='range')practiceSession.resetToTee=practiceSession.resetToTee===false;window.PuttUI?.syncPracticeToolbar?.();},
       clearTrails(){if(!practiceSession)return false;clearPracticeTrails();window.PuttUI?.toast('مسیرهای ضربه پاک شدند.');return true;},
-      togglePlacement(){if(practiceSession?.type!=='putting'||isBallFlying||golferSwingPhase!=='idle'||window.GolferLocomotion?.busy)return false;practiceSession.placing=!practiceSession.placing;window.PuttUI?.syncPracticeToolbar?.();return practiceSession.placing;},
-      placeAt(x,z){if(practiceSession?.type!=='putting'||!practiceSession.placing||!practicePointOnGreen(x,z))return false;const point=new THREE.Vector3(x,getTerrainHeight(x,z)+BALL_RADIUS,z);practiceSession.placing=false;setPracticeBall(point,{anchor:true,walk:true});window.PuttUI?.toast('توپ روی گرین جای‌گذاری شد؛ بازیکن به سمت آن قدم می‌زند.');return true;},
-      end(){const previous=practiceSession?.returnState||null;practiceSession=null;clearPracticeTrails();window.GolferLocomotion?.reset();document.body.classList.remove('practice-placement');gameMode='18holes';selectedSingleHole=1;window.gameMode=gameMode;window.selectedSingleHole=selectedSingleHole;window.PuttUI?.syncPracticeToolbar?.();return previous;},
+      togglePlacement(){const rapid=isRapidPracticePutt()&&practiceSession.multiShotReady;if(practiceSession?.type!=='putting'||(isBallFlying||golferSwingPhase!=='idle'||window.GolferLocomotion?.busy)&&!rapid)return false;practiceSession.placing=!practiceSession.placing;window.PuttUI?.syncPracticeToolbar?.();window.PuttUI?.updateShotState?.(true);return practiceSession.placing;},
+      placeAt(x,z){if(practiceSession?.type!=='putting'||!practiceSession.placing||!practicePointOnGreen(x,z))return false;const point=new THREE.Vector3(x,getTerrainHeight(x,z)+BALL_RADIUS,z);practiceSession.placing=false;setPracticeBall(point,{anchor:true,walk:false});window.PuttUI?.toast('توپ روی گرین جای‌گذاری شد.');return true;},
+      end(){const previous=practiceSession?.returnState||null;practiceSession=null;clearPracticeTrails();stopPracticeMovingPuttBalls();window.GolferLocomotion?.reset();document.body.classList.remove('practice-placement');gameMode='18holes';selectedSingleHole=1;window.gameMode=gameMode;window.selectedSingleHole=selectedSingleHole;window.PuttUI?.syncPracticeToolbar?.();return previous;},
       get state(){return practiceSession;},
       get trailCount(){return practiceTrailPaths.length;}
     };
     const practiceRaycaster=new THREE.Raycaster(),practiceNdc=new THREE.Vector2(),practicePlane=new THREE.Plane(new THREE.Vector3(0,1,0),0),practiceHit=new THREE.Vector3();
     renderer.domElement.addEventListener('pointerdown',e=>{
-      if(!practiceSession||practiceSession.type!=='putting'||!practiceSession.placing||document.body.dataset.view!=='game'||isBallFlying||golferSwingPhase!=='idle')return;
+      const rapid=isRapidPracticePutt()&&practiceSession.multiShotReady;
+      if(!practiceSession||practiceSession.type!=='putting'||!practiceSession.placing||document.body.dataset.view!=='game'||(isBallFlying||golferSwingPhase!=='idle')&&!rapid)return;
       const rect=renderer.domElement.getBoundingClientRect();if(!rect.width||!rect.height)return;
       practiceNdc.set(((e.clientX-rect.left)/rect.width)*2-1,-((e.clientY-rect.top)/rect.height)*2+1);
       practiceRaycaster.setFromCamera(practiceNdc,camera);let height=holePins3D[currentHoleNumber]?.y||0,point=null;
@@ -3500,6 +3572,7 @@ group.name = name;
       } else if (!window.GreenReader?.enabled) {
         updateAddressCamera(dt);
       }
+      if(isRapidPracticePutt())stepPracticeMovingPuttBalls(dt);
 
       // Keep Toptracer live floating yardage badge pinned to ball tip during camera movement
       if (isBallFlying && ballPos) {

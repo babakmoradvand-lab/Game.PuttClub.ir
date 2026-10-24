@@ -13,7 +13,7 @@ const reset=game.slice(game.indexOf('function resetToptracer()'),game.indexOf('f
 assert.doesNotMatch(reset,/practiceTrailPaths|clearPracticeTrails/,'ordinary tracer reset must not erase saved practice paths');
 assert.match(game,/if\(practiceSession\)preservePracticeTrajectory\(\)/);
 assert.match(game,/preservePracticeTrajectory\(\);\s*window\.CaddieSystem\?\.finishInterruptedShot/);
-assert.match(game,/function clearPracticeTrails\(\)\{practiceTrailPaths\.length=0/);
+assert.match(game,/function clearPracticeTrails\(\)\{[\s\S]*?practiceTrailPaths\.length=0/);
 assert.match(game,/clearTrails\(\)\{if\(!practiceSession\)return false;clearPracticeTrails\(\)/);
 assert.match(game,/get trailCount\(\)\{return practiceTrailPaths\.length;?\}/);
 assert.match(ui,/listen\("btn-clear-practice-trajectories",\(\)=>window\.PuttPractice\?\.clearTrails\?\.\(\)\)/);

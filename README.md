@@ -12,9 +12,9 @@ A third, independently playable course **زمین باشگاه پات کلاب**
 
 ## Free practice — practice1
 
-The game-mode screen now includes a separate **Free Practice** flow alongside the existing full-round and scored single-hole modes. Range practice lets players choose a course, one of its 18 holes, and an available tee; the ball returns to that tee after each shot by default, with an optional continue-from-landing setting. Putting practice starts on the selected green, supports click/tap placement anywhere on that green, and animates the golfer walking toward the new ball position. During either practice mode, every completed shot leaves a distinct-colored 3D trajectory in view until the player uses the compact “clear trails” action. Both practice modes allow repeat shots, do not write to the round scorecard or saved round, and return to the prior round/setup state when one exists.
+The game-mode screen now includes a separate **Free Practice** flow alongside the existing full-round and scored single-hole modes. Range practice lets players choose a course, one of its 18 holes, and an available tee; the ball returns to that tee after each shot by default, with an optional continue-from-landing setting. Putting practice starts on the selected green and supports click/tap placement anywhere on that green without waiting for a golfer walk. After each putt is struck, its ball continues rolling independently while the player can reset or place the next ball and strike again; multiple balls can therefore move on the green at once. Each shot keeps a distinct-colored 3D trajectory until the player uses the compact “clear trails” action. Both practice modes allow repeat shots, do not write to the round scorecard or saved round, and return to the prior round/setup state when one exists.
 
-Run the data and score-isolation contract with `node tests/practice-mode-contract.cjs`; the colored trajectory persistence and explicit-clear contract is `node tests/practice-trails-contract.cjs`.
+Run the data and score-isolation contract with `node tests/practice-mode-contract.cjs`; colored trajectory persistence is covered by `node tests/practice-trails-contract.cjs`, and immediate multi-ball putting by `node tests/practice-putt-multiball-contract.cjs`.
 
 ## Run
 
