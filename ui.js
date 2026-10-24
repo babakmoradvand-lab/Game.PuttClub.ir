@@ -22,7 +22,8 @@
   let step = "handicap",
     panel = null,
     returnFocus = null,
-    started = false, starting = false, preRoundConfigured = false;
+    started = false, starting = false, preRoundConfigured = false,
+    practiceIntent = "range", selectedPracticeTee = "blue";
   let toastTimer,
     lastBusy,
     offlineReady = false;
@@ -36,7 +37,9 @@
     handicap: "handicap-select-modal",
     course: "course-select-modal",
     mode: "mode-select-modal",
-    holes: "custom-hole-modal",
+    roundHoles: "custom-hole-modal",
+    practiceType: "practice-type-modal",
+    practiceHoles: "practice-holes-modal",
   };
   const listen = (id, fn) => $(id)?.addEventListener("click", fn);
   const icon = (name) =>
@@ -87,13 +90,14 @@
     document.body.dataset.view = "setup";
     Object.entries(screenIds).forEach(([k, id]) => ($(id).hidden = k !== step));
     document.querySelectorAll("[data-step]").forEach((e) => {
-      const current = e.dataset.step === (step === "holes" ? "mode" : step);
+      const current = e.dataset.step === (["roundHoles","practiceType","practiceHoles"].includes(step) ? "mode" : step);
       e.classList.toggle("current", current);
       current
         ? e.setAttribute("aria-current", "step")
         : e.removeAttribute("aria-current");
     });
-    if (step === "holes") renderHoles();
+    if (step === "roundHoles") renderHoles();
+    if (step === "practiceHoles") renderPracticeHoles();
     $("round-summary").textContent =
       `${skills[skill]} / ${course === "puttclub" ? "زمین باشگاه پات کلاب" : course === "mis" ? "Masjed Soleyman" : "Tehran presentation"} / Session play`;
     $("setup-shell").scrollTop = 0;
@@ -147,11 +151,11 @@
     if (step === "handicap") showTitle();
     else
       showStep(
-        step === "course" ? "handicap" : step === "mode" ? "course" : "mode",
+        step === "course" ? "handicap" : step === "mode" ? "course" : step === "practiceHoles" ? "practiceType" : step === "practiceType" ? "mode" : "mode",
       );
   }
   function renderHoles() {
-    // Practice cards use the selected independent course, even before the first round.
+    // Single-hole round cards use the selected course while preserving the round-score flow.
     const selectedHoles=course==='puttclub'?window.PuttClubCourse.holeCards:window.MIS_COURSE_18;
     const container = $("custom-hole-grid-container");
     container.replaceChildren();
@@ -164,11 +168,72 @@
       b.innerHTML = `<strong>${String(n).padStart(2, "0")}</strong><small>PAR ${info.par ?? "—"} <span>·</span> ${info.yard ?? "—"} YD</small>${Number.isFinite(score) ? '<span class="completion">Completed · ' + score + " strokes</span>" : ""}`;
       b.setAttribute(
         "aria-label",
-        `Practice hole ${n}, par ${info.par ?? "unknown"}, ${info.yard ?? "unknown"} yards`,
+        `Single-hole round ${n}, par ${info.par ?? "unknown"}, ${info.yard ?? "unknown"} yards`,
       );
       b.addEventListener("click", () => startRound("single_hole", n));
       container.appendChild(b);
     }
+  }
+  function renderPracticeHoles() {
+    const selectedHoles=course==='puttclub'?window.PuttClubCourse?.holeCards:window.MIS_COURSE_18;
+    const container=$("practice-hole-grid-container");
+    const teeSelector=$("practice-tee-selector");
+    const isRange=practiceIntent==="range";
+    $("practice-title").textContent=isRange?"Choose your range station.":"Choose a putting green.";
+    $("practice-screen-eyebrow").textContent=isRange?"PRACTICE / RANGE STATION":"PRACTICE / PUTTING GREEN";
+    $("practice-screen-description").textContent=isRange
+      ? "Select one of the 18 tee boxes. Practice shots repeat from this spot by default."
+      : "Select one of the 18 greens. You can then place the ball anywhere on that green.";
+    teeSelector.replaceChildren();
+    teeSelector.hidden=!isRange;
+    if(isRange){
+      const options=course==='puttclub'?[['blue','Blue tee'],['white','White tee'],['red','Red tee']]:[['standard','Standard tee'],['forward','Forward tee']];
+      if(!options.some(([value])=>value===selectedPracticeTee))selectedPracticeTee=options[0][0];
+      for(const [value,label] of options){const b=document.createElement('button');b.type='button';b.textContent=label;b.setAttribute('aria-pressed',String(value===selectedPracticeTee));b.addEventListener('click',()=>{selectedPracticeTee=value;renderPracticeHoles();});teeSelector.appendChild(b);}
+    }
+    container.replaceChildren();
+    for(let n=1;n<=18;n++){
+      const info=selectedHoles?.[n]?.tees?.[0]||{};
+      const b=document.createElement('button');b.type='button';b.className='hole-pick-card';
+      b.innerHTML=`<strong>${String(n).padStart(2,"0")}</strong><small>PAR ${info.par??"—"} <span>·</span> ${info.yard??info.distanceToPinYards??"—"} YD</small><span class="completion">${isRange?"Select tee box":"Select green"}</span>`;
+      b.setAttribute('aria-label',`${isRange?"Range tee box":"Putting green"} ${n}, par ${info.par??"unknown"}`);
+      b.addEventListener('click',()=>startPractice(n));container.appendChild(b);
+    }
+  }
+  async function startPractice(hole){
+    if(starting)return;starting=true;
+    const returnState=window.PuttUI?.exportSession?.()||null;
+    if(returnState)returnState.course=window.activeCourseId||returnState.course;
+    try{
+      if(window.activeCourseId!==course){toast(course==='puttclub'?'در حال آماده‌سازی زمین باشگاه پات کلاب…':'Preparing course…');await switchActiveCourse(course);}
+      window.currentHandicap=skill;
+      const type=practiceIntent==='range'?'range':'putting';
+      window.PuttPractice.start({type,hole,tee: selectedPracticeTee,returnState});
+      showGame();
+      window.PuttUI?.syncPracticeToolbar?.();
+    }catch(error){toast('آماده‌سازی تمرین انجام نشد؛ دوباره تلاش کنید.');console.error(error);}
+    finally{starting=false;}
+  }
+  function syncPracticeToolbar(){
+    const state=window.PuttPractice?.state,active=!!state;
+    const toolbar=$("practice-toolbar");if(!toolbar)return;
+    toolbar.hidden=!active;
+    if(!active){document.body.classList.remove("practice-placement");return;}
+    const range=state.type==='range';
+    $("practice-range-controls").hidden=!range;
+    $("practice-putting-controls").hidden=range;
+    $("practice-toolbar-mode").textContent=range?'RANGE PRACTICE':'PUTTING PRACTICE';
+    $("practice-toolbar-hole").textContent=`${course==='puttclub'?'PuttClub':course==='tehran'?'Tehran':'MIS'} · ${range?'tee':'green'} ${state.hole}`;
+    $("practice-toolbar-shots").textContent=`ضربه‌ها: ${state.shots||0}`;
+    $("practice-reset-to-tee").checked=state.resetToTee!==false;
+    $("btn-practice-place").setAttribute("aria-pressed",String(!!state.placing));
+    $("btn-practice-place").textContent=state.placing?'روی نقطهٔ دلخواه گرین کلیک کن…':'جای‌گذاری توپ روی گرین';
+    document.body.classList.toggle("practice-placement",!!state.placing);
+  }
+  async function exitPractice(){
+    const returnState=window.PuttPractice?.end?.()||null;
+    if(returnState?.started){await importSession(returnState,{silent:true});return;}
+    showTitle();
   }
   function openPanel(id) {
     if (!panelIds.includes(id)) return;
@@ -237,6 +302,7 @@
     saveSession();
   }
   function sync() {
+    syncPracticeToolbar();
     const club = GOLF_BAG[currentClubIndex],
       isPutter = !!club.isPutter;
     const mode = currentSwingMode,
@@ -409,9 +475,18 @@
   listen("skill-continue", () => showStep("course"));
   listen("course-continue", () => showStep("mode"));
   listen("btn-mode-18holes", () => startRound("18holes"));
-  listen("btn-mode-custom-hole", () => showStep("holes"));
+  listen("btn-mode-custom-hole", () => showStep("roundHoles"));
+  listen("btn-mode-practice", () => showStep("practiceType"));
+  document.querySelectorAll("[data-practice-type]").forEach(e=>e.addEventListener("click",()=>{practiceIntent=e.dataset.practiceType;selectedPracticeTee=course==='puttclub'?'blue':'standard';showStep("practiceHoles");}));
+  listen("btn-close-practice-type",()=>showStep("mode"));
+  listen("btn-practice-reset",()=>window.PuttPractice?.reset?.());
+  listen("btn-practice-reset-putting",()=>window.PuttPractice?.reset?.());
+  listen("btn-practice-place",()=>window.PuttPractice?.togglePlacement?.());
+  $("practice-reset-to-tee").addEventListener("change",e=>window.PuttPractice?.setRangeReset?.(e.target.checked));
+  listen("btn-practice-exit",exitPractice);
   listen("btn-pre-round-technique", () => openPanel("swing-picker-modal"));
   listen("btn-close-custom-hole", () => showStep("mode"));
+  listen("btn-close-practice-holes", () => showStep("practiceType"));
   listen("club-trigger-card", () => openPanel("club-picker-modal"));
   listen("swing-trigger-card", () => openPanel("swing-picker-modal"));
   listen("btn-close-club-picker", () => closePanel());
@@ -532,6 +607,8 @@
       if (panel) {
         e.preventDefault();
         closePanel();
+      } else if (window.PuttPractice?.state?.placing) {
+        e.preventDefault();window.PuttPractice.togglePlacement();
       } else if (document.body.dataset.view === "setup") {
         e.preventDefault();
         backSetup();
@@ -593,10 +670,11 @@
       : "A complete saved build has not been verified.";
   }
   function exportSession() {
+    if(gameMode==='practice_range'||gameMode==='practice_putting')return null;
     if(isBallFlying||golferSwingPhase!=="idle"||isCameraTransitioning)return null;
     return {schema:1,started,view:document.body.dataset.view,hudSlide,technique:window.ShotTechnique?.exportState(),step,skill,course,mode:gameMode,hole:currentHoleNumber,single:selectedSingleHole,strokes:strokesCurrentHole,tee:isWomenTee,courseTee:courseTeeColor,scores:[...holeScores],courseState:isPuttClub()?exportPuttClubState():null,wind:window.WindSystem?.exportState(),equipment:window.CaddieSystem?.exportState(),club:currentClubIndex,swing:currentSwingMode,power:swingPowerPercent,ball:ballPos.toArray(),aim:aimDirection.toArray(),camera:camera.position.toArray(),zoom:gameplayView.zoom,target:orbitControls.target.toArray(),putt:$("putter-backswing-slider").value,celebrating:$("celebration-overlay").style.display!=="none",telemetry:["tele-carry","tele-roll","tele-total"].map(id=>$(id).textContent)};
   }
-  async function importSession(data) {
+  async function importSession(data, options={}) {
     if(data?.schema!==1||!data.started)return;
     selectSkill(data.skill);selectCourse(data.course);window.currentHandicap=skill;
     if(window.activeCourseId!==course)await switchActiveCourse(course);
@@ -626,7 +704,7 @@
     window.CaddieSystem?.restore(data.equipment);
     if(data.celebrating)handleHoleCompleted();
     if(isPuttClub())restorePuttClubState(data.courseState);
-    toast("Updated build loaded · round restored. An unfinished shot restarts from its pre-strike position.");
+    if(!options.silent)toast("Updated build loaded · round restored. An unfinished shot restarts from its pre-strike position.");
   }
   // One native click per tap/Enter/Space. The whole fixed-size card advances;
   // physics/tracking/weather never select a page or open a second disclosure.
@@ -664,6 +742,8 @@
     closePanel,
     showCelebration,
     updateScoreSummary,
+    syncPracticeToolbar,
+    showTitle,
     markPreRoundConfigured,
     toast,
   };

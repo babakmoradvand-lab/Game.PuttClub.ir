@@ -2823,6 +2823,7 @@ group.name = name;
       const club = GOLF_BAG[currentClubIndex];
 
       strokesCurrentHole++;
+      if(practiceSession)practiceSession.shots++;
 
       shotStartPos.copy(ballPos);
       firstImpactPos.set(0, 0, 0);
@@ -3084,7 +3085,9 @@ group.name = name;
       document.getElementById('tele-total').textContent = `${actualTotalYards} YDS`;
       teleHUD.style.display = 'flex';
 
-      if(window.GolferLocomotion?.beginRest(()=>{autoSuggestClub();updateHoleUI();positionGolferAtBall();drawMinimap();}))return;
+      if(gameMode==='practice_range'&&practiceSession?.resetToTee!==false){resetPracticeBall({preserveTelemetry:true,quiet:true});return;}
+      window.PuttUI?.syncPracticeToolbar?.();
+      if(window.GolferLocomotion?.beginRest(()=>{autoSuggestClub();updateHoleUI();positionGolferAtBall();drawMinimap();window.PuttUI?.syncPracticeToolbar?.();}))return;
       resetAimToPin();
       setAddressCamera(false);
 
@@ -3095,6 +3098,7 @@ group.name = name;
     }
 
     function handleHoleCompleted() {
+      if(gameMode==='practice_range'||gameMode==='practice_putting'){updatePracticeAfterHole();return;}
       const athleteCelebration=!!window.CaddieSystem?.onHole?.();
       if(!athleteCelebration)window.CaddieSystem?.finishInterruptedShot();
       hideToptracerYardageTag();
@@ -3252,6 +3256,109 @@ group.name = name;
     
     let gameMode = '18holes';
     let selectedSingleHole = 1;
+    let practiceSession = null;
+
+    function practicePointOnGreen(x,z){
+      const pin=holePins3D[currentHoleNumber];if(!pin)return false;
+      if(isPuttClub()){const surface=window.PuttClubCourse.surface(x,z);return surface.type==='green'&&surface.holeNumber===currentHoleNumber&&!window.PuttClubCourse.areaAt(new THREE.Vector3(x,getTerrainHeight(x,z),z));}
+      const center=brownCenters3D[currentHoleNumber]||pin;return Math.hypot(x-center.x,z-center.z)<=10.85;
+    }
+    function defaultPracticeGreenPoint(){
+      const pin=holePins3D[currentHoleNumber],tee=teeBoxes3D[currentHoleNumber];
+      if(isPuttClub()){
+        const h=window.PuttClubCourse.data.holes[currentHoleNumber-1],source=h.tees.find(t=>t.color===(practiceSession?.tee||courseTeeColor))||h.tees[0];
+        const origin=new THREE.Vector3().fromArray(source.position),dir=origin.sub(pin).setY(0).normalize();
+        for(const r of [2.5,3.5,4.5,5.5,1.5,6.5])for(let k=0;k<16;k++){
+          const a=k*Math.PI/8,pinPoint=pin.clone().add(new THREE.Vector3(Math.cos(a)*r,0,Math.sin(a)*r));
+          if(practicePointOnGreen(pinPoint.x,pinPoint.z)){pinPoint.y=getTerrainHeight(pinPoint.x,pinPoint.z)+BALL_RADIUS;return pinPoint;}
+        }
+        const candidate=pin.clone().addScaledVector(dir,3);candidate.y=getTerrainHeight(candidate.x,candidate.z)+BALL_RADIUS;return candidate;
+      }
+      const center=brownCenters3D[currentHoleNumber]||pin,dir=tee?tee.clone().sub(pin).setY(0).normalize():new THREE.Vector3(1,0,0);
+      const candidate=center.clone().addScaledVector(dir,1.5);candidate.y=getTerrainHeight(candidate.x,candidate.z)+BALL_RADIUS;return candidate;
+    }
+    function setPracticeBall(position,{tee=false,anchor=false,walk=false,preserveTelemetry=false}={}){
+      if(!practiceSession||!position)return false;
+      const p=position.clone?position.clone():new THREE.Vector3().fromArray(position);
+      if(![p.x,p.y,p.z].every(Number.isFinite))return false;
+      if(practiceSession.type==='putting'&&!practicePointOnGreen(p.x,p.z))return false;
+      if(tee){
+        const surfaceY=getTerrainHeight(p.x,p.z)+(isPuttClub()?0:.15);
+        p.y=surfaceY+(isPuttClub()?0:.08)+BALL_RADIUS;
+        teePegGroup.position.set(p.x,surfaceY,p.z);teePegGroup.visible=true;
+      }else{p.y=getTerrainHeight(p.x,p.z)+BALL_RADIUS;teePegGroup.visible=false;}
+      ballPos.copy(p);ballMesh.position.copy(ballPos);ballVel.set(0,0,0);
+      isBallFlying=false;isBallSettled=false;isBallGrounded=false;ballRestTimer=0;
+      golferSwingPhase='idle';golferSwingProgress=0;golferImpactCallback=null;golferFinishHold=0;isCameraTransitioning=false;
+      window.GolferLocomotion?.reset();resetToptracer();aimLine.visible=false;
+      if(anchor)practiceSession.anchorBall=ballPos.toArray();
+      resetAimToPin();autoSuggestClub();if(practiceSession.type==='putting'){currentClubIndex=12;updateSelectedClubUI();}
+      setAddressCamera(true);
+      if(!preserveTelemetry)document.getElementById('shot-telemetry-hud').style.display='none';
+      if(walk&&window.GolferLocomotion&&window.GolferLocomotion.greenDistance(golferGroup.position)<=1.0){
+        window.GolferLocomotion.beginShot();
+        if(window.GolferLocomotion.beginRest(()=>{autoSuggestClub();if(practiceSession?.type==='putting'){currentClubIndex=12;updateSelectedClubUI();}updateHoleUI();positionGolferAtBall();drawMinimap();})){
+          updateHoleUI();drawMinimap();window.PuttUI?.syncPracticeToolbar?.();return true;
+        }
+        window.GolferLocomotion.reset();
+      }
+      positionGolferAtBall();updateHoleUI();drawMinimap();window.PuttUI?.sync();window.PuttUI?.syncPracticeToolbar?.();return true;
+    }
+    function resetPracticeBall({walk=false,preserveTelemetry=false,quiet=false}={}){
+      if(!practiceSession)return false;
+      practiceSession.placing=false;
+      const tee=practiceSession.type==='range';
+      const point=practiceSession.anchorBall||ballPos.toArray();
+      if(tee)strokesCurrentHole=0;
+      const ok=setPracticeBall(point,{tee,walk:false,preserveTelemetry});
+      if(ok&&walk)positionGolferAtBall();
+      if(!quiet)window.PuttUI?.toast(tee?'توپ به همان تی‌باکس بازگشت.':'توپ به نقطهٔ تمرین انتخاب‌شده بازگشت.');
+      return ok;
+    }
+    function updatePracticeAfterHole(){
+      if(!practiceSession)return;
+      window.CaddieSystem?.finishInterruptedShot();
+      AudioEngine.playCupDrop();
+      window.PuttUI?.toast(practiceSession.type==='putting'?'پات وارد حفره شد؛ تمرین ادامه دارد.':'توپ وارد حفره شد؛ تمرین ادامه دارد.');
+      resetPracticeBall({quiet:true});
+      window.PuttUI?.syncPracticeToolbar?.();
+    }
+    window.PuttPractice={
+      start({type,hole,tee='blue',returnState=null}={}){
+        if(!['range','putting'].includes(type)||!Number.isInteger(hole)||hole<1||hole>18)throw new Error('Invalid practice selection');
+        practiceSession={type,hole,tee,resetToTee:true,placing:false,anchorBall:null,shots:0,returnState};
+        gameMode=type==='range'?'practice_range':'practice_putting';selectedSingleHole=hole;window.gameMode=gameMode;window.selectedSingleHole=hole;
+        if(type==='range'){
+          if(isPuttClub()){courseTeeColor=['blue','white','red'].includes(tee)?tee:'blue';isWomenTee=false;}
+          else isWomenTee=tee==='forward';
+        }else isWomenTee=false;
+        setupHole(hole);
+        if(type==='range'){
+          practiceSession.anchorBall=ballPos.toArray();practiceSession.anchorTee=teePegGroup.position.toArray();
+        }else{
+          teePegGroup.visible=false;const point=defaultPracticeGreenPoint();setPracticeBall(point,{anchor:true});
+          currentClubIndex=12;updateSelectedClubUI();positionGolferAtBall();updateHoleUI();drawMinimap();
+        }
+        window.PuttUI?.syncPracticeToolbar?.();window.PuttUI?.sync?.();return true;
+      },
+      reset:()=>resetPracticeBall(),
+      setRangeReset(value){if(practiceSession?.type==='range')practiceSession.resetToTee=!!value;window.PuttUI?.syncPracticeToolbar?.();},
+      togglePlacement(){if(practiceSession?.type!=='putting'||isBallFlying||golferSwingPhase!=='idle'||window.GolferLocomotion?.busy)return false;practiceSession.placing=!practiceSession.placing;window.PuttUI?.syncPracticeToolbar?.();return practiceSession.placing;},
+      placeAt(x,z){if(practiceSession?.type!=='putting'||!practiceSession.placing||!practicePointOnGreen(x,z))return false;const point=new THREE.Vector3(x,getTerrainHeight(x,z)+BALL_RADIUS,z);practiceSession.placing=false;setPracticeBall(point,{anchor:true,walk:true});window.PuttUI?.toast('توپ روی گرین جای‌گذاری شد؛ بازیکن به سمت آن قدم می‌زند.');return true;},
+      end(){const previous=practiceSession?.returnState||null;practiceSession=null;window.GolferLocomotion?.reset();document.body.classList.remove('practice-placement');gameMode='18holes';selectedSingleHole=1;window.gameMode=gameMode;window.selectedSingleHole=selectedSingleHole;window.PuttUI?.syncPracticeToolbar?.();return previous;},
+      get state(){return practiceSession;}
+    };
+    const practiceRaycaster=new THREE.Raycaster(),practiceNdc=new THREE.Vector2(),practicePlane=new THREE.Plane(new THREE.Vector3(0,1,0),0),practiceHit=new THREE.Vector3();
+    renderer.domElement.addEventListener('pointerdown',e=>{
+      if(!practiceSession||practiceSession.type!=='putting'||!practiceSession.placing||document.body.dataset.view!=='game'||isBallFlying||golferSwingPhase!=='idle')return;
+      const rect=renderer.domElement.getBoundingClientRect();if(!rect.width||!rect.height)return;
+      practiceNdc.set(((e.clientX-rect.left)/rect.width)*2-1,-((e.clientY-rect.top)/rect.height)*2+1);
+      practiceRaycaster.setFromCamera(practiceNdc,camera);let height=holePins3D[currentHoleNumber]?.y||0,point=null;
+      for(let i=0;i<4;i++){practicePlane.constant=-height;if(!practiceRaycaster.ray.intersectPlane(practicePlane,practiceHit)){point=null;break;}point=practiceHit.clone();height=getTerrainHeight(point.x,point.z);}
+      if(!point)return;
+      if(!practicePointOnGreen(point.x,point.z)){window.PuttUI?.toast('نقطهٔ انتخابی بیرون از گرین است؛ داخل سطح گرین را انتخاب کن.');e.preventDefault();e.stopImmediatePropagation();return;}
+      if(window.PuttPractice.placeAt(point.x,point.z)){e.preventDefault();e.stopImmediatePropagation();}
+    },true);
     setupHole(1);
 
     let clock = new THREE.Clock();
